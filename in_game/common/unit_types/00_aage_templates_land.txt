@@ -1,0 +1,81 @@
+﻿
+INJECT:a_armored_horsemen = {
+    combat_power = -1.5
+}
+
+INJECT:a_mailed_knights = {
+    combat_power = -1.5
+}
+
+INJECT:a_horsemen = {
+    combat_power = -1.5
+}
+
+INJECT:a_cavalrymen = {
+    combat_power = -1.0
+}
+
+INJECT:a_plated_knights = {
+    combat_power = -1.0
+}
+
+INJECT:a_heavy_cavalrymen = {
+    combat_power = -1.0
+}
+
+INJECT:a_lancers = {
+    combat_power = -1.0
+}
+
+INJECT:a_cavaliers = {
+    combat_power = -1.0
+}
+
+
+INJECT:a_light_lancers = {
+    combat_power = -1.0
+}
+
+INJECT:a_pistoleers = {
+    combat_power = 0
+}
+
+INJECT:a_late_cavaliers = {
+    combat_power = 0
+}
+
+INJECT:a_heavy_lancers = {
+    combat_power = 0
+}
+
+INJECT:a_akinji = {
+    combat_power = -1.0
+}
+
+INJECT:a_lanzas_de_castilla = {
+    combat_power = -1.0
+}
+
+INJECT:a_hungarian_hussars = {
+    combat_power = 0
+}
+
+INJECT:a_winged_hussars = {
+    combat_power = 0
+}
+
+INJECT:a_serbian_hussars = {
+    combat_power = -1.0
+}
+
+INJECT:a_mamluk_horsemen_renaissance = {
+    combat_power = -1
+}
+
+INJECT:a_mamluk_horsemen_traditions = {
+    combat_power = -1.5
+}
+
+INJECT:a_hobelars = {
+    combat_power = -1.5
+}

@@ -1,0 +1,337 @@
+﻿#  FLA
+
+REPLACE:fla_cloth = {
+	content_priority = 1100
+	age = age_1_traditions
+	icon = fla_cloth
+	potential = {
+		has_or_had_tag = FLA
+	}
+	
+	global_cloth_output_modifier = 0.17
+	global_fine_cloth_output_modifier = 0.05
+
+	requires = feudalism_advance
+}
+
+# 2
+fla_infantry = {
+    age = age_2_renaissance
+    icon = swedish_tradition
+	potential = {
+		has_or_had_tag = FLA
+		
+	}
+	army_heavy_infantry_power = 0.10
+
+	requires = army_initiative_ren
+}
+
+# 3
+fla_heavyship = {
+	age = age_2_renaissance
+	icon = cas_castilian_navy
+	potential = {
+		has_or_had_tag = FLA
+
+	}
+
+	navy_heavy_ship_power = 0.10
+
+	requires = unlock_early_carrack_advance
+}
+
+# 4
+fla_tradecap = {
+	age = age_3_discovery
+	icon = gen_free_port
+	potential = {
+		has_or_had_tag = FLA
+
+	}
+
+	global_merchant_capacity_modifier = 0.15
+	requires = fla_prospering_agriculture
+}
+
+# 5
+fla_navalmoral = {
+	age = age_1_traditions
+	icon = cas_castilian_navy
+	potential = {
+		has_or_had_tag = FLA
+
+	}
+
+	naval_morale_modifier = 0.10
+
+	requires = fla_cloth
+}
+
+
+#NAP
+
+nap_proximtyeff = {
+	age = age_2_renaissance
+	icon = a_permanent_capital
+	potential = {
+		has_or_had_tag = NAP
+	}
+
+global_distance_from_capital_speed_propagation = 0.10
+
+requires = subject_integration
+
+}
+
+# 2
+REPLACE:neapolitan_army_reforms = {
+	
+	age = age_3_discovery
+	icon = levee_en_masse_advance
+
+	potential = {
+		OR = {
+			culture = culture:neapolitan
+			culture = { merged_culture_group_contains_culture = culture:neapolitan }
+		}
+		NOT = { has_reform = government_reform:partitio_reform }
+	}
+
+	army_heavy_infantry_power = 0.10
+	army_light_infantry_power = 0.10
+
+	requires = unlock_halberdiers_advance
+}
+
+# 3
+
+nap_galley = {
+	age = age_2_renaissance
+	icon = catalan_galley
+	potential = {
+		has_or_had_tag = NAP
+	}
+
+navy_galley_power = 0.15
+
+requires = unlock_m_galley_advance
+
+}
+
+# 4
+
+nap_wine = {
+	age = age_3_discovery
+	icon = por_vindo_porto
+	potential = {
+		has_or_had_tag = NAP
+	}
+
+global_wine_output_modifier = 0.20
+
+requires = encouraged_city_living
+
+}
+
+# 5
+
+nap_dicipline = {
+	age = age_2_renaissance
+	icon = teu_crusader_dicipline
+	potential = {
+		has_or_had_tag = NAP
+	}
+
+   discipline = 0.05 
+
+   requires = rebellion_support
+
+}
+
+#6
+italian_group_building_advance = {
+	content_priority = 1100
+	age = age_2_renaissance
+	icon = offensive_army
+
+	potential = {
+		culture = { has_culture_group = culture_group:italian_group }
+		
+	}
+
+	town_upgrade_cost_modifier = -0.20
+	city_upgrade_cost_modifier = -0.20
+
+	requires = renaissance_advance
+}
+
+# FLORANCE
+
+FLO_infcombat = {
+	age = age_1_traditions
+	icon = offensive_army
+
+	potential = {
+		has_or_had_tag = FLO
+	}
+
+	army_heavy_infantry_power = 0.10
+
+	requires = written_alphabet 
+}
+
+# 2
+
+FLO_merccost = {
+	age = age_2_renaissance
+	icon = offensive_army
+
+	potential = {
+		has_or_had_tag = FLO
+	}
+
+	hire_mercenary_premium_cost_modifier = -0.50
+	mercenary_maintenance_efficiency = 0.35
+
+	requires = professional_armies_advance 
+}
+
+
+FLO_institutioncost = {
+	age = age_2_renaissance
+	icon = offensive_army
+
+	potential = {
+		has_or_had_tag = FLO
+	}
+
+	embrace_institution_cost_modifier = -0.30
+    global_institution_growth_modifier = 0.25
+	requires =  renaissance_advance
+}
+
+
+#  HESSE
+
+HES_proximty = { 
+age = age_2_renaissance 
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  global_distance_from_capital_speed_propagation = 0.10
+  requires =  renaissance_advance
+}
+
+# 2
+HES_landmoral = { 
+age = age_2_renaissance 
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  land_morale_modifier = 0.10 
+  requires =  renaissance_advance
+}
+
+# 3
+HES_lightinf = { 
+age = age_3_discovery
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  army_light_infantry_power = 0.10
+  
+  requires =  unlock_halberdiers_advince
+}
+
+# 4
+HES_stability = { 
+age = age_1_traditions
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  stability_cost_efficiency = 0.20
+  
+  requires =  construction_speed_traditions
+}
+
+# 5
+HES_legitimacy = { 
+age = age_1_traditions
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  monthly_legitimacy = 0.10
+  
+  requires =  agriculture_advance
+}
+
+# 6
+HES_prosperity = { 
+age = age_1_traditions
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = HES
+  }
+
+  global_monthly_prosperity = 0.10
+  
+  requires =  HES_stability
+}
+
+#  MUSCOVY
+
+MOS_manpower = { 
+age = age_2_renaissance
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = MOS
+  }
+
+global_manpower_modifier = 0.15
+  
+  requires = armory_advance
+}
+
+# 2
+MOS_horse = { 
+age = age_3_discovery
+icon = offensive_army
+
+potential = {
+		has_or_had_tag = MOS
+  }
+
+possible_frontage_modifier = 0.10
+  
+  requires = supply_lines
+}
+
+# 3
+MOS_popgrowth = {
+	age = age_1_traditions
+	icon = offensive_army
+	potential = {
+		has_or_had_tag = MOS
+	}
+	requires = agriculture_advance
+	
+	unlock_building = ruralgrowth_outpost
+}

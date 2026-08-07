@@ -1,0 +1,24 @@
+REPLACE:picard = {
+	language = francique_dialect
+	
+	color = map_PIC
+	
+	tags = { french_gfx western_european_gfx european_gfx }
+
+	opinions = {
+		angevin = kindred
+		berrichon = kindred
+		burgundian = kindred
+		champenais = kindred
+		franc_comtois = kindred
+		french = kindred
+		gallo = kindred
+		lorrain = kindred
+		norman = kindred
+		poitevin = kindred
+		saintongeais = kindred
+		walloon = kindred
+		low_franconian = positive
+	}
+}
+	
