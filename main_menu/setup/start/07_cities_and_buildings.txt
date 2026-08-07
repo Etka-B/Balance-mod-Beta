@@ -328,7 +328,7 @@ locations={
 	olomouc = { rank = town town_setup = german_town }
 	opole = { rank = town town_setup = german_town }
 	plzen = { rank = town town_setup = german_town }
-
+    kassel = { rank = town town_setup = german_town }
 	linz = { rank = town town_setup = german_town }
 	melk = { rank = town town_setup = german_town }
 	klagenfurt = { rank = town town_setup = german_town }

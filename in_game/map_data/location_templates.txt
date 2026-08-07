@@ -1,4 +1,4 @@
-stockholm = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = swedish raw_material = clay natural_harbor_suitability = 0.75}
+﻿stockholm = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = swedish raw_material = clay natural_harbor_suitability = 0.75}
 norrtalje = { topography = flatland vegetation = forest climate = continental religion = catholic culture = swedish raw_material = fish natural_harbor_suitability = 0.25}
 enkoping = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = swedish raw_material = millet}
 uppsala = { topography = flatland vegetation = farmland climate = continental religion = catholic culture = swedish raw_material = wheat}
@@ -5102,7 +5102,7 @@ kirzhach = { topography = flatland vegetation = farmland climate = continental r
 poreevo = { topography = flatland vegetation = woods climate = continental religion = orthodox culture = muscovite raw_material = legumes}
 yanovo = { topography = flatland vegetation = woods climate = continental religion = orthodox culture = muscovite raw_material = lumber}
 lake_pleshcheyevo = { topography = lakes climate = continental}
-rostov = { topography = flatland vegetation = farmland climate = continental religion = orthodox culture = muscovite raw_material = wild_game}
+rostov = { topography = flatland vegetation = farmland climate = continental religion = orthodox culture = muscovite raw_material = marble}
 borisogleb = { topography = flatland vegetation = woods climate = continental religion = orthodox culture = muscovite raw_material = fiber_crops}
 petrovsk_rostov = { topography = flatland vegetation = woods climate = continental religion = orthodox culture = muscovite raw_material = clay}
 lake_nero = { topography = lakes climate = continental}

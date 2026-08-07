@@ -39109,7 +39109,7 @@ countries = {
 		own_control_core = {
 			kassel rotenburg eschwege frankenberg marburg alsfeld
 			giessen melsungen
-			 ziegenhain korbach lauterbach fulda hunfeld wetzlar friedberg_hesse nidda hanau budingen frankfurt hersfeld
+			 ziegenhain korbach lauterbach fulda hunfeld wetzlar friedberg_hesse nidda hanau budingen frankfurt hersfeld offenbach
 		}
 
 		starting_technology_level = 3

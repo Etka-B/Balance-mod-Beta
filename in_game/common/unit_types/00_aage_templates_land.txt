@@ -79,3 +79,183 @@ INJECT:a_mamluk_horsemen_traditions = {
 INJECT:a_hobelars = {
     combat_power = -1.5
 }
+
+INJECT:a_hussars = {
+    combat_power = 1.0
+}
+
+INJECT:a_gallop_cavalry = {
+    combat_power = 1.0
+}
+
+
+INJECT:a_light_dragoons= {
+    combat_power = 1.5
+}
+
+INJECT:a_cuirassiers = {
+    combat_power = 1.5
+}
+
+INJECT:a_byzantine_cataphracts = {
+    combat_power = -1.5
+}
+
+INJECT:a_byzantine_cataphracts_2 = {
+    combat_power = -1.0
+}
+
+INJECT:a_byzantine_cataphracts_3 = {
+    combat_power = -1.0
+}
+
+INJECT:a_byzantine_cataphracts_4 = {
+    combat_power = 0
+}
+
+INJECT:a_byzantine_cataphracts_5 = {
+    combat_power = 1.0
+}
+
+INJECT:a_byzantine_cataphracts_6 = {
+    combat_power = 1.5
+}
+INJECT:a_late_winged_hussars = {
+	combat_power = 1.0
+}
+
+INJECT:a_order_knights = {
+	combat_power = -1.5
+}
+INJECT:a_order_knights_2 = {
+	combat_power = -1.0
+}
+
+INJECT:a_tribal_cavalry = {
+	combat_power = -1.5
+}
+
+INJECT:a_steppe_horde = {
+	combat_power = -1.0
+}
+
+REPLACE:a_age_1_traditions_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+
+	buildable = no
+	max_strength = 0.2
+	combat_power = 2.5
+
+
+	age = "age_1_traditions"
+}
+
+REPLACE:a_age_1_traditions_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+
+	buildable = no
+	max_strength = 0.2
+	combat_power = 2.5
+	age = "age_1_traditions"
+}
+
+REPLACE:a_age_2_renaissance_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.4
+	combat_power = 3.0
+
+	age = "age_2_renaissance"
+}
+
+
+REPLACE:a_age_2_renaissance_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.4
+	combat_power = 3.0
+
+	
+	age = "age_2_renaissance"
+}
+
+REPLACE:a_age_3_discovery_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.6
+	combat_power = 3.0
+	age = "age_3_discovery"
+}
+
+REPLACE:a_age_3_discovery_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.6
+	combat_power = 3.0
+	age = "age_3_discovery"
+}
+
+REPLACE:a_age_4_reformation_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.8
+	combat_power = 4.0
+
+	age = "age_4_reformation"
+}
+
+REPLACE:a_age_4_reformation_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 0.8
+	combat_power = 4.0
+
+	age = "age_4_reformation"
+    
+}
+
+REPLACE:a_age_5_absolutism_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 1.0
+	combat_power = 5
+	age = "age_5_absolutism"
+}
+
+REPLACE:a_age_5_absolutism_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 1.0
+	combat_power = 5
+	age = "age_5_absolutism"
+}
+
+REPLACE:a_age_6_revolutions_light_cavalry = {
+	copy_from = a_light_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 1.2
+	combat_power = 5.5
+	
+	age = "age_6_revolutions"
+}
+
+REPLACE:a_age_6_revolutions_heavy_cavalry = {
+	copy_from = a_heavy_cavalry
+	hide = yes
+	buildable = no
+	max_strength = 1.2
+	combat_power = 5.5
+	
+	age = "age_6_revolutions"
+}

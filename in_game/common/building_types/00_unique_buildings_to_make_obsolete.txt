@@ -13,14 +13,18 @@
 	town = yes
 	city = no
 	megalopolis = no
-	
+
 	
 	location_potential = {
-		location_population < 10000
-	}	
+		NOT = {
+			OR = {
+				population >= 15.000
+			}
+		}
+	}
 	remove_if = {
 		location = {
-			location_population > 10000
+			population > 15.000
 		}
 	}
 	
@@ -40,3 +44,5 @@
 	}
 	
 }
+
+
