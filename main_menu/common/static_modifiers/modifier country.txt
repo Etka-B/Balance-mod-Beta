@@ -1,0 +1,28 @@
+﻿minor_massive_bonus = {
+	game_data = {
+		category = country
+	}
+	monthly_gold_income = 6
+	siege_ability = 0.25
+    government_size = 1 
+}	
+
+minor_massive_bonus.2 = {
+	game_data = {
+		category = country
+	}
+	monthly_gold_income = 9
+	siege_ability = 0.25
+    
+}	
+
+muscovy_massive_bonus = {
+	game_data = {
+		category = country
+	}
+	monthly_gold_income = 7
+	government_size = 1
+	global_integration_speed_modifier = 0.25
+}
+
+

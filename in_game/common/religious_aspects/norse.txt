@@ -1,0 +1,68 @@
+worship_odin_god = {
+    
+    icon = religious_aspect_folk_blue
+    religion = norse
+    
+	
+    modifier = {
+		global_max_literacy = 10
+		research_speed_modifier = 0.025
+    }
+}
+
+worship_tor_god = {
+    
+    icon = religious_aspect_folk_yellow
+    religion = norse
+
+    modifier = {
+		army_heavy_infantry_power = 0.10
+		global_weaponry_output_modifier = 0.10
+    }
+}
+
+worship_tyr_god = {
+    
+    icon = religious_aspect_folk_red
+    religion = norse
+
+    modifier = {
+		army_initiative = 0.2
+		navy_initiative = 0.2
+    }
+}
+
+worship_njord_god = {
+    
+    icon = religious_aspect_folk_dark_blue
+    religion = norse
+
+    modifier = {
+		navy_heavy_ship_power = 0.2
+		global_fish_output_modifier = 0.5
+    }
+}
+
+worship_freyr_god = {
+    
+    icon = religious_aspect_folk_green
+    religion = norse
+
+    modifier = {
+		global_raw_material_output = 0.2
+		monthly_war_exhaustion = -0.1
+    }
+}
+
+
+
+worship_freya_god = {
+    
+    icon = religious_aspect_folk_pink
+    religion = norse
+
+    modifier = {
+		global_population_growth = 0.001
+		global_monthly_food_modifier = 0.1
+    }
+}
