@@ -21,4 +21,60 @@ REPLACE:picard = {
 		low_franconian = positive
 	}
 }
+
+REPLACE:syriac_culture = {
+	language = aramaic_language
+	
+	color = color_culture_syriac
+	
+	tags = { levantine_gfx middle_east_gfx }
+
+	opinions = {
+		levantine_culture = kindred 
+	}
+	
+	culture_groups = {
+		arabic_group
+	}
+}
+
+REPLACE:bedouin_culture = { 
+	language = egyptian_dialect 
+	
+	color = color_culture_bedouin
+	
+	tags = { egyptian_gfx middle_east_gfx}
+
+	opinions = {
+		lower_egyptian_culture = kindred
+		upper_egyptian_culture = kindred
+		bedouin_culture = kindred
+		libyan_arabic_culture = kindred
+		levantine_culture = kindred
+	}	
+	
+	culture_groups = {
+		arabic_group
+	}	
+}
+	
+
+
+REPLACE:alawite_culture = {
+	language = levantine_dialect
+	
+	color = color_culture_alawite
+	
+	tags = { levantine_gfx middle_east_gfx }
+
+	opinions = {
+		levantine_culture = kindred
+	}
+	
+	culture_groups = {
+		arabic_group
+	}	
+}
+	
+
 	

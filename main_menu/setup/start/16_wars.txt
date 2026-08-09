@@ -972,4 +972,47 @@ war_manager = {
 			}
 		}
 	}
+
+
+truce = {   #mamluks early game truce
+  attacker = MAM
+
+
+  defender = FDL 
+  defender = SKN
+  defender = NQS
+  defender = MAK
+  defender = ALO
+  defender = ABW
+  start_date = 1336.12.12
+  months = 240
+
+}
+
+
+
+truce = {   #mamluks early game truce
+  attacker = MAM
+
+
+  defender = BQA 
+
+  start_date = 1336.12.12
+  months = 60
+
+}
+
+truce = {   #mamluks early game truce
+  attacker = MAM
+
+
+  defender = AMR 
+  defender = MDA
+  defender = MEC
+  defender = TAB
+  start_date = 1336.12.12
+  months = 120
+
+}
+
 }

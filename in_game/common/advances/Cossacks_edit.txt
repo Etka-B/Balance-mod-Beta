@@ -1,0 +1,11 @@
+﻿REPLACE:cossacks_recruitment = {
+	age = age_2_renaissance
+	potential = {
+		country_has_estate = estate_type:cossacks_estate
+	}
+	army_light_cavalry_power = 0.15
+	army_heavy_cavalry_power = 0.15
+	unlock_estate_privilege = cossacks_military_service
+
+	requires = gunpowder_advance
+}

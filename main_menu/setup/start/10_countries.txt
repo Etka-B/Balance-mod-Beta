@@ -1192,6 +1192,8 @@ countries = {
 			stendal osterburg salzwedel gardelegen
 			wittenberge pritzwalk treuenbrietzen
 			angermunde prenzlau
+			lebus beeskow magdeburg juterbog jerichow burg wolmirstedt
+			haldensleben calbe ruppin havelberg wittstock
 		}
 
 		own_control_integrated = {
@@ -1308,6 +1310,9 @@ countries = {
 			aristocracy_vs_plutocracy = -60
 			land_vs_naval = -20
 			outward_vs_inward = 0
+			serfdom_free_subjects = -60
+			capital_economy_vs_traditional_economy = 50
+			
 		}
 
 		tolerated_cultures = {
@@ -1456,8 +1461,7 @@ countries = {
 
 	MAG = {	#Magdeburg
 		own_control_core = {
-			magdeburg juterbog jerichow burg wolmirstedt
-			haldensleben calbe halle_an_der_saale
+		 halle_an_der_saale
 		}
 
 		starting_technology_level = 3
@@ -2022,7 +2026,7 @@ countries = {
 			rzheva_pustaya ashevo bezhanitsy podberezye visokoye kuretsk lyakhovichy maryovo lyubno svinort gorodets_luga izori tesov
 			bronnitsa gruzino veliky_porog valday pribuzh ivangorod izboishchi pashozero tervenichi megra voznesenye ostrechiny andomsky_pogost
 			kinerma pryazha salmi loimola sordavala kurkijoki sellinkyla karhumagi puatane saarijoki sumsky_posad unezhma vygozero maloshuyka
-			chelmuzhi vodlozero shalskii rakitnya mikshino bernovo yezsk lyuban
+			chelmuzhi vodlozero shalskii rakitnya mikshino bernovo yezsk lyuban lotoshino
 			#Principality of Volokolansk
 			# volok
 		}
@@ -2349,7 +2353,7 @@ countries = {
 	#Appanage of Tver
 	ZUB = {
 		own_control_core = {
-			zubtsov gorodok kholm_tver lotoshino mikulino_tver
+			zubtsov gorodok kholm_tver  mikulino_tver
 		}
 
 		starting_technology_level = 3
@@ -18165,11 +18169,11 @@ countries = {
 				name_william = 1
 			}
 
-			aristocracy_vs_plutocracy = 20
-			serfdom_vs_free_subjects = 10
+			aristocracy_vs_plutocracy = -20
+			serfdom_vs_free_subjects = -60
 			mercantilism_vs_free_trade = 20
-			capital_economy_vs_traditional_economy = 0
-			individualism_vs_communalism = -20
+			capital_economy_vs_traditional_economy = -50
+			individualism_vs_communalism = -10
 
 		}
 		capital = bruges
@@ -22700,32 +22704,31 @@ countries = {
 			damietta al_mima el_burullus el_mahalla fuwa menouf samanoud tidah
 			mansoura bilbeis faqus ushmum_tannah qalyub tarrana tinnis
 			suez saint_anthony saint_paul_anchorite
-			el_tor
 			edfu esna qena hiw qus
 			asyut el_balyana el_buwit akhmim manfalut
 			minya ashmunayn el_bahnasa sharuna tahna
 			kharga bahariyya baris el_qasr qasr_farafra siwa
 		}
 
-		own_control_integrated = {
-			el_arish nekhel qatya warrada
-			matruh sallum tobruk
-			el_qoseir ras_gharib safaga
-			el_jundi faran nuweiba saint_katrine
-			ayntab dluk
-			jerusalem acre amman aqaba beersheba gaza hebron karak maan majdal nablus safed sughar jaffa al_quwayrah
-			beirut baalbek deir_qamar sidon tripoli_syria shoubak madaba
-			damascus al_bab aleppo antioch arsuz artah baniyas dabiq hama homs idlib jabbul jableh kafartab latakia manbij maskanah masyaf nabek qusayr tartus zardana
-			umluj al_hawra al_manjur al_maramiyah
-			al_ula al_bleiteh al_farah_ula al_marwa az_zubayir mughayra
-			duba ad_disah al_azlam al_wajh bada_yaqub bir_al_qurr
-			tabuk_arabia al_khanbarah al_muazzam al_ukhaydir bajdah bir_ibn_hermas dhat_al_hajj
-			aynuna al_bad al_muwaylih haql makna
-		}
+		# own_control_integrated = {
+		# 	el_arish nekhel qatya warrada
+		# 	matruh sallum tobruk
+		# 	el_qoseir ras_gharib safaga
+		# 	el_jundi faran nuweiba saint_katrine
+		# 	ayntab dluk
+		# 	jerusalem acre amman aqaba beersheba gaza hebron karak maan majdal nablus safed sughar jaffa al_quwayrah
+		# 	beirut baalbek deir_qamar sidon tripoli_syria shoubak madaba
+		# 	damascus al_bab aleppo antioch arsuz artah baniyas dabiq hama homs idlib jabbul jableh kafartab latakia manbij maskanah masyaf nabek qusayr tartus zardana
+		# 	umluj al_hawra al_manjur al_maramiyah
+		# 	al_ula al_bleiteh al_farah_ula al_marwa az_zubayir mughayra
+		# 	duba ad_disah al_azlam al_wajh bada_yaqub bir_al_qurr
+		# 	tabuk_arabia al_khanbarah al_muazzam al_ukhaydir bajdah bir_ibn_hermas dhat_al_hajj
+		# 	aynuna al_bad al_muwaylih haql makna
+		# }
 
-		own_control_conquered = {
-			iskenderun
-		}
+		# own_control_conquered = {
+		# 	iskenderun
+		# }
 
 		include = "expl_muslim_mediterranean"
 		include = "expl_horn_of_africa"
@@ -22798,6 +22801,7 @@ countries = {
 		own_control_core = {
 			aswan  aydhab kom_ombo
 			deraheib #suakin_province
+			el_qoseir ras_gharib safaga  
 		}
 
 		starting_technology_level = 3
@@ -22848,7 +22852,7 @@ countries = {
 	BQA = {
 		own_control_core = {
 			benghazi ajdabiya al_bayda al_khuimat barca derna mechili msus qaminis suluntah tmimi
-			awjila el_agheila
+			awjila el_agheila tobruk sallum matruh
 		}
 
 		starting_technology_level = 3
@@ -32807,6 +32811,7 @@ countries = {
 			sis caxud hargan molevon
 			tarsus candir_cil corycus
 			ayas kapan
+		    iskenderun
 		}
 
 		our_cores_conquered_by_others = {
@@ -33929,9 +33934,9 @@ countries = {
 
 	#Kilis - KIL
 	KIL = {
-		own_control_core = {
-			kilis afrin trapessac
-		}
+		# own_control_core = {
+		# 	kilis afrin trapessac
+		# }
 
 		include = "expl_middle_east"
 		include = "muslim_monarchy_no_coast"
@@ -34772,10 +34777,10 @@ countries = {
 
 	#Al 'Alī - AAL
 	AAL = {
-		own_control_core = {
-			burraq jayrud qutayfah
-			sakaka dumat_al_jandal aba_al_qur al_hamad arar
-		}
+		# own_control_core = {
+		# 	burraq jayrud qutayfah
+		# 	sakaka dumat_al_jandal aba_al_qur al_hamad arar
+		# }
 
 		starting_technology_level = 3
 		include = "expl_middle_east"
@@ -34804,7 +34809,10 @@ countries = {
 		own_control_core = {
 			bosra dara irbid nawa salkhad suwayda
 			azraq
-			kaf al_harrah an_nasifah qurayyat_al_milh
+			karak al_quwayrah amman aqaba maan madaba shoubak sughar
+			jerusalem acre beersheba gaza hebron jaffa majdal nablus safed
+			el_arish nekhel qatya warrada lake_bardawil 
+			el_tor el_jundi faran nuweiba saint_katrine
 		}
 
 		starting_technology_level = 3
@@ -34820,9 +34828,10 @@ countries = {
 		}
 
 		capital = irbid
-		tolerated_cultures = {
-			levantine_culture
+		accepted_cultures = {
+			syriac_culture
 			najdi_culture
+			bedouin_culture
 		}
 		religious_school = hanafi_school
 		government = { mysticism_vs_jurisprudence = -15 }
@@ -34836,6 +34845,12 @@ countries = {
 			khanaser qastal salamiyya
 			marrat
 			arak huwwarin qaryatayn tadmur
+			antioch afrin arsuz artah idlib lake_amik
+			ayntab dluk kilis trapessac
+			aleppo al_bab dabiq jabbul manbij marrat maskanah zardana lake_jabbul
+			burraq jayrud qutayfah
+			latakia baniyas jableh tartus
+			beirut baalbek deir_qamar sidon tripoli_syria damascus qusayr homs hama masyaf kafartab nabek
 		}
 
 		own_control_integrated = {
@@ -34870,7 +34885,12 @@ countries = {
 
 		capital = tadmur
 		tolerated_cultures = {
-			levantine_culture
+			
+		}
+		accepted_cultures = {
+			iraqi_culture
+			syriac_culture
+			alawite_culture
 		}
 		religious_school = hanafi_school
 		government = { mysticism_vs_jurisprudence = -15 }
@@ -35632,11 +35652,11 @@ countries = {
 	}
 
 	ZUR = {	#Zurich
-		own_control_core = {
-			zurich schwyz lucerne
-			wolhusen schaffhausen fribourg glarus kyburg bonndorf villingen waldshut furstenberg frauenfeld aarau baden_im_aargau sarnen solothurn
-			burgdorf_emmental thun bern interlaken frutigen basel bienne delemont
-		}
+		# own_control_core = {
+		# 	zurich schwyz lucerne
+		# 	wolhusen schaffhausen fribourg glarus kyburg bonndorf villingen waldshut furstenberg frauenfeld aarau baden_im_aargau sarnen solothurn
+		# 	burgdorf_emmental thun bern interlaken frutigen basel bienne delemont
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35801,18 +35821,35 @@ countries = {
 	}
 
 	SWI = {
-		own_control_core = { }
+		own_control_core = { 
+			zurich schwyz lucerne
+			wolhusen schaffhausen fribourg glarus kyburg bonndorf villingen waldshut furstenberg frauenfeld aarau baden_im_aargau sarnen solothurn
+			burgdorf_emmental thun bern interlaken frutigen basel bienne delemont
+		}
 		starting_technology_level = 3
 		include = "expl_western_europe"
 		include = "catholic_republic_not_present"
 		include = "expl_northern_europe"
 		country_rank = rank_duchy
 		tolerated_cultures = {}
-		capital = bern	#Actually no capital, but this was the closest to the seat of the government
+		capital = zurich	#Actually no capital, but this was the closest to the seat of the government
 		government = {
 			type = republic
 			heir_selection = oligarchic_elective
 			ruler = random
+
+			centralization_vs_decentralization = 30
+			aristocracy_vs_plutocracy = -30
+			serfdom_vs_free_subjects = -40
+			traditionalist_vs_innovative = -30
+			spiritualist_vs_humanist = -60
+			mercantilism_vs_free_trade = -25
+			offensive_vs_defensive = 30
+			land_vs_naval = -35
+			quality_vs_quantity = -20
+			belligerent_vs_conciliatory = -20
+			capital_economy_vs_traditional_economy = -40
+			individualism_vs_communalism = -30
 		}
 	}
 
@@ -36151,9 +36188,9 @@ countries = {
 	}
 
 	BLB = {  # Bishopric of Lebus
-		own_control_core = {
-			lebus
-		}
+		# own_control_core = {
+		# 	lebus
+		# }
 		starting_technology_level = 3
 		include = "expl_western_europe"
 		include = "catholic_german_bishopric_no_coast"
@@ -36214,9 +36251,9 @@ countries = {
 	}
 
 	BSK = {  # Beeskow-Starkow
-		own_control_core = {
-			beeskow
-		}
+		# own_control_core = {
+		# 	beeskow
+		# }
 		starting_technology_level = 3
 		include = "expl_western_europe"
 		include = "expl_northern_europe"
@@ -38301,9 +38338,9 @@ countries = {
 	}
 
 	RUP = { #Ruppin
-		own_control_core = {
-			ruppin
-		}
+		# own_control_core = {
+		# 	ruppin
+		# }
 
 		starting_technology_level = 3
 		include = "catholic_monarchy_no_coast"
@@ -38331,9 +38368,9 @@ countries = {
 	}
 
 	HVB = {	#Havelberg
-		own_control_core = {
-			havelberg wittstock
-		}
+		# own_control_core = {
+		# 	havelberg wittstock
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -39146,6 +39183,17 @@ countries = {
 			reforms = {
 				landgraviate
 			}
+			centralization_vs_decentralization = 45
+			aristocracy_vs_plutocracy = -70
+			serfdom_vs_free_subjects = -60
+			traditionalist_vs_innovative = -40
+			spiritualist_vs_humanist = -60
+			offensive_vs_defensive = -20
+			land_vs_naval = -30
+			quality_vs_quantity = -20
+			belligerent_vs_conciliatory = -20
+			capital_economy_vs_traditional_economy = 60
+			individualism_vs_communalism = 10
 		}
 
 		tolerated_cultures = {
@@ -60447,6 +60495,7 @@ countries = {
 		own_control_core = {
 			tayma ash_shamli
 			abu_qasr basithah bir_fajr
+			kaf al_harrah an_nasifah qurayyat_al_milh
 		}
 
 		include = "expl_middle_east"
@@ -60761,6 +60810,9 @@ countries = {
 			yanbu al_ahmar al_jar ash_shibahah badr_hunayn yanbu_an_nakhil
 			al_thamad buwat shajwa
 			al_ais
+			umluj al_ais al_hawra al_manjur al_maramiyah
+            al_ula al_bleiteh al_farah_ula al_marwa az_zubayir mughayra
+			duba ad_disah al_azlam al_wajh bada_yaqub bir_al_qurr
 		}
 
 	include = "expl_middle_east"
@@ -62988,5 +63040,30 @@ countries = {
 		}
 	}
 
+	TAB = { #Tabuk
+		own_control_core = {
+			aynuna al_bad al_muwaylih haql makna tabuk_arabia al_khanbarah al_muazzam al_ukhaydir bajdah bir_ibn_hermas dhat_al_hajj
+		}
+
+	include = "expl_middle_east"
+
+		starting_technology_level = 3
+		include = "muslim_monarchy_no_abrahamic_dhimmi"
+		government = {
+			type = monarchy
+			heir_selection = cognatic_primogeniture
+			ruler = random
+
+			laws = {
+				sharia_law = zaidi_policy
+			}
+		}
+
+		religious_school = zaidi_school
+
+		capital = tabuk_arabia
+
+	}
 }
+
 }

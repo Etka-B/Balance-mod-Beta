@@ -865,8 +865,8 @@ templin = { topography = flatland vegetation = forest climate = continental reli
 angermunde = { topography = flatland vegetation = forest climate = continental religion = catholic culture = markish raw_material = lumber}
 berlin = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = fiber_crops}
 teltow = { topography = flatland vegetation = woods climate = continental religion = catholic culture = markish raw_material = wool}
-treuenbrietzen = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = legumes}
-herzfelde = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = legumes}
+treuenbrietzen = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = salt}
+herzfelde = { topography = flatland vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = iron}
 freienwalde = { topography = flatland vegetation = forest climate = continental religion = catholic culture = markish raw_material = livestock}
 lebus = { topography = flatland vegetation = woods climate = continental religion = catholic culture = markish raw_material = wild_game}
 brandenburg = { topography = wetlands vegetation = grasslands climate = continental religion = catholic culture = markish raw_material = millet}
