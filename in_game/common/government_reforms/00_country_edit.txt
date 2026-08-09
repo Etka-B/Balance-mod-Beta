@@ -57,3 +57,25 @@ TRY_REPLACE:crown_castile_reform = {
 	
 	years = 2
 }
+
+
+# BRA
+brandenburg_monarchy = {
+    major = yes
+    unique = yes
+    age = age_1_traditions
+    potential = {
+        has_or_had_tag = BRA
+    }
+    allow = {
+        has_embraced_institution = institution:legalism
+    }
+
+    country_modifier = {
+        global_estate_max_tax = 0.1
+        country_cabinet_efficiency = 0.1
+        government_reform_slots = 1
+    }
+    years = 2
+}
+

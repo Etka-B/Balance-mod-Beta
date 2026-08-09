@@ -60813,6 +60813,8 @@ countries = {
 			umluj al_ais al_hawra al_manjur al_maramiyah
             al_ula al_bleiteh al_farah_ula al_marwa az_zubayir mughayra
 			duba ad_disah al_azlam al_wajh bada_yaqub bir_al_qurr
+			aynuna al_bad al_muwaylih haql makna tabuk_arabia al_khanbarah al_muazzam al_ukhaydir bajdah bir_ibn_hermas dhat_al_hajj
+
 		}
 
 	include = "expl_middle_east"
@@ -63040,30 +63042,7 @@ countries = {
 		}
 	}
 
-	TAB = { #Tabuk
-		own_control_core = {
-			aynuna al_bad al_muwaylih haql makna tabuk_arabia al_khanbarah al_muazzam al_ukhaydir bajdah bir_ibn_hermas dhat_al_hajj
-		}
-
-	include = "expl_middle_east"
-
-		starting_technology_level = 3
-		include = "muslim_monarchy_no_abrahamic_dhimmi"
-		government = {
-			type = monarchy
-			heir_selection = cognatic_primogeniture
-			ruler = random
-
-			laws = {
-				sharia_law = zaidi_policy
-			}
-		}
-
-		religious_school = zaidi_school
-
-		capital = tabuk_arabia
-
-	}
+	
 }
 
 }

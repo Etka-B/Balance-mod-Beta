@@ -249,11 +249,3 @@ DHF = { #Dhofar
 	culture_definition = dhofari_culture
 	religion_definition = sunni
 }
-
-TAB = { #Tabuk
-	color = map_TAB
-	color2 = rgb { 16 41 192 }
-
-	culture_definition = hijazi_culture
-	religion_definition = sunni
-}

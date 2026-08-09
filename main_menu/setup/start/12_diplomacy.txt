@@ -1,4 +1,4 @@
-﻿diplomacy_manager = {
+diplomacy_manager = {
     #-------England-------
 	#Balliol Backing
 	#scripted_oneway = { first = ENG second = SBL type = guarantee }
@@ -186,9 +186,8 @@
     dependency = { first = FRA second = MON subject_type = vassal }
     dependency = { first = FRA second = AUM subject_type = vassal }
     dependency = { first = FRA second = ROU subject_type = vassal }
-    # dependency = { first = FRA second = FLA subject_type = vassal start_date = 1305.6.23 } #Reined in as a vassal of France by the Treaty of Athis-sur-Orge in 1305, confirmed after the Battle of Cassel in 1328
-    # dependency = { first = FRA second = NEV subject_type = vassal } #In a PU with FLA
-    # dependency = { first = FRA second = RET subject_type = vassal } #In a PU with FLA
+    dependency = { first = FRA second = NEV subject_type = vassal } #In a PU with FLA
+    dependency = { first = FRA second = RET subject_type = vassal } #In a PU with FLA
     dependency = { first = FRA second = NRB subject_type = vassal }
     dependency = { first = FRA second = VNT subject_type = vassal }
     dependency = { first = FRA second = RCC subject_type = vassal }
@@ -383,8 +382,6 @@
     dependency = { first = JAL second = SUT subject_type = vassal }
     dependency = { first = JAL second = SYY subject_type = vassal }
     dependency = { first = JAL second = ZBR subject_type = vassal }
-    # dependency = { first = MAM second = DUL subject_type = vassal }
-    dependency = { first = MAM second = KIL subject_type = vassal }
     dependency = { first = MEN second = TVS subject_type = vassal }
     dependency = { first = SUT second = BHT subject_type = vassal }
     dependency = { first = SUT second = BIN subject_type = vassal }
@@ -795,18 +792,10 @@
     dependency = { first = MYI second = TYY subject_type = tributary }
 
     #------------Levant-------------
-    # dependency = { first = MAM second = AAL subject_type = vassal }
-    # dependency = { first = MAM second = AMR subject_type = vassal }
-    # dependency = { first = MAM second = BKZ subject_type = vassal }
-    # dependency = { first = MAM second = BQA subject_type = vassal }
-    # dependency = { first = MAM second = DGE subject_type = vassal }
-    # dependency = { first = MAM second = FDL subject_type = vassal }
-    # dependency = { first = MAM second = SKN subject_type = vassal }
+
 
     #------------Arabia-------------
-    # dependency = { first = MAM second = MDA subject_type = vassal }
-    # dependency = { first = MAM second = MEC subject_type = vassal }
-    # dependency = { first = ORM second = JRW subject_type = vassal }
+    dependency = { first = ORM second = JRW subject_type = vassal }
     
     scripted_mutual = { first = QHT second = DWS type = alliance }
 
