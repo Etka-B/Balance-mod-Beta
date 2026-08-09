@@ -4347,6 +4347,12 @@ countries = {
 
 			# English towns on the Welsh March
 			shrewsbury hereford
+
+
+			ernay laigle louviers pont_audemer
+			caen argentan bayeux domfront falaise lisieux pont_douilly
+			cherbourg coutances avranches st_sauveur vire
+		 	rouen arques fecamp gisors tancarville longueville mortain aumale bernay
 		}
 		own_control_integrated = {
 			# Earldom of Chester
@@ -8872,7 +8878,7 @@ countries = {
 		own_control_core = {
 			aquileia tolmezzo pordenone spilimbergo udine gemona
 			tolmin pieve
-			ilirska_bistrica #Counts of Duino
+			 #Counts of Duino
 		}
 
 		own_control_integrated = {
@@ -15068,6 +15074,12 @@ countries = {
 		# }
 
 		our_cores_conquered_by_others = {
+
+			ernay laigle louviers pont_audemer
+			caen argentan bayeux domfront falaise lisieux pont_douilly
+			cherbourg coutances avranches st_sauveur vire
+		 	rouen arques fecamp gisors tancarville
+			longueville mortain aumale bernay
 		}
 
 		starting_technology_level = 3
@@ -16807,9 +16819,9 @@ countries = {
 
 	#Aumale (Vassal, Fief Mouvant)
 	AUM = {
-		own_control_core = {
-			aumale
-		}
+		# own_control_core = {
+		# 	aumale
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -17165,9 +17177,9 @@ countries = {
 
 	#Mortain
 	MRT = {
-		own_control_core = {
-			mortain
-		}
+		# own_control_core = {
+		# 	mortain
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -17643,7 +17655,7 @@ countries = {
 		own_control_core = {
 			evreux harcourt #Normandy
 			mantes #Ile de France
-			longueville #Longueville
+			# longueville #Longueville
 		}
 
 		starting_technology_level = 3
@@ -17689,12 +17701,12 @@ countries = {
 
 	#Normandy
 	NRM = {
-		own_control_core = {
-			bernay laigle louviers pont_audemer
-			caen argentan bayeux domfront falaise lisieux pont_douilly
-			cherbourg coutances avranches st_sauveur vire
-			rouen arques fecamp gisors tancarville
-		}
+		# own_control_core = {
+		# 	bernay laigle louviers pont_audemer
+		# 	caen argentan bayeux domfront falaise lisieux pont_douilly
+		# 	cherbourg coutances avranches st_sauveur vire
+		# 	rouen arques fecamp gisors tancarville
+		# }
 
 		our_cores_conquered_by_others = {
 			jersey # England
@@ -18378,24 +18390,25 @@ countries = {
 			ljubljana kranj novo_mesto postojna #Duchy of Carniola
 			graz feldbach furstenfeld judenburg kapfenberg leoben liezen maribor murau murzzuschlag rottenmann schladming slovenj_gradec voitsberg weiz #Duchy of Styria
 			linz bad_ischl freistadt gmunden kirchdorf perg rohrbach st_georgen steyr wels #Duchy of Upper Austria
+			waidhofen st_polten leibnitz ptuj friesach feldkirchen wolfsberg celje lasko bled skofja_loka kocevje metlika ilirska_bistrica
 		}
 
 		own_control_integrated = {
-			kyburg #County of Kyburg
-			bonndorf villingen waldshut #Landgraviate of Breisgau
+			# kyburg #County of Kyburg
+			# bonndorf villingen waldshut #Landgraviate of Breisgau
 			krumbach gunzburg wertingen #Margraviate of Burgau
 			ensisheim #Lordship of Upper Alsace
 			waldsee saulgau #Lordship of Waldsee
 		}
 
-		own_control_conquered = {
-			aarau baden_im_aargau #County of Lenzburg
-			frauenfeld #Lordship of Thurgau
-			wolhusen #Lordship of Wolhusen
-			schaffhausen
-			fribourg
-			glarus
-		}
+		# own_control_conquered = {
+		# 	aarau baden_im_aargau #County of Lenzburg
+		# 	frauenfeld #Lordship of Thurgau
+		# 	wolhusen #Lordship of Wolhusen
+		# 	schaffhausen
+		# 	fribourg
+		# 	glarus
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -18790,9 +18803,9 @@ countries = {
 	}
 
 	CLI = {	#Cilli
-		own_control_core = {
-			celje lasko
-		}
+		# own_control_core = {
+		# 	celje lasko
+		# }
 
 		starting_technology_level = 3
 		include = "expl_mediterranean"
@@ -18825,7 +18838,7 @@ countries = {
 
 	ORT = {	#Ortenburg
 		own_control_core = {
-			spittal kocevje
+			spittal 
 		}
 
 		starting_technology_level = 3
@@ -35326,7 +35339,7 @@ countries = {
 
 	BXN = {	#Brixen
 		own_control_core = {
-			brixen bled
+			brixen 
 		}
 
 		starting_technology_level = 3
@@ -35508,7 +35521,7 @@ countries = {
 
 	PSS = {	#Passau
 		own_control_core = {
-			passau st_polten
+			passau 
 		}
 
 		starting_technology_level = 3
@@ -35529,9 +35542,9 @@ countries = {
 
 	SLZ = {	#Salzburg
 		own_control_core = {
-			salzburg hallein st_johann saalfelden leibnitz tamsweg friesach
+			salzburg hallein st_johann saalfelden  tamsweg 
 			bischofshofen zell_am_see mittersill laufen muhldorf
-			ptuj zell_am_ziller
+			 zell_am_ziller
 		}
 
 		starting_technology_level = 3
@@ -35558,7 +35571,7 @@ countries = {
 
 	BAM = {	#Bamberg
 		own_control_core = {
-			bamberg wolfsberg kronach
+			bamberg  kronach
 			forchheim lichtenfels pegnitz
 		}
 
@@ -35620,7 +35633,9 @@ countries = {
 
 	ZUR = {	#Zurich
 		own_control_core = {
-			zurich
+			zurich schwyz lucerne
+			wolhusen schaffhausen fribourg glarus kyburg bonndorf villingen waldshut furstenberg frauenfeld aarau baden_im_aargau sarnen solothurn
+			burgdorf_emmental thun bern interlaken frutigen basel bienne delemont
 		}
 
 		starting_technology_level = 3
@@ -35638,9 +35653,9 @@ countries = {
 	}
 
 	SYZ = {	#Schwyz
-		own_control_core = {
-			schwyz
-		}
+		# own_control_core = {
+		# 	schwyz
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35718,9 +35733,9 @@ countries = {
 	}
 
 	OBW = {	#Obwalden
-		own_control_core = {
-			sarnen
-		}
+		# own_control_core = {
+		# 	sarnen
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35735,9 +35750,9 @@ countries = {
 	}
 
 	LCU = {	#Lucerne
-		own_control_core = {
-			lucerne
-		}
+		# own_control_core = {
+		# 	lucerne
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35802,9 +35817,9 @@ countries = {
 	}
 
 	BRN = {	#Bern
-		own_control_core = {
-			bern interlaken
-		}
+		# own_control_core = {
+		# 	bern interlaken
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35819,9 +35834,9 @@ countries = {
 	}
 
 	SLT = {	#Solothurn
-		own_control_core = {
-			solothurn
-		}
+		# own_control_core = {
+		# 	solothurn
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35869,9 +35884,9 @@ countries = {
 	}
 
 	BAS = {	#Basel
-		own_control_core = {
-			basel bienne delemont
-		}
+		# own_control_core = {
+		# 	basel bienne delemont
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35934,9 +35949,9 @@ countries = {
 	}
 
 	KYB = {
-		own_control_core = {
-			burgdorf_emmental thun
-		}
+		# own_control_core = {
+		# 	burgdorf_emmental thun
+		# }
 
 		starting_technology_level = 3
 		include = "expl_western_europe"
@@ -35991,7 +36006,7 @@ countries = {
 	FRE = {	#Freising
 		own_control_core = {
 			freising miesbach garmisch
-			skofja_loka waidhofen
+			 
 		}
 
 		starting_technology_level = 3
@@ -36979,9 +36994,9 @@ countries = {
 	}
 
 	FUR = {  # Fürstenberg (South Germany)
-		own_control_core = {
-			furstenberg
-		}
+		# own_control_core = {
+		# 	furstenberg
+		# }
 		starting_technology_level = 3
 		include = "expl_western_europe"
 		include = "expl_northern_europe"
@@ -36993,9 +37008,9 @@ countries = {
 	}
 
 	GRK = {  # Gurk (South Germany)
-		own_control_core = {
-			feldkirchen
-		}
+		# own_control_core = {
+		# 	feldkirchen
+		# }
 		starting_technology_level = 3
 		include = "expl_western_europe"
 		include = "expl_northern_europe"

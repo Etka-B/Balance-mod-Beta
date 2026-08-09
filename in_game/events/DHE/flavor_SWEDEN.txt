@@ -14,12 +14,13 @@ flavor_sweden.1 = {
 		monthly_chance = 3
 	}
 
-
+	trigger = {
 		religion = religion:catholic
 		owns = location:stockholm
 		at_war = no
 		is_subject = no
 		has_regent = no
+	}
 
 
 	illustration_tags = {
@@ -29,6 +30,7 @@ flavor_sweden.1 = {
 
 	immediate = {
 		event_illustration_estate_effect = { foreground = estate_type:clergy_estate background = estate_type:clergy_estate }
+		create_named_dynasty = lodbrok_dynasty
 
 		create_character = {
 			first_name = name_ragnar
@@ -39,6 +41,7 @@ flavor_sweden.1 = {
 			culture = culture:swedish
 			religion = religion:norse
 			dynasty = dynasty:lodbrok_dynasty
+			estate = estate_type:nobles_estate
 			create_in_limbo = yes
 			save_scope_as = ragnar_lodbrok
 			script = swe_ragnar_lodbrok
@@ -63,12 +66,7 @@ flavor_sweden.1 = {
 		set_new_ruler = scope:ragnar_lodbrok
 		add_stability = -60
         add_legitimacy = -30
-        
-        hidden_effect = {
-			scope:ragnar_lodbrok = {
-				change_character_estate = estate_type:nobles_estate
-			}
-		}
+
 		change_religion = religion:norse
 		if = {
 			limit = {

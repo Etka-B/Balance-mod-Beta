@@ -9,7 +9,7 @@ flavor_minor.1 = {
     fire_only_once = yes
     dynamic_historical_event = {
         
-        tag = SCO
+        tag = ZUR
         
         from = 1337.1.1
         to =   1350.1.1        
@@ -26,7 +26,6 @@ flavor_minor.1 = {
 
         
         add_stability = stability_severe_bonus
-        add_legitimacy = legitimacy_mild_bonus
         add_country_modifier = { 
             modifier = minor_massive_bonus 
             years = 50 
