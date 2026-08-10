@@ -269,6 +269,6 @@ a_early_winged_hussars = {
     combat_power = 0
 	morale_damage_done = 0.25
     initiative = 2.0
-	unit_type = light_cavalry
+	category = army_heavy_cavalry
 	gfx_tags = { medium_tag }
 }

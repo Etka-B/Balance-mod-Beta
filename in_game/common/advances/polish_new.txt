@@ -1,0 +1,12 @@
+winged_hussars_advance = {
+	content_priority = 1100
+	age = age_3_discovery
+	potential = {
+		OR = {
+			has_or_had_tag = POL
+			has_or_had_tag = PLC 
+		} 
+	}
+	requires = unlock_lancers_advance
+	unlock_unit = a_early_winged_hussars
+}

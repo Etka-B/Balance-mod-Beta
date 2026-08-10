@@ -18,6 +18,11 @@ TRY_REPLACE:portuguese_monarchy_reform = {
 		 global_sailors_modifier = 0.1
 		tax_income_efficiency = large_tax_income_efficiency_bonus
 		government_reform_slots = 1
+	    can_recruit_explorer = yes
+		allow_open_sea_exploration = yes
+		exploration_mission_speed = 0.05
+		colonial_migration_size_modifier = 0.25
+
 	}
 	years = 2
 }
