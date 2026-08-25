@@ -1,0 +1,71 @@
+﻿balance_forgive_antagonism = {
+    type = diplomacy
+    category = CATEGORY_FRIENDLY_ACTIONS
+
+    potential = {
+        scope:actor = {
+            has_limited_diplomacy = no
+        }
+    }
+
+    allow = {
+        scope:actor = {
+            antagonism = {
+                target = scope:recipient
+                value > 0
+            }
+        }
+    }
+
+    cooldown = {
+        type = balance_forgive_antagonism
+        months = 3
+    }
+
+    select_trigger = {
+        looking_for_a = country
+        target_flag = recipient
+        name = "choose_country"
+        column = {
+            data = name
+        }
+        visible = {
+            within_diplomatic_range = scope:actor
+        }
+        enabled = {
+            scope:actor = {
+                antagonism = {
+                    target = root
+                    value > 0
+                }
+            }
+        }
+    }
+
+    effect = {
+        scope:actor = {
+            remove_antagonism = {
+                modifier = balance_antagonism_forgiven
+                target = scope:recipient
+            }
+            add_antagonism = {
+                modifier = balance_antagonism_forgiven
+                target = scope:recipient
+                scale = balance_forgive_all_antagonism
+            }
+        }
+    }
+
+    ai_tick = never
+    ai_will_do = {
+        add = -1000
+    }
+
+    diplo_chance = {
+        base = 1000
+    }
+
+    accept = {
+        add = 1000
+    }
+}

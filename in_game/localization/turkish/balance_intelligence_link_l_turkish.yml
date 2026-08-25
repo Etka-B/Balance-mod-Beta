@@ -1,0 +1,10 @@
+﻿l_turkish:
+ offer_balance_intelligence_link: "İstihbarat İrtibatı"
+ offer_balance_intelligence_link_desc: "$COUNTRY$ ile istihbarat irtibatı kurarak birbirinizin topraklarını görün."
+ balance_intelligence_link: "İstihbarat İrtibatı"
+ balance_intelligence_link_relation: "İstihbarat İrtibatı"
+ balance_intelligence_link_desc: "İdari istihbaratın gizli paylaşımı, iki ülkenin de birbirlerinin topraklarını sisin ötesinden görmesini sağlar."
+ diplomatic_status_balance_intelligence_link_name: "İstihbarat İrtibatı"
+ diplomatic_status_balance_intelligence_link_tooltip: "#T İstihbarat İrtibatı#!\nİki ülke de diğerinin topraklarındaki savaş sisini görebilir."
+ diplomatic_status_balance_intelligence_link_target_name: "İstihbarat İrtibatı"
+ diplomatic_status_balance_intelligence_link_target_tooltip: "#T İstihbarat İrtibatı#!\nBu ülke aşağıdaki ülkelerle askeri istihbarat paylaşmaktadır."

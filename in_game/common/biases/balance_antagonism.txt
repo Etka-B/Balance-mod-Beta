@@ -1,0 +1,4 @@
+balance_antagonism_forgiven = {
+    value = -1
+    yearly_decay = 2
+}

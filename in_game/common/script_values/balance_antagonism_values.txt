@@ -1,0 +1,4 @@
+balance_forgive_all_antagonism = {
+    value = "antagonism(scope:recipient)"
+    min = 0
+}

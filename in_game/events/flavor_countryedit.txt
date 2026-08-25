@@ -1,4 +1,4 @@
-REPLACE:flavor_hab.3 = { #Loss of the Habsburg
+﻿REPLACE:flavor_hab.3 = { #Loss of the Habsburg
 	type = country_event
 	title = flavor_hab.3.title
 	desc = flavor_hab.3.desc

@@ -1,4 +1,4 @@
-﻿flavor_ver.4 = {
+﻿REPLACE:flavor_ver.4 = {
 	type = country_event
 	title = flavor_ver.4.title
 	desc = flavor_ver.4.desc

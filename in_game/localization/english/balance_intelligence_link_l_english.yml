@@ -1,0 +1,10 @@
+﻿l_english:
+ offer_balance_intelligence_link: "Intelligence Liaison"
+ offer_balance_intelligence_link_desc: "Establish an intelligence liaison with $COUNTRY$ and share vision of each other's territory."
+ balance_intelligence_link: "Intelligence Liaison"
+ balance_intelligence_link_relation: "Intelligence Liaison"
+ balance_intelligence_link_desc: "A discreet exchange of administrative intelligence that grants both countries clear vision of each other's territory."
+ diplomatic_status_balance_intelligence_link_name: "Intelligence Liaison"
+ diplomatic_status_balance_intelligence_link_tooltip: "#T Intelligence Liaison#!\nBoth countries can see through the fog of war over each other's territory."
+ diplomatic_status_balance_intelligence_link_target_name: "Intelligence Liaison"
+ diplomatic_status_balance_intelligence_link_target_tooltip: "#T Intelligence Liaison#!\nThis country is sharing military intelligence with the following countries."
