@@ -1,0 +1,21 @@
+﻿l_turkish:
+ # Minor Ülke Eventleri (İsviçre, Hessen, Flemenk, Brandenburg, Floransa, Milano)
+ flavor_minor.1.title: "Bölgesel Bir Gücün Yükselişi"
+ flavor_minor.1.desc: "Ülkemiz tarihi bir dönüm noktasında duruyor. Stratejik diplomasi, iç istikrar ve ekonomik büyüme sayesinde milletimiz sıkletinin üzerinde işler başarmaya başladı. Bugün alacağımız kararlar, önümüzdeki onlarca yıl boyunca bölgesel güçler arasındaki konumumuzu pekiştirecektir."
+ flavor_minor.1.a: "Kendi kaderimizi kendimiz çizeceğiz."
+
+ flavor_minor.2.title: "Bölgesel Bir Gücün Yükselişi"
+ flavor_minor.2.desc: "Ülkemiz tarihi bir dönüm noktasında duruyor. Stratejik diplomasi, iç istikrar ve ekonomik büyüme sayesinde milletimiz sıkletinin üzerinde işler başarmaya başladı. Bugün alacağımız kararlar, önümüzdeki onlarca yıl boyunca bölgesel güçler arasındaki konumumuzu pekiştirecektir."
+ flavor_minor.2.a: "Kendi kaderimizi kendimiz çizeceğiz."
+
+ # Moskova Eventi
+ flavor_muscovy.1.title: "Kuzeyin Yükselen Gücü"
+ flavor_muscovy.1.desc: "Kuzey topraklarının ve ormanlarının derinliklerinden yükselen Knezliğimiz, çevresindeki topraklar üzerinde hakimiyet kurmaya başlıyor. Askeri gücümüzü ve idari yapımızı sağlamlaştırarak Rus topraklarının gerçek hakimi olduğumuzu kanıtlamalıyız."
+ flavor_muscovy.1.a: "Moskof toprakları birleşecek!"
+
+ # İsveç Eventi (Ragnar'ın Mirası)
+ flavor_sweden.1.title: "Ragnar'ın Mirası"
+ flavor_sweden.1.desc: "Hristiyanlığın İsveç topraklarında kök salmasının üzerinden nesiller geçmiş olsa da, eski tanrıların fısıltıları hâlâ varlığını sürdürüyor. Efsanevi Ragnar Lodbrok'un soyundan geldiğini iddia eden yetenekli bir lider ortaya çıktı. Katolik Kilisesi onu bir tehdit olarak görse de, halkın bir kısmı kadim geleneklere geri dönmeyi arzuluyor."
+ flavor_sweden.1.historical_info: "İsveç'in Hristiyanlaşmasının ardından, pagan gelenekleri ve Ragnar Lodbrok gibi efsanevi figürlerin mirası İskandinav kültürü üzerinde derin bir iz bırakmıştır."
+ flavor_sweden.1.a: "Sarayımızda kâfirlere yer yok! Mesih'e sadık kalacağız."
+ flavor_sweden.1.b: "Valhalla bizi çağırıyor! Kadim inançlara geri dönün."

@@ -1,0 +1,60 @@
+REPLACE:bailiff = {
+	audio_tier = 2
+	is_foreign = no
+	max_levels = 1
+	pop_type = soldiers
+	
+	employment_size = bailiff_employment
+	category = government_category
+	
+	rural_settlement = yes
+	expensive = yes
+	build_time = rural_build_time
+	
+	forbidden_for_estates = yes
+	
+	location_potential = {
+		is_overseas_for_owner = no
+	}
+	
+	allow = {
+		trigger_if = {
+			limit = {
+				scope:actor = {
+					modifier:num_bailiffs <= 0
+				}
+			}
+			custom_tooltip = {
+				text = no_local_bailiff_tt
+				always = no
+			}
+		}
+		trigger_else = {
+			custom_tooltip = {
+				text = local_bailiff_tt
+				scope:actor = {
+					total_building_levels_including_construction:bailiff < modifier:num_bailiffs
+				}
+			}
+		}
+	}
+	
+	
+	unique_production_methods = {
+		bailiff_input = {
+			paper = 0.1
+			tools = 0.15
+			weaponry = 0.25
+			stone = 0.1
+			category = building_maintenance
+		}
+	}
+
+	modifier = {
+		local_max_control = 0.2
+		local_nobles_estate_power = 1.0
+		local_peasant_enfranchisment = -0.1
+	}
+	
+	
+}

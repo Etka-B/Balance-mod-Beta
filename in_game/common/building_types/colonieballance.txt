@@ -1,0 +1,58 @@
+﻿colonial_assimilation = {
+	audio_tier = 1
+	is_foreign = no
+	max_levels = 1
+	pop_type = clergy
+	graphical_tags = { small_religious }
+	
+	category = colonial_category
+	
+	employment_size = religious_building_employment
+	
+	pop_size_created = religious_building_employment
+	
+	rural_settlement = yes
+	town = yes
+	city = yes
+
+	country_potential = {
+		OR = {
+			has_or_had_tag = POR
+		    has_or_had_tag = ENG
+		    has_or_had_tag = FRA
+		    has_or_had_tag = CAS
+			has_or_had_tag = NED
+	}
+		
+
+
+	}
+	
+   	location_potential = {
+		  NOT = {
+		     OR = {
+				continent = continent:asia
+				continent = continent:europe
+			}
+		}
+	}
+		allow = {
+
+		NOT = { dominant_culture = scope:actor.culture}
+	}
+	
+	possible_production_methods = {
+		colony_maintenance
+	}
+	construction_demand = simple_colony_construction
+
+	
+	build_time = colonise_build_time
+	
+	modifier = {
+		local_tribal_promotion = 0.5
+		local_disease_resistance = 0.05
+		local_pop_assimilation_speed = 0.05
+
+	}
+}

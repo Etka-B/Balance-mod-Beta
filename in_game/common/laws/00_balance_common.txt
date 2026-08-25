@@ -1,0 +1,107 @@
+﻿REPLACE:mining_law = {
+	law_category = socioeconomic
+
+	german_mining_law = {
+		unique = yes
+		potential = {
+			OR = {
+				culture ?= { has_culture_group = culture_group:german_group }
+				culture ?= culture:slovene
+			}
+		}
+		country_modifier = {
+			town_upgrade_cost_modifier = -0.2
+			pure_tooltip_entry = unlock_bergregal_rights_tt
+		}
+		estate_preferences = {
+			crown_estate
+			burghers_estate
+		}
+		years = 2
+	}
+	zimbabwe_mining_law = {
+		unique = yes
+		potential = {
+			culture = culture:shona_culture
+		}
+		country_modifier = {
+			expand_rgo_mining_cost_modifier = -0.2
+			global_goods_gold_output_modifier = 0.05
+		}
+		estate_preferences = {
+			crown_estate
+		}
+		years = 2
+	}
+	nobles_mining_law = {
+		country_modifier = {
+			global_rgo_build_time = -0.1
+			monthly_towards_traditional_economy = societal_value_minor_monthly_move
+			monthly_towards_aristocracy = societal_value_monthly_move
+			nobles_estate_target_satisfaction = small_permanent_target_satisfaction
+		}
+		estate_preferences = {
+			nobles_estate
+		}
+		years = 2
+	}
+	burghers_mining_law = {
+		country_modifier = {
+			expand_rgo_mining_cost_modifier = -0.1
+			monthly_towards_capital_economy = societal_value_minor_monthly_move
+			monthly_towards_plutocracy = societal_value_monthly_move
+			burghers_estate_target_satisfaction = small_permanent_target_satisfaction
+		}
+		estate_preferences = {
+			burghers_estate
+		}
+		years = 2
+	}
+	peasants_mining_law = {
+		country_modifier = {
+			monthly_towards_free_subjects = societal_value_monthly_move
+			peasants_estate_target_satisfaction = small_permanent_target_satisfaction
+		}
+		estate_preferences = {
+			peasants_estate
+		}
+		years = 2
+	}
+	novo_brdo_mining_law = {
+		unique = yes
+		potential = {
+			has_or_had_tag = SER
+			custom_tooltip = {
+				text = has_unlocked_novo_brdo_tt
+				has_variable = novo_brdo_variable
+			}
+		}
+		country_modifier = {
+			global_rgo_build_time = -0.2
+			monthly_towards_traditional_economy = societal_value_monthly_move
+			town_upgrade_cost_modifier = -0.05
+		}
+		estate_preferences = {
+			nobles_estate
+		}
+		years = 2
+	}
+	royal_fifth_law = {
+		unique = yes
+		potential = {
+			has_unlocked_policy_trigger = {
+				type = royal_fifth_law
+			}
+		}
+		country_modifier = {
+			global_silver_output_modifier = 0.1
+			global_goods_gold_output_modifier = 0.1
+			global_mercury_output_modifier = 0.15
+			subject_pays_colonial_cost_modifier = 0.50
+		}
+		estate_preferences = {
+			crown_estate
+		}
+		years = 2
+	}
+}

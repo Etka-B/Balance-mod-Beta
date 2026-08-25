@@ -1,0 +1,48 @@
+﻿ruralgrowth_outpost = {
+	audio_tier = 1
+	is_special = yes
+	
+	max_levels = 1
+	pop_type = peasants
+	
+	category = infrastructure_category
+	
+	employment_size = tiny_rural_peasant_produce_employment
+	
+	rural_settlement = yes
+	town = yes
+	city = no
+	megalopolis = no
+
+	
+	location_potential = {
+		NOT = {
+			OR = {
+				population >= 15.000
+			}
+		}
+	}
+	remove_if = {
+		location = {
+			population > 15.000
+		}
+	}
+	
+
+	possible_production_methods = {
+		moskovsettlement_maintenance 
+	}
+	construction_demand = rural_moskovgrowth_construction
+
+	
+	build_time = village_build_time
+	
+	modifier = {
+		local_migration_attraction = 1.0
+		local_population_growth = 0.003
+		
+	}
+	
+}
+
+

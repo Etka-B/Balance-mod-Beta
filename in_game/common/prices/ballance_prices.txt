@@ -1,0 +1,3 @@
+﻿REPLACE:hire_mercenary_premium = {
+	gold = 0.8
+}

@@ -1,0 +1,45 @@
+REPLACE:flavor_hab.3 = { #Loss of the Habsburg
+	type = country_event
+	title = flavor_hab.3.title
+	desc = flavor_hab.3.desc
+	outcome = neutral
+	#historical_info = flavor_hab.3.historical_info
+
+	fire_only_once = yes
+
+	dynamic_historical_event = {
+		tag = HAB
+		from = 1337.1.1
+		to = 1537.1.1
+		monthly_chance = 100
+	}
+
+	illustration_tags = {
+		10 = angry
+		10 = exterior
+	}
+
+	immediate = {
+		event_illustration_estate_effect = { foreground = estate_type:nobles_estate background = estate_type:nobles_estate }
+	}
+
+	trigger = {
+		at_war = no
+		has_ruler = yes
+		NOT = {
+			owns = location:krumbach
+			any_subject_or_below = {
+				owns = location:krumbach
+			}
+		}
+		owns = location:vienna
+		ruler = { dynasty = dynasty:habsburg_dynasty }
+	}
+
+	option = {
+		name = flavor_hab.3.a
+
+		add_prestige = prestige_severe_penalty
+		add_legitimacy = legitimacy_severe_penalty
+	}
+}

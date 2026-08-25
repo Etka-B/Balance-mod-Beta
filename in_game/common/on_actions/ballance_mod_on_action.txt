@@ -1,0 +1,48 @@
+﻿on_game_start = {
+    on_actions = {
+        balance_goods_change_action
+    }
+}
+
+balance_goods_change_action = {
+    effect = {
+        #muscovy
+        location:moscow = {
+            change_raw_material = goods:iron
+        }
+        location:odintsovo = {
+            change_raw_material = goods:cotton
+        }
+        location:tarusa = {
+            change_raw_material = goods:salt
+        }
+         location:kozlov_vyazma = {
+            change_raw_material = goods:dyes
+        }
+         location:uglich = {
+            change_raw_material = goods:silver
+        }
+         location:rostov = {
+            change_raw_material = goods:marble
+        }
+         location:sudislavl = {
+            change_raw_material = goods:copper
+        }
+        #sweden
+        location:stockholm = {
+            change_raw_material = goods:amber
+        }
+        location:riseberga = {
+            change_raw_material = goods:cotton
+        }
+        location:nas = {
+            change_raw_material = goods:salt
+        }
+        location:kalmar = {
+            change_raw_material = goods:wine
+        }
+        location:lidkoping = {
+            change_raw_material = goods:dyes
+        }
+    }
+}

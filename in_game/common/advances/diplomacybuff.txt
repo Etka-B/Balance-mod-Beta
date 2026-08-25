@@ -1,0 +1,23 @@
+﻿REPLACE:improved_rams = {
+	age = age_3_discovery
+	icon = global_trade_routes_advance
+	for = mil
+
+	navy_galley_power = 0.25
+}
+
+REPLACE:privateers = {
+	age = age_2_renaissance
+	icon = letters_of_marque
+	for = dip
+	
+	requires = shrewd_commerce_practice
+	
+	can_hire_privateers = yes
+	army_light_infantry_power = 0.1
+	army_heavy_infantry_power = 0.1
+}
+
+
+
+

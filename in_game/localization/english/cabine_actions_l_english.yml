@@ -1,0 +1,11 @@
+﻿l_english:
+  african_newland_developmentboost: "Resurgence African Land"
+  african_newland_developmentboost_desc: "Focus cabinet efforts on developing undeveloped provinces across Africa."
+  african_newland_developmentboost_no_provinces: "@trigger_no! No suitable [province|e] found. A target province must:\nBe located in the Africa continent;\nHave an average development below 10;\nNot already be supported by this action or Expel People."
+  african_newland_developmentboost_action: "Focus Development in [SCOPE.sProvince('target').GetNameWithNoTooltip]"
+  african_newland_developmentboost_active: "Developing [SCOPE.sProvince('target').GetNameWithHighlightOnly]"
+  african_newland_developmentboost_action_progress: "[SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_wordier: "[SCOPE.sProvince('target').GetNameWithNoTooltip] average [development|E]: [SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_long_wordier: "@development! [SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_tooltip: "[SCOPE.sProvince('target').GetAverageDevelopmentInfo]"
+  african_newland_developmentboost_select_province: "Select Province to Develop"

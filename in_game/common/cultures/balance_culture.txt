@@ -1,0 +1,170 @@
+REPLACE:picard = {
+	language = francique_dialect
+	
+	color = map_PIC
+	
+	tags = { french_gfx western_european_gfx european_gfx }
+
+	opinions = {
+		angevin = kindred
+		berrichon = kindred
+		burgundian = kindred
+		champenais = kindred
+		franc_comtois = kindred
+		french = kindred
+		gallo = kindred
+		lorrain = kindred
+		norman = kindred
+		poitevin = kindred
+		saintongeais = kindred
+		walloon = kindred
+		low_franconian = positive
+	}
+}
+
+REPLACE:syriac_culture = {
+	language = aramaic_language
+	
+	color = color_culture_syriac
+	
+	tags = { levantine_gfx middle_east_gfx }
+
+	opinions = {
+		levantine_culture = kindred 
+	}
+	
+	culture_groups = {
+		arabic_group
+	}
+}
+
+REPLACE:bedouin_culture = { 
+	language = egyptian_dialect 
+	
+	color = color_culture_bedouin
+	
+	tags = { egyptian_gfx middle_east_gfx}
+
+	opinions = {
+		lower_egyptian_culture = kindred
+		upper_egyptian_culture = kindred
+		bedouin_culture = kindred
+		libyan_arabic_culture = kindred
+		levantine_culture = kindred
+	}	
+	
+	culture_groups = {
+		arabic_group
+	}	
+}
+	
+
+
+REPLACE:alawite_culture = {
+	language = levantine_dialect
+	
+	color = color_culture_alawite
+	
+	tags = { levantine_gfx middle_east_gfx }
+
+	opinions = {
+		levantine_culture = kindred
+	}
+	
+	culture_groups = {
+		arabic_group
+	}	
+}
+	
+REPLACE:sanhaja = {
+	language = tamazight_language
+	
+	color = map_sanhaja
+	
+	tags = { middle_east_gfx amazigh_gfx }
+
+	opinions = {	
+		kabyle = kindred
+		masmuda = positive
+		tuareg = kindred
+		moroccan = kindred
+	}		
+	
+	use_patronym = yes
+
+	culture_groups = {
+		amazigh_group
+		maghrebi_group
+	}
+}
+
+REPLACE:masmuda = {
+	language = tamazight_language
+	
+	color = map_masmuda
+	
+	tags = { middle_east_gfx amazigh_gfx }
+
+	opinions = {
+		sanhaja = positive
+		moroccan = kindred
+	}		
+	
+	use_patronym = yes
+
+	culture_groups = {
+		amazigh_group
+		maghrebi_group
+	}
+}
+
+REPLACE:zenati = {
+	language = tamazight_language
+	
+	color = map_tlemcen
+	
+	tags = { middle_east_gfx amazigh_gfx }
+
+	opinions = {	
+		castilian = negative
+		portuguese = negative
+		aragonese = negative
+		algerian = negative
+		chaoui = kindred
+		eastern_amazigh = kindred
+		mozabite = kindred
+		moroccan = kindred
+		tuareg = positive
+	}	
+	
+	use_patronym = yes
+	
+	culture_groups = {
+		amazigh_group
+		maghrebi_group
+	}
+}
+
+REPLACE:chaoui = {
+	language = tamazight_language
+	
+	color = map_chaoui
+	
+	tags = { middle_east_gfx amazigh_gfx }
+
+	opinions = {	
+		algerian = negative
+		eastern_amazigh = kindred
+		kabyle = positive
+		mozabite = kindred
+		tunisian = kindred
+		zenati = kindred
+	}		
+	
+	use_patronym = yes
+
+	culture_groups = {
+		amazigh_group
+		maghrebi_group
+	}
+}

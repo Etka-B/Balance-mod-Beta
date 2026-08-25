@@ -1,0 +1,11 @@
+﻿{
+	"name":	"Balance-mod Beta",
+	"id":	"",
+	"version":	"1.3.11",
+	"supported_game_version":	"1.3.11",
+	"short_description":	"Balance mod version 0.1",
+	"tags":	["Balance", "Culture & Art", "Events", "Flags", "Gameplay", "Loading Screen", "Map"],
+	"relationships":	[],
+	"game_custom_data":	{
+}
+}

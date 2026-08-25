@@ -1,0 +1,11 @@
+﻿l_turkish:
+  african_newland_developmentboost: "Afrika Topraklarını Canlandırma"
+  african_newland_developmentboost_desc: "Kabine çabalarını Afrika genelindeki gelişmemiş vilayetleri kalkındırmaya odaklayın."
+  african_newland_developmentboost_no_provinces: "@trigger_no! Uygun [province|e] bulunamadı. Hedef vilayet şu şartları sağlamalıdır:\nAfrika kıtasında yer almalı;\nOrtalama kalkınması 10'un altında olmalı;\nBu kabine eylemi veya 'Halkı Sürgün Et' eylemi tarafından halihazırda desteklenmiyor olmalı."
+  african_newland_developmentboost_action: "[SCOPE.sProvince('target').GetNameWithNoTooltip] vilayetinde kalkınmayı başlat"
+  african_newland_developmentboost_active: "[SCOPE.sProvince('target').GetNameWithHighlightOnly] vilayeti geliştiriliyor"
+  african_newland_developmentboost_action_progress: "[SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_wordier: "[SCOPE.sProvince('target').GetNameWithNoTooltip] vilayetindeki ortalama [development|E]: [SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_long_wordier: "@development! [SCOPE.sProvince('target').GetAverageDevelopment|V2]"
+  african_newland_developmentboost_action_progress_tooltip: "[SCOPE.sProvince('target').GetAverageDevelopmentInfo]"
+  african_newland_developmentboost_select_province: "Gelişimin artırılacağı vilayeti seç:"

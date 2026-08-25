@@ -1,0 +1,258 @@
+﻿namespace = flavor_minor
+
+flavor_minor.1 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+    fire_only_once = yes
+    dynamic_historical_event = {
+        
+        tag = SWI
+        
+        from = 1337.1.1
+        to =   1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+    option = { 
+        name = flavor_minor.1.a
+        historical_option = yes
+
+        
+        add_stability = stability_severe_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus 
+            years = 50 
+            mode = add_and_extend 
+        }
+        
+        ai_will_select = {
+            value = 90
+        }
+    }
+}
+
+
+
+
+flavor_minor.2 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+
+    fire_only_once = yes
+
+    dynamic_historical_event = {
+
+        tag = HES
+        
+        from = 1337.1.1
+        to = 1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+    option = { 
+        name = flavor_minor.1.a
+        historical_option = yes
+
+        add_stability = stability_severe_bonus
+        add_legitimacy = legitimacy_mild_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus 
+            years = 50 
+            mode = add_and_extend 
+        }
+
+        ai_will_select = {
+            value = 90
+        }
+    }
+}
+
+
+
+flavor_minor.3 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+
+    
+    fire_only_once = yes
+
+    dynamic_historical_event = {
+        
+        tag = FLA
+        from = 1337.1.1
+        to = 1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+    option = { 
+        name = flavor_minor.1.a
+        historical_option = yes
+
+        add_stability = stability_severe_bonus
+        add_legitimacy = legitimacy_mild_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus 
+            years = 50 
+            mode = add_and_extend 
+        }
+
+        ai_will_select = {
+            value = 90
+        }
+    }
+}
+
+flavor_minor.4 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+
+    
+    fire_only_once = yes
+
+    dynamic_historical_event = {
+        
+        tag = BRA
+        from = 1337.1.1
+        to = 1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+    option = { 
+        name = flavor_minor.1.a
+        historical_option = yes
+
+        add_stability = stability_severe_bonus
+        add_legitimacy = legitimacy_mild_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus 
+            years = 50 
+            mode = add_and_extend 
+        }
+
+        ai_will_select = {
+            value = 90
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+# 5
+
+flavor_minor.5 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+  fire_only_once = yes
+
+    dynamic_historical_event = {
+        
+        tag = FLO
+
+        
+        from = 1337.1.1
+        to =   1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+
+
+    option = { 
+        name = flavor_minor.2.a
+        historical_option = yes
+
+        
+        add_stability = stability_severe_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus.2 
+            years = 50 
+            mode = add_and_extend 
+        }
+           
+        ai_will_select = {
+            value = 90
+        }
+    }
+}
+
+flavor_minor.6 = { 
+    type = country_event
+    
+    title = flavor_minor.1.title
+    desc = flavor_minor.1.desc
+    outcome = neutral
+  fire_only_once = yes
+
+    dynamic_historical_event = {
+        
+        tag = MLO
+
+        
+        from = 1337.1.1
+        to =   1350.1.1        
+        monthly_chance = 100
+    }
+
+    trigger = {
+        is_human = yes 
+    }
+
+
+
+    option = { 
+        name = flavor_minor.2.a
+        historical_option = yes
+
+        
+        add_stability = stability_severe_bonus
+        add_country_modifier = { 
+            modifier = minor_massive_bonus.2 
+            years = 50 
+            mode = add_and_extend 
+        }
+           
+        ai_will_select = {
+            value = 90
+        }
+    }
+}

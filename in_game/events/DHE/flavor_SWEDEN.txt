@@ -1,0 +1,81 @@
+namespace = flavor_sweden
+flavor_sweden.1 = {
+	type = country_event
+	title = The_Legacy_of_Ragnar
+	desc = Though_generations_have_passed_since_Christianity_took_root_in_Swedish_lands_whispers_of_the_old_gods_still_linger_A_skilled_leader_claiming_descent_from_the_legendary_Ragnar_Lodbrok_has_emerged_While_the_Catholic_Church_views_him_as_a_threat_many_long_for_a_return_to_the_ancient_ways.
+	outcome = neutral
+	historical_info = Following_Sweden's_Christianization_pagan_traditions_and_the_legacy_of_legendary_figures_like_Ragnar_Lodbrok_left_a_profound_mark_on_Nordic_heritage
+
+	fire_only_once = yes
+	dynamic_historical_event = {
+		tag = SWE
+		from = 1337.1.1
+		to = 1470.1.1
+		monthly_chance = 3
+	}
+
+	trigger = {
+		religion = religion:catholic
+		owns = location:stockholm
+		at_war = no
+		is_subject = no
+		has_regent = no
+	}
+
+
+	illustration_tags = {
+		10 = angry
+		10 = exterior
+	}
+
+	immediate = {
+		event_illustration_estate_effect = { foreground = estate_type:clergy_estate background = estate_type:clergy_estate }
+		create_named_dynasty = lodbrok_dynasty
+
+		create_character = {
+			first_name = name_ragnar
+			adm = { 80 100 }
+			dip = { 80 100 }
+			mil = { 80 100 }
+			birth_date = 1320.1.1
+			culture = culture:swedish
+			religion = religion:norse
+			dynasty = dynasty:lodbrok_dynasty
+			estate = estate_type:nobles_estate
+			create_in_limbo = yes
+			save_scope_as = ragnar_lodbrok
+			script = swe_ragnar_lodbrok
+		}
+	}
+
+
+	option = {
+        historical_option = yes
+        name = There_is_no_place_for_heretics_in_our_court!_We_remain_faithful_to_Christ.
+        add_stability = stability_severe_bonus
+        add_legitimacy = legitimacy_mild_bonus
+	    add_country_modifier = { 
+        modifier = minor_massive_bonus 
+        years = 50 
+        mode = add_and_extend 
+        }
+    }
+	option = {
+
+        name = Valhalla_calls_to_us!_Hail_Ragnar,_return_to_the_old_gods!
+		set_new_ruler = scope:ragnar_lodbrok
+		add_stability = -60
+        add_legitimacy = -30
+
+		change_religion = religion:norse
+		if = {
+			limit = {
+				has_ruler = yes
+				ruler = { has_character_modifier = enacted_placitum_regium }
+			}
+
+			ruler = { remove_character_modifier = enacted_placitum_regium }
+		}
+		change_religion_for_ruler_and_family = { country = ROOT religion = religion:norse }
+	}
+}

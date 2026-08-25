@@ -1,0 +1,146 @@
+﻿l_turkish:
+ # ==========================================
+ # FLA - FLANDERS
+ # ==========================================
+ fla_infantry: "Flemen Milis Eğitimi"
+ fla_infantry_desc: "Disiplinli kent milisleri ve düzenli piyade birlikleri, karada güçlü savunma kabiliyetleri sağlar."
+ fla_heavyship: "Flemen Okyanus Filoları"
+ fla_heavyship_desc: "Dayanıklı ana muharebe gemileri inşa etmek, Kuzey Denizi'ndeki kritik deniz ticaret yollarının korunmasını sağlar."
+ fla_tradecap: "Flemish Ticaret Merkezleri"
+ fla_tradecap_desc: "Ticaret altyapısını genişletmek, Flemen tüccarların kilit Avrupa pazarlarında hakimiyet kurmasına ve tüccar ağlarını büyütmesine olanak tanır."
+ fla_navalmoral: "Alçak Ülkelerin Gururu"
+ fla_navalmoral_desc: "Köklü bir denizcilik geleneği, kıyı sularını savunan Flemen denizcilere özgüven ve yüksek moral kazandırır."
+
+ # ==========================================
+ # NAP - NAPLES
+ # ==========================================
+ nap_proximtyeff: "Napoli Merkezi Yönetimi"
+ nap_proximtyeff_desc: "İdari hatları basitleştirmek, başkent Napoli ile uzak topraklar arasındaki otorite gecikmesini azaltır."
+ nap_galley: "Napoli Kadırga Filoları"
+ nap_galley_desc: "Akdeniz sularına hakim olmak, hayati kıyı rotalarını koruyabilecek iyi inşa edilmiş kadırga filoları gerektirir."
+ nap_wine: "Campania Bağları"
+ nap_wine_desc: "Yerel bağcılığı teşvik etmek, küresel çapta talep gören Napoli şarapları üreterek bölgesel ticareti canlandırır."
+ nap_discipline: "Napoli Askeri Disiplini"
+ nap_discipline_desc: "Sıkı eğitimden geçmiş profesyonel birlikler, tüm askeri kollarda ordu standartlarını yükseltir."
+ italian_group_building_advance: "İtalyan Şehir Mimarisi"
+ italian_group_building_advance_desc: "Gelişmiş şehir planlama ve mühendislik gelenekleri, İtalyan kasaba ve şehirlerini modernleştirme maliyetlerini önemli ölçüde düşürür."
+
+ # ==========================================
+ # FLO - FLORENCE
+ # ==========================================
+ FLO_infcombat: "Floransa Kent Muhafızları"
+ FLO_infcombat_desc: "Örgütlü şehir milisleri, Floransa Cumhuriyeti'ni kararlı bir disiplin ve askeri beceriyle savunur."
+ FLO_merccost: "Floransa Paralı Asker Sözleşmeleri"
+ FLO_merccost_desc: "Geniş bankacılık kaynaklarını kullanmak, Floransa'nın paralı asker ordularını standart maliyetin çok altında güvenceye almasını ve elde tutmasını sağlar."
+ FLO_institutioncost: "Floransa Rönesans Hamiliği"
+ FLO_institutioncost_desc: "Hümanizmi, sanatları ve bilimleri desteklemek, kurumların benimsenmesini ve devlet genelinde kültürel büyümeyi hızlandırır."
+
+ # ==========================================
+ # HES - HESSE
+ # ==========================================
+ HES_proximty: "Hessen Karayolu Denetimi"
+ HES_proximty_desc: "Verimli ulaşım ağları ve kuryeler, Hessen toprakları genelinde merkezi yetkililerle hızlı temas sağlar."
+ HES_landmoral: "Hessen Askeri Ruhu"
+ HES_landmoral_desc: "Sert ve dayanıklı bir savaşçı kültürü, Hessen kara kuvvetlerinin kararlılığını ve moralini güçlendirir."
+ HES_lightinf: "Hessen Hafif Piyadesi"
+ HES_lightinf_desc: "Uzmanlaşmış hafif piyade birlikleri; vur-kaç, hızlı intikal ve ormanlık alan savaşlarında üstün başarı gösterir."
+ HES_stability: "Hessen Kamu Düzeni"
+ HES_stability_desc: "İyi düzenlenmiş iç politikalar, toplumsal huzuru sağlar ve sosyal düzeni koruma maliyetini azaltır."
+ HES_legitimacy: "Hessen Hanedan Saygınlığı"
+ HES_legitimacy_desc: "Tanınan hanedan hakları ve güçlü hukuki temeller, arazi beyinin (landgrave) otoritesini pekiştirir."
+ HES_prosperity: "Hessen Bölgesel Kalkınması"
+ HES_prosperity_desc: "Bölgesel tarım ve ticaret altyapısına yapılan yatırımlar, istikrarlı ve uzun vadeli ekonomik refah sağlar."
+
+ # ==========================================
+ # MOS - MUSCOVY
+ # ==========================================
+ MOS_manpower: "Moskof Asker Toplama Sistemi"
+ MOS_manpower_desc: "Sistemli zorunlu askerlik ve geniş toprak derinliği, askeri insan gücü havuzunu muazzam ölçüde genişletir."
+ MOS_horse: "Moskof Süvari Cephesi"
+ MOS_horse_desc: "Geniş taktiksel düzenler kullanmak, savaş alanı cephesini ve süvarilerin etkinliğini en üst düzeye çıkarır."
+ MOS_popgrowth: "Moskof Sınır Karakolları"
+ MOS_popgrowth_desc: "Tarımsal yerleşim karakolları kurmak, doğu sınırları boyunca nüfusun genişlemesini teşvik eder."
+
+ # ==========================================
+ # SWE - SWEDEN
+ # ==========================================
+ SWE_popgrowth: "İsveç Kırsal Genişlemesi"
+ SWE_popgrowth_desc: "Bakir topraklarda karakollar kurmak, kırsal nüfus artışını destekleyecek arazi ve kaynak sağlar."
+ SWE_lumber: "İsveç Kereste Üretimi"
+ SWE_lumber_desc: "Geniş çam ormanları, gemi yapımı ve kereste ihracatı için bol miktarda yüksek kaliteli ahşap sağlar."
+
+ # ==========================================
+ # BRA - BRANDENBURG
+ # ==========================================
+ BRA_infantry: "Brandenburg Disiplini"
+ BRA_infantry_desc: "Sıkı eğitim rejimleri, hem ağır hem de hafif piyadeleri korkulan ve son derece etkili savaş birliklerine dönüştürür."
+ BRA_proximtyeff: "Brandenburg İdari Kuryeleri"
+ BRA_proximtyeff_desc: "Hızlı idari müdahale, Berlin'den gelen emirlerin ülke genelinde yayılma hızını artırır."
+
+ # ==========================================
+ # MLO - MILAN
+ # ==========================================
+ MLO_armytradition: "Milano Paralı Asker Birlikleri"
+ MLO_armytradition_desc: "Profesyonel Condottieri sözleşmeleri ordu moralini artırırken, optimize edilmiş vergi tahsilatı askeri seferleri finanse eder."
+
+ # ==========================================
+ # ENG - ENGLAND
+ # ==========================================
+ ENG_dev: "İngiliz Akademik Refahı"
+ ENG_dev_desc: "Akademik kurumlara ve bölgesel yönetime yapılan yatırımlar, aylık kalkınmayı istikrarlı bir şekilde artırır."
+
+ # ==========================================
+ # MOR - MOROCCO
+ # ==========================================
+ moroccan_light_cavalry_moral: "Fas Hafif Süvarisi"
+ moroccan_light_cavalry_moral_desc: "Çevik çöl atlıları, hızlı hücumlar ve üstün taktiksel hareket kabiliyetiyle düşmanların kalbine korku salar."
+
+ # ==========================================
+ # TUN - TUNISIA
+ # ==========================================
+ TUN_discipline: "Barbary Kıyısı Disiplini"
+ TUN_discipline_desc: "Kıyı müstahkem mevkilerindeki sıkı askeri örgütlenme, birlik koordinasyonunu ve disiplinini artırır."
+
+ # ==========================================
+ # ETH - ETHIOPIA
+ # ==========================================
+ ETH_infantry: "Süleyman Hanedanı Savaşçıları"
+ ETH_infantry_desc: "Çetin göğüs göğüse dövüş eğitimi almış dağlık bölge ağır piyadeleri, Süleyman Hanedanı'nı gururla savunur."
+
+ # ==========================================
+ # POL / PLC - POLAND
+ # ==========================================
+ early_winged_hussars_advance: "Erken Dönem Kanatlı Hussarlar"
+ early_winged_hussars_advance_desc: "Mızraklar ve kanatlarla donatılmış, belirleyici savaş alanı hücumları yapabilen seçkin zırhlı süvariler."
+
+ # ==========================================
+ # COLONIAL SUBJECT ADVANCES
+ # ==========================================
+ colonial_tradition: "Koloje Öncü Geleneği"
+ colonial_tradition_desc: "Yerleşim teşviklerini desteklemek, deniz aşırı topraklarda istikrarlı bir nüfus artışını besler."
+ colonial_heritage: "Yeni Dünya Mirası"
+ colonial_heritage_desc: "Hızlı bölgesel kalkınma, el değmemiş toprakları müreffeh koloni eyaletlerine dönüştürür."
+ founding_fathers: "Koloni Kurucu Babaları"
+ founding_fathers_desc: "Saygın yerel devlet adamları, koloni içinde cumhuriyetçi ilkeleri ve yurttaşlık erdemlerini yaşatır."
+ colonial_militia: "Koloni Milis Meclisleri"
+ colonial_militia_desc: "Yerel savunma milislerini örgütlemek, kriz zamanlarında toplanabilecek asker havuzunu büyütür."
+ new_frontiers: "Yeni Sınırlar Girişimi"
+ new_frontiers_desc: "Optimize edilmiş koloni bakımı ve göç programları, bölgeye yeni yerleşimci dalgaları çeker."
+ continental_trade: "Kıtasal Ticaret Ağları"
+ continental_trade_desc: "Kara ve deniz ticaret rotalarını güvenceye almak, koloni ticaretini dış müdahalelerden korur."
+ free_thinkers: "Koloni Özgür Düşünürleri"
+ free_thinkers_desc: "Özgür entelektüel ortam, kolonilerdeki azami okuryazarlık oranını artırır."
+ manufacturing_center: "Koloni İmalat Merkezleri"
+ manufacturing_center_desc: "Hammadde kaynaklarının yerinde işlenmesi, imalat üretkenliğini gözle görülür şekilde yükseltir."
+ colonial_assembly: "Koloni Yasama Meclisi"
+ colonial_assembly_desc: "Özerk yerel yönetim yapıları kurmak, siyasi kapasiteyi ve idari gücü pekiştirir."
+ liberty_heroes: "Özgürlük Kahramanları"
+ liberty_heroes_desc: "Karizmatik askeri liderler, birliklerin savaş alanında çok daha hızlı manevra yapmasını sağlar."
+ colonial_ambition: "Koloni Hırsı"
+ colonial_ambition_desc: "Kendi kaderini tayin etme fikri, askeri morali ve bölgesel iddiaları yükseltir."
+
+ # ==========================================
+ # TUR - OTTOMAN EMPIRE
+ # ==========================================
+ TUR_antagonismbonus: "İmparatorluk Hırsı"
+ TUR_antagonismbonus_desc: "Osmanlı Devleti'nin amansız genişlemesi ve kurduğu hegemonya, komşu güçler arasında rekabet ve düşmanlığı körükler."

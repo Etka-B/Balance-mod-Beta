@@ -1,0 +1,150 @@
+﻿REPLACE:high_legitimacy = {
+	potential_trigger = {
+		uses_government_power = legitimacy
+	}
+	limit = {
+		legitimacy > 50
+	}
+	scales_with = {
+		value = legitimacy
+		multiply = 0.01
+	}
+
+	global_crown_estate_power = 0.50
+	pop_leave_rebels_threshold = -0.05
+	monthly_righteousness = 0.5
+	monthly_doom = -0.1
+	monthly_towards_absolutism = societal_value_minor_monthly_move
+}
+
+REPLACE:positive_stability_impact = {
+	potential_trigger = {
+		stability > 0
+	}	
+
+	scales_with = {
+		value = stability
+		multiply = 0.01
+	}
+
+		
+	global_estate_target_satisfaction = positive_stability_satisfaction_scale
+	global_pop_promotion_speed_modifier = 1.0
+	monthly_doom = -0.1
+	monthly_righteousness = 0.1
+	global_monthly_prosperity = 0.001
+	global_population_growth = 0.001
+
+}
+
+REPLACE:prestige = {
+	scales_with = {
+		value = prestige
+		multiply = 0.01
+	}
+
+	global_trade_center_power = 0.05
+	cultural_influence = 1
+	diplomatic_reputation = diplomatic_reputation_severe_bonus
+	skill_of_new_artists = 0.1
+    cultural_influence_modifier = 0.5
+	antagonism_monthly_change_modifier = 0.50
+	global_crown_estate_power = 0.20
+}
+
+REPLACE:high_republican_tradition = {
+	potential_trigger = {
+		uses_government_power = republican_tradition
+	}
+	scales_with = {
+		value = republican_tradition
+		multiply = 0.01
+	}
+
+	legislative_efficiency = 0.10
+	pop_leave_rebels_threshold = -0.05
+	monthly_towards_liberalism = societal_value_monthly_move
+	global_crown_estate_power = 0.20
+}
+
+REPLACE:low_republican_tradition = {
+	potential_trigger = {
+		uses_government_power = republican_tradition
+	}
+	scales_with = {
+		value = republican_tradition
+		multiply = -0.01
+		add = 1
+	}
+
+	stability_cost_efficiency = -2
+	legislative_efficiency = -0.10
+	global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
+}
+
+very_low_republican_tradition = {
+	potential_trigger = {
+		uses_government_power = republican_tradition
+	}
+
+		limit = {
+		republican_tradition <= 50
+	}
+	scales_with = {
+		value = republican_tradition
+		multiply = -0.01
+		add = 1
+	}
+
+	stability_cost_efficiency = -2
+	legislative_efficiency = -0.10
+	global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
+	global_crown_estate_power = -0.20
+}
+
+REPLACE:high_devotion = {
+	potential_trigger = {
+		uses_government_power = devotion
+	}
+	scales_with = {
+		value = devotion
+		multiply = 0.01
+	}
+
+	monthly_religious_influence = 0.1
+	pop_leave_rebels_threshold = -0.05
+	global_crown_estate_power = 0.20
+}
+REPLACE:low_devotion = {
+	potential_trigger = {
+		uses_government_power = devotion
+	}
+	scales_with = {
+		value = devotion
+		multiply = -0.01
+		add = 1
+	}
+
+	global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
+	monthly_religious_influence = -0.1
+
+}
+
+very_low_devotion = {
+	potential_trigger = {
+		uses_government_power = devotion
+	}
+	limit = {
+		devotion <= 50
+	}
+	scales_with = {
+		value = devotion
+		multiply = -0.01
+		add = 1
+	}
+
+	global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
+	monthly_religious_influence = -0.1
+	global_crown_estate_power = -0.20
+
+}

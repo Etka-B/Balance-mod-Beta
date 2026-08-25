@@ -1,0 +1,16 @@
+﻿REPLACE:slave_raiding_wars = {
+	age = age_1_traditions
+	
+	potential = {
+		original_capital ?= { continent = continent:africa }
+	}
+	
+	
+	auto_slave_raid = yes
+	
+	requires = agriculture_advance
+        ai_weight = {
+        add = 2000
+    }
+}
+

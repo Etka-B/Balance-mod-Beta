@@ -1,0 +1,8 @@
+﻿moskovsettlement_maintenance = {
+	stone = 0.1
+	lumber = 0.1
+	wild_game = 0.1
+	wool = 0.1
+    fur = 0.3
+	category = building_maintenance
+}

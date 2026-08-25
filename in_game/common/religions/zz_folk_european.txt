@@ -1,0 +1,16 @@
+REPLACE:norse = {
+	script_override = yes
+
+	color = color_norse
+	group = folk_european_group
+
+	religious_aspects = 2
+	
+	definition_modifier = {
+		auto_slave_raid_different_religion = yes
+	}
+
+	tags = {
+		folk_european_gfx pagan_gfx
+	}
+}

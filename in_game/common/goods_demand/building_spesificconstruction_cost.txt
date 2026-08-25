@@ -1,0 +1,13 @@
+simple_rural_moskovgrowth_construction = {
+	masonry = 0.5
+	lumber = 0.5
+	fur = 0.3
+	category = building_construction
+}
+
+rural_moskovgrowth_construction= {
+	masonry = 0.5
+	lumber = 0.5
+	fur = 0.3
+	category = building_construction
+}

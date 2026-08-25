@@ -1,0 +1,146 @@
+﻿l_english:
+ # ==========================================
+ # FLA - FLANDERS
+ # ==========================================
+ fla_infantry: "Flemish Militia Training"
+ fla_infantry_desc: "Disciplined civic militias and organized infantry formations ensure strong defensive capabilities on land."
+ fla_heavyship: "Flemish Ocean Fleets"
+ fla_heavyship_desc: "Constructing robust capital ships ensures protection over essential maritime trade routes in the North Sea."
+ fla_tradecap: "Flemish Commercial Hubs"
+ fla_tradecap_desc: "Expanding trade infrastructure allows Flemish merchants to dominate key European markets and expand mercantile networks."
+ fla_navalmoral: "Pride of the Low Countries"
+ fla_navalmoral_desc: "A proud naval tradition instills confidence and morale in Flemish sailors defending their coastal waters."
+
+ # ==========================================
+ # NAP - NAPLES
+ # ==========================================
+ nap_proximtyeff: "Neapolitan Central Administration"
+ nap_proximtyeff_desc: "Streamlining administrative lines reduces authority lag between the capital in Naples and distant territorial holdings."
+ nap_galley: "Neapolitan Galley Squadrons"
+ nap_galley_desc: "Dominating Mediterranean waters requires well-built galley fleets capable of guarding vital coastal routes."
+ nap_wine: "Vintages of Campania"
+ nap_wine_desc: "Fostering local viticulture produces globally sought-after Neapolitan wines, boosting regional commerce."
+ nap_discipline: "Neapolitan Martial Discipline"
+ nap_discipline_desc: "Rigorously trained professional corps raise martial standards across all military branches."
+ italian_group_building_advance: "Italian Urban Architecture"
+ italian_group_building_advance_desc: "Advanced urban planning and engineering traditions significantly lower the costs of modernizing Italian towns and cities."
+
+ # ==========================================
+ # FLO - FLORENCE
+ # ==========================================
+ FLO_infcombat: "Florentine Civic Guard"
+ FLO_infcombat_desc: "Organized urban militias defend the Florentine Republic with resolute discipline and martial prowess."
+ FLO_merccost: "Florentine Mercenary Contracts"
+ FLO_merccost_desc: "Leveraging vast banking resources enables Florence to secure and maintain mercenary armies at a fraction of the standard cost."
+ FLO_institutioncost: "Florentine Renaissance Patronage"
+ FLO_institutioncost_desc: "Subsidizing humanism, arts, and sciences accelerates institutional embracement and cultural growth across the state."
+
+ # ==========================================
+ # HES - HESSE
+ # ==========================================
+ HES_proximty: "Hessian Highway Control"
+ HES_proximty_desc: "Efficient transit networks and couriers maintain swift contact with central authorities across Hessian territories."
+ HES_landmoral: "Hessian Martial Spirit"
+ HES_landmoral_desc: "A tough, resilient warrior culture strengthens the resolve and morale of Hessian land forces."
+ HES_lightinf: "Hessian Light Infantry"
+ HES_lightinf_desc: "Specialized light infantry units excel at skirmishing, rapid deployment, and woodland warfare."
+ HES_stability: "Hessian Civic Order"
+ HES_stability_desc: "Well-regulated internal policies ensure public peace and reduce the overhead of maintaining social order."
+ HES_legitimacy: "Hessian Dynastic Standing"
+ HES_legitimacy_desc: "Recognized dynastic claims and strong legal foundations uphold the authority of the landgrave."
+ HES_prosperity: "Hessian Land Development"
+ HES_prosperity_desc: "Investments in regional agriculture and trade infrastructure yield steady, long-term economic prosperity."
+
+ # ==========================================
+ # MOS - MUSCOVY
+ # ==========================================
+ MOS_manpower: "Muscovite Levies"
+ MOS_manpower_desc: "Systematic conscription and vast territorial depth dramatically expand the military manpower pool."
+ MOS_horse: "Muscovite Cavalry Frontage"
+ MOS_horse_desc: "Utilizing expansive tactical formations maximizes battlefield frontage and cavalry effectiveness."
+ MOS_popgrowth: "Muscovite Frontier Outposts"
+ MOS_popgrowth_desc: "Establishing agrarian settlement outposts encourages population expansion along eastern borders."
+
+ # ==========================================
+ # SWE - SWEDEN
+ # ==========================================
+ SWE_popgrowth: "Swedish Rural Expansion"
+ SWE_popgrowth_desc: "Developing wilderness outposts provides land and resources to foster rural population growth."
+ SWE_lumber: "Swedish Timber Harvesting"
+ SWE_lumber_desc: "Vast pine forests provide abundant high-grade timber for naval construction and timber exports."
+
+ # ==========================================
+ # BRA - BRANDENBURG
+ # ==========================================
+ BRA_infantry: "Brandenburg Discipline"
+ BRA_infantry_desc: "Rigorous drill regimes transform both heavy and light infantry into feared, highly effective combat formations."
+ BRA_proximtyeff: "Brandenburg Administrative Couriers"
+ BRA_proximtyeff_desc: "Rapid administrative response speeds up command propagation from Berlin across the realm."
+
+ # ==========================================
+ # MLO - MILAN
+ # ==========================================
+ MLO_armytradition: "Milanese Mercenary Guilds"
+ MLO_armytradition_desc: "Professional Condottieri contracts bolster army morale while optimized tax collection funds military campaigns."
+
+ # ==========================================
+ # ENG - ENGLAND
+ # ==========================================
+ ENG_dev: "English Scholastic Prosperity"
+ ENG_dev_desc: "Investments in scholarly institutions and regional governance drive steady monthly development."
+
+ # ==========================================
+ # MOR - MOROCCO
+ # ==========================================
+ moroccan_light_cavalry_moral: "Moroccan Light Cavalry"
+ moroccan_light_cavalry_moral_desc: "Agile desert horsemen inspire fear in enemies through swift charges and superior tactical mobility."
+
+ # ==========================================
+ # TUN - TUNISIA
+ # ==========================================
+ TUN_discipline: "Barbary Coast Discipline"
+ TUN_discipline_desc: "Strict martial organization along coastal strongholds increases troop coordination and unit discipline."
+
+ # ==========================================
+ # ETH - ETHIOPIA
+ # ==========================================
+ ETH_infantry: "Solomonic Warriors"
+ ETH_infantry_desc: "Highland heavy infantry trained in fierce hand-to-hand combat defend the Solomonic dynasty with honor."
+
+ # ==========================================
+ # POL / PLC - POLAND
+ # ==========================================
+ early_winged_hussars_advance: "Early Winged Hussars"
+ early_winged_hussars_advance_desc: "Elite armored cavalry equipped with lances and feathered wings, capable of decisive battlefield charges."
+
+ # ==========================================
+ # COLONIAL SUBJECT ADVANCES
+ # ==========================================
+ colonial_tradition: "Colonial Pioneer Tradition"
+ colonial_tradition_desc: "Fostering land settlement incentives fuels steady population growth across overseas territories."
+ colonial_heritage: "New World Heritage"
+ colonial_heritage_desc: "Rapid regional development turns wilderness outposts into prosperous colonial provinces."
+ founding_fathers: "Colonial Founding Fathers"
+ founding_fathers_desc: "Respected local statesmen uphold republican ideals and civic virtue within the colony."
+ colonial_militia: "Colonial Militia Assemblies"
+ colonial_militia_desc: "Organizing local defense militias increases available levy pools in times of crisis."
+ new_frontiers: "New Frontiers Initiative"
+ new_frontiers_desc: "Optimized colonial maintenance and migration programs attract waves of new settlers."
+ continental_trade: "Continental Trade Networks"
+ continental_trade_desc: "Securing overland and coastal trade lanes protects colonial commerce from external interference."
+ free_thinkers: "Colonial Free Thinkers"
+ free_thinkers_desc: "An atmosphere of intellectual freedom increases maximum literacy rates across the colonies."
+ manufacturing_center: "Colonial Manufacturing Hubs"
+ manufacturing_center_desc: "Local processing of raw materials dramatically enhances manufacturing productivity."
+ colonial_assembly: "Colonial Legislative Assembly"
+ colonial_assembly_desc: "Establishing autonomous local governance structures strengthens political capacity."
+ liberty_heroes: "Heroes of Liberty"
+ liberty_heroes_desc: "Charismatic military leaders inspire units to maneuver swiftly on the battlefield."
+ colonial_ambition: "Colonial Ambition"
+ colonial_ambition_desc: "A shared vision of self-determination elevates military morale and territorial ambition."
+
+# ==========================================
+ # TUR - OTTOMAN EMPIRE
+ # ==========================================
+ TUR_antagonismbonus: "Imperial Ambition"
+ TUR_antagonismbonus_desc: "The relentless expansion and asserted hegemony of the Ottoman state breed rivalry and hostility among neighboring powers."
