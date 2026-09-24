@@ -1,0 +1,172 @@
+###############################################################################
+# BATTLE COMPOSITION -- what kind of troops each side had in a battle.
+#
+# WHY IT IS NEEDED AT ALL
+#   war_manager already records this per battle, in more detail than what
+#   follows: `total` (who fought) and `losses` (who died), ten slots each in
+#   unit_categories load order. But a war entry is deleted a year after the
+#   war ends and its battles go with it, and raising the purge define does
+#   not hold them -- measured: of the wars still in a 1447 save, every one
+#   older than 365 days was a revolt, and not one ordinary war survived.
+#   These variables are the copy that outlives that.
+#
+# WHAT THE ENGINE HANDS US
+#   on_battle_won / on_great_battle_won, documented in the base game's own
+#   common/on_action/_hardcoded.txt:
+#     root = actor, scope:actor = winning "unit", scope:target = losing "unit"
+#     scope:killed_land_units / _navy_units -- what the loser lost
+#     scope:lost_land_units   / _navy_units -- what the winner lost
+#     scope:war_score                       -- score the winner gains here
+#
+# WHY IT WALKS THE LOCATION AND NOT scope:actor
+#   A side does not fight as one unit, and it does not fight as one country
+#   either. Measured on the Battle of Genova, 1448.1.10: France fought with
+#   three armies -- 152e, 153e and 151e Armee, all still standing in Genova
+#   afterwards -- and scope:actor was the 152e alone, 8,729 men out of the
+#   side's 25,749. Reading it gave a third of the truth. Walking only the
+#   scope's own country would have fixed that battle and still lost every
+#   ally who turned up to the next one.
+#
+#   So the battle's location is walked instead, every unit standing on it,
+#   and each unit is put on a side by who it is hostile to. An ally of the
+#   winner is hostile to the loser and lands on the winning side; a country
+#   hostile to neither -- somebody's army passing through -- lands on
+#   neither.
+#
+#   The location comes from the WINNER and is used for both sides, because it
+#   is the battle's location by definition. Asking the loser for its own
+#   unit_location would follow a beaten army to wherever it retreated.
+#
+#   every_unit_in_location does not appear anywhere in the base game's
+#   scripts, so it is used on the strength of our own measurement rather than
+#   on precedent: the attrition shadow's supply term was fed by this same
+#   iterator and came out 935,488 against the engine's 368,626 -- far too
+#   heavy, but only a real walk over real units could have added that much.
+#   An unknown name would have left the term at zero.
+#
+#   Units that were standing here but took no part in the battle are counted
+#   too. Nothing in scope says who was actually engaged.
+#
+# WHAT IT MEASURES: SURVIVORS, NOT WHO FOUGHT
+#   The engine fires only the won/lost pair, nothing at the start of a
+#   battle, so this reads the stacks after the fighting and after the dead
+#   have been taken out. Measured on the same battle: Tuscany came out as
+#   923.85 / 1417.83 / 955.68 / 0 / 0 / 2100, which is war_manager's `total`
+#   minus its `losses` to five decimals -- not `total`. Splitting the dead by
+#   category too would need a reading from before the battle, and the engine
+#   does not offer one.
+#
+#   All ten categories are split out, land and naval, so a sea battle is
+#   described the same way a land one is. The chain does not care which kind
+#   of unit it is walking -- a hull falls into a naval branch, a regiment
+#   into a land one.
+#
+# Written to, and overwritten by, every battle; the slot bank copies them
+# into that battle's permanent numbered slot immediately afterwards.
+#   bcw0..bcw9 -- winning side, bcl0..bcl9 -- losing side:
+#   0 light infantry  1 heavy infantry  2 light cavalry  (men)
+#   3 heavy cavalry   4 artillery       5 auxiliary      (men)
+#   6 galley          7 light ship      8 heavy ship     9 transport (hulls)
+###############################################################################
+
+
+# One side of the battle, split by unit category.
+# $FOE$ = the OTHER side's country -- a unit belongs to this side if it is
+#         hostile to that country, which is what picks up allies.
+# $P$   = w (winner) or l (loser).
+# scope:bc_loc must already hold the battle location.
+# Cleared first: a side with nothing left standing has to read as zero rather
+# than as whatever the previous battle left behind.
+balance_battle_comp_side = {
+	set_global_variable = { name = bc$P$0 value = 0 }
+	set_global_variable = { name = bc$P$1 value = 0 }
+	set_global_variable = { name = bc$P$2 value = 0 }
+	set_global_variable = { name = bc$P$3 value = 0 }
+	set_global_variable = { name = bc$P$4 value = 0 }
+	set_global_variable = { name = bc$P$5 value = 0 }
+	set_global_variable = { name = bc$P$6 value = 0 }
+	set_global_variable = { name = bc$P$7 value = 0 }
+	set_global_variable = { name = bc$P$8 value = 0 }
+	set_global_variable = { name = bc$P$9 value = 0 }
+
+	if = {
+		limit = { exists = $FOE$ }
+		scope:bc_loc = {
+			every_unit_in_location = {
+				limit = {
+					exists = owner
+					owner = { is_hostile_with = $FOE$ }
+					# Prisoners are an army of their own, standing with whoever
+					# took them. Counted, they turned up as survivors of the
+					# winning side: Casale 1482.9.5 read 16,547 Tuscan light
+					# infantry where the engine has 14,747 -- the 1,800 French
+					# taken prisoner that day.
+					has_only_prisoners = no
+				}
+				every_sub_unit = {
+					# REGIMENT_SIZE = 1000, so subunit_strength counts
+					# thousands; the x1000 puts these in men, the same unit
+					# as killed_land_units.
+					if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_light_infantry } }
+						change_global_variable = { name = bc$P$0 add = { value = subunit_strength multiply = 1000 } }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_heavy_infantry } }
+						change_global_variable = { name = bc$P$1 add = { value = subunit_strength multiply = 1000 } }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_light_cavalry } }
+						change_global_variable = { name = bc$P$2 add = { value = subunit_strength multiply = 1000 } }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_heavy_cavalry } }
+						change_global_variable = { name = bc$P$3 add = { value = subunit_strength multiply = 1000 } }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_artillery } }
+						change_global_variable = { name = bc$P$4 add = { value = subunit_strength multiply = 1000 } }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_auxiliary } }
+						change_global_variable = { name = bc$P$5 add = { value = subunit_strength multiply = 1000 } }
+					}
+					# Hulls, counted one per sub-unit. A ship's strength is
+					# its HEALTH, 0 to 1 -- measured across 1,299 naval
+					# sub-units: 0.8515, 0.60517, 0.9902, and the field left
+					# out entirely on the 1,210 undamaged ones. Summing it
+					# would call a battered ship a partial loss, while the
+					# engine counts whole ships sunk. One sub-unit is one
+					# ship: a naval battle reads who.size=30 against
+					# total={ 6, 24 }.
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:navy_galley } }
+						change_global_variable = { name = bc$P$6 add = 1 }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:navy_light_ship } }
+						change_global_variable = { name = bc$P$7 add = 1 }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:navy_heavy_ship } }
+						change_global_variable = { name = bc$P$8 add = 1 }
+					}
+					else_if = {
+						limit = { sub_unit_category = { this = sub_unit_category:navy_transport } }
+						change_global_variable = { name = bc$P$9 add = 1 }
+					}
+				}
+			}
+		}
+	}
+}
+
+
+# Both sides, ready for the slot bank to copy. Each side is selected by
+# hostility to the OTHER side's leader, so the winner's allies come with the
+# winner and the loser's with the loser.
+balance_battle_comp_all = {
+	scope:actor = { unit_location = { save_scope_as = bc_loc } }
+	balance_battle_comp_side = { FOE = scope:target.owner P = w }
+	balance_battle_comp_side = { FOE = scope:actor.owner  P = l }
+}

@@ -1,0 +1,22 @@
+﻿@balance_gp_alliance_point_limit = 10
+
+# True if $first$ and $second$ (both real players) could ally without pushing their
+# combined alliance-bloc weight over @balance_gp_alliance_point_limit. Always true if
+# either side is AI, or if either side isn't a tracked real player yet.
+#
+# Reads the PRECOMPUTED balance_gp_bloc_weight_cached variable (set monthly in
+# balance_gp_calculate_scores) instead of recomputing balance_gp_bloc_weight live via
+# every_ally here - matching how Ars-Belli's own mp_limits system does it (precompute
+# once a month into a variable, then only ever do plain variable arithmetic in triggers).
+balance_gp_combined_bloc_fits_limit = {
+	OR = {
+		$first$ = { is_ai = yes }
+		$second$ = { is_ai = yes }
+		$first$ = {
+			var:balance_gp_bloc_weight_cached <= {
+				value = @balance_gp_alliance_point_limit
+				subtract = $second$.var:balance_gp_bloc_weight_cached
+			}
+		}
+	}
+}

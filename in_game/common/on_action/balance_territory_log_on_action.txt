@@ -1,0 +1,83 @@
+# Records every location (province) that changes hands -- conquest, cession,
+# colonization, annexation, whatever the cause -- since EU5 only keeps a
+# location's CURRENT owner plus the date of its single most recent change
+# (owner / previous_owner / last_owner_change), not a full ownership history
+# the way EU4 does.
+#
+# One exception, and only one: a transfer with a REBEL state on either side is
+# skipped. See the note above balance_log_territory_change for why, and for
+# what it does not touch -- vassal annexations and every other ordinary
+# transfer are recorded exactly as before.
+#
+# Uses the same pre-declared numbered-slot trick as the battle/war log
+# (see balance_battle_log_on_action.txt) instead of
+# add_to_global_variable_list, since that de-duplicates by value -- it would
+# silently drop a location that changes hands more than once, or a country
+# that appears as new/old owner more than once, breaking the ordering. Slot
+# names are kept short (terr_<n>_loc, not balance_territory_<n>_location)
+# since they're repeated many times and dominate file size.
+#
+# Read by the community ledger tool from the save as:
+#   global_var:terr_count                 -- total transfers
+#   global_var:terr_<n>_loc/_old/_new     -- location / old owner / new owner, for n = 1..count
+# This is what powers the "play history" territory-growth map on the site.
+
+on_location_changed_owner = {
+	on_actions = {
+		balance_log_territory_change
+	}
+}
+
+# root = location, scope:loser = previous owner, scope:winner = new owner (can be null)
+#
+# REVOLTS ARE NOT RECORDED. ANNEXATIONS ARE.
+#   Half of this bank was a province bouncing between its owner and a rebel
+#   state and back again. Measured on the 1467.9.14 save: of 4,113 rows, 2,119
+#   were exactly that -- the same location flipping A -> B and then B -> A, with
+#   one side a country that no longer exists in the save at all. The signature
+#   is unmistakable, and no ordinary transfer looks like it:
+#
+#       104  #67111229 -> Yuan          102  Yuan      -> #67111229
+#        85  Astrakhan -> #50334006      85  #50334006 -> Astrakhan
+#        61  Astrakhan -> #100665702     61  #100665702 -> Astrakhan
+#
+#   Seven locations around Astrakhan changed hands sixteen to eighteen times
+#   each. An annexation does not do that.
+#
+#   is_rebel_country is a country trigger the base game leans on in about thirty
+#   places (hre.txt, the_revolution.txt, war_of_the_roses_actions.txt). BOTH
+#   sides are tested because a revolt writes two rows: Real -> Rebel when the
+#   province is lost, Rebel -> Real when it is taken back.
+#
+#   A VASSAL ANNEXATION IS Real -> Real AND PASSES UNTOUCHED. So does a
+#   conquest, a cession, a colonization, an inheritance -- everything this bank
+#   exists for. Only the churn is dropped.
+#
+#   AND IT COSTS NOTHING AT THE END. Of the 2,165 locations in that save, not
+#   one finishes owned by a vanished country: every location's LAST row has a
+#   real owner on both sides. The ownership history still lands every province
+#   where it actually belongs. What disappears is the temporary loss in the
+#   middle, which on a territory-growth map is noise rather than history.
+#
+#   One thing this could not be checked against offline: the save's countries
+#   block holds only Real countries (11,497 of them, zero Rebel), so a crushed
+#   rebel is deleted outright and cannot be told apart from an annexed real
+#   country after the fact. The 2,119 above is the ping-pong signature, not the
+#   trigger's own answer. The real figure is whatever the next save shows.
+balance_log_territory_change = {
+	effect = {
+		if = {
+			limit = {
+				exists = scope:loser
+				exists = scope:winner
+				scope:winner = { is_rebel_country = no }
+				scope:loser = { is_rebel_country = no }
+			}
+			terr_increment_and_log = yes
+
+			add_to_global_variable_list = { name = balance_territory_locations target = root }
+			add_to_global_variable_list = { name = balance_territory_old_owners target = scope:loser }
+			add_to_global_variable_list = { name = balance_territory_new_owners target = scope:winner }
+		}
+	}
+}

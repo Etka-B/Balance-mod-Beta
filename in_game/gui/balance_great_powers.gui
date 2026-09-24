@@ -1,0 +1,321 @@
+types BalanceGreatPowersTypes
+{
+	type balance_gp_window = window {
+		name = "balance_gp_window"
+		parentanchor = top|right
+		widgetanchor = top|right
+		position = { -470 90 }
+		size = { 470 700 }
+		allow_outside = yes
+		movable = yes
+
+		visible = "[GetVariableSystem.Exists('balance_gp_panel_open')]"
+
+		using = bg_paper_card
+		using = bg_cabinet_card_frame
+
+		# Custom medieval castle illustration as the panel backdrop.
+		background = {
+			texture = "gfx/interface/balance/gp_background.jpg"
+			fittype = centercrop
+			alpha = 0.65
+		}
+
+		# Dark tint so the illustration doesn't fight with the text rows for contrast.
+		background = {
+			using = color_black_texture
+			alpha = 0.35
+		}
+
+		vbox = {
+			margin = { 22 14 }
+			spacing = 8
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			# Title bar (also the drag handle, since it's not a separate widget).
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				spacing = 8
+
+				icon = {
+					size = { 26 26 }
+					texture = "[GetConceptTexture('score')]"
+				}
+
+				text_single = {
+					text = "BALANCE_GP_WINDOW_TITLE"
+					using = Font_Type_Headers
+					align = left|vcenter
+					layoutpolicy_horizontal = expanding
+				}
+
+				# Static rules explainer - hover only, no click action. A labeled button
+				# instead of a bare icon, since a small "i" icon alone didn't read as
+				# "rules" to players.
+				button_regular = {
+					text = "BALANCE_GP_RULES_BUTTON"
+					size = { 64 24 }
+
+					tooltipwidget = {
+						ContextualTooltipType = {
+							blockoverride "title_text" {
+								text = "BALANCE_GP_RULES_TT_TITLE"
+							}
+							blockoverride "concept_link" {
+								text = "BALANCE_GP_RULES_TT_TITLE"
+							}
+							blockoverride "tooltip_content" {
+								TooltipTextBlock = {
+									blockoverride "text" {
+										text = "BALANCE_GP_RULES_TT"
+									}
+								}
+							}
+						}
+					}
+				}
+
+				# Opens the "My Alliance" side panel (balance_gp_alliance_panel.gui).
+				button_regular = {
+					text = "BALANCE_GP_MY_ALLIANCE_BUTTON"
+					onclick = "[GetScriptedGui('balance_gp_toggle_alliance_panel').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					size = { 130 24 }
+
+					action_tooltip = {
+						title = "BALANCE_GP_MY_ALLIANCE_BUTTON"
+						text = "BALANCE_GP_MY_ALLIANCE_BUTTON_TOOLTIP"
+					}
+				}
+
+				widget = {
+					size = { 40 40 }
+					ui_direction_button_holder_right = {}
+
+					button_close_alt = {
+						blockoverride "close_on_action" {
+							on_action = "[GetVariableSystem.Toggle('balance_gp_panel_open')]"
+						}
+					}
+				}
+			}
+
+			widget = {
+				size = { -1 2 }
+				layoutpolicy_horizontal = expanding
+				using = bg_divider_flavor_01
+			}
+
+			widget = {
+				layoutpolicy_horizontal = expanding
+				size = { -1 26 }
+
+				background = {
+					using = color_black_texture
+					alpha = 0.7
+				}
+
+				text_single = {
+					parentanchor = left|vcenter
+					margin = { 6 0 }
+					text = "BALANCE_GP_WINDOW_SUBTITLE"
+					default_format = "#color_white"
+					autoresize = yes
+					max_width = 400
+				}
+			}
+
+			# Column headers, aligned to match the row layout below exactly
+			# (same margin/spacing/widths as the data row's hbox).
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				margin = { 6 4 }
+				spacing = 10
+
+				text_single = { size = { 44 -1 } autoresize = no fontsize = 15 align = center|nobaseline text = "BALANCE_GP_COL_RANK" default_format = "#color_white" }
+				# The real flag widget, invisible, instead of a guessed-width spacer -
+				# guarantees the exact same footprint as the flag in the rows below.
+				country_flag_small = { alpha = 0 }
+				text_single = { layoutpolicy_horizontal = expanding layoutstretchfactor_horizontal = 1 autoresize = no fontsize = 15 align = left|nobaseline text = "BALANCE_GP_COL_COUNTRY" default_format = "#color_white" }
+				text_single = { size = { 105 -1 } autoresize = no fontsize = 15 align = left|nobaseline text = "BALANCE_GP_COL_TIER" default_format = "#color_white" }
+				text_single = { size = { 70 -1 } margin_right = 6 autoresize = no fontsize = 15 align = right|nobaseline text = "BALANCE_GP_COL_SCORE" default_format = "#color_white" }
+				# The real scrollbar widget (not a guessed-width spacer), so this reserves
+				# exactly the same space the actual one below does, whatever that is.
+				scrollbar_vertical = {
+					using = Scrollbar_Vertical
+					enabled = no
+				}
+			}
+
+			scrollarea = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				scrollbarpolicy_horizontal = always_off
+
+				scrollbar_vertical = {
+					using = Scrollbar_Vertical
+				}
+
+				scrollwidget = {
+					fixedgridbox = {
+						addcolumn = 100%
+						addrow = 40
+						setitemsizefromcell = yes
+
+						datamodel = "[GetGlobalList('balance_gp_list')]"
+
+						item = {
+							widget = {
+								layoutpolicy_horizontal = expanding
+								datacontext = "[Scope.GetCountry]"
+
+								# Every row gets a dark, readable backing; odd rows a touch
+								# darker for a subtle zebra-stripe effect.
+								background = {
+									using = color_black_texture
+									alpha = 0.6
+								}
+								background = {
+									visible = "[IsOdd_int32(PdxGuiWidget.GetIndexInDataModel)]"
+									using = color_black_texture
+									alpha = 0.35
+								}
+
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									margin = { 6 0 }
+									spacing = 10
+
+									# Rank number, gold/silver/bronze for the top 3. The 4 alternatives are
+									# stacked on top of each other (only one visible at a time) inside one
+									# fixed-size widget, so they take up exactly one column - not four.
+									widget = {
+										size = { 44 -1 }
+
+										text_single = {
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)0')]"
+											size = { 44 -1 }
+											autoresize = no
+											align = center|nobaseline
+											raw_text = "1"
+											default_format = "#color_highlight"
+										}
+										text_single = {
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)1')]"
+											size = { 44 -1 }
+											autoresize = no
+											align = center|nobaseline
+											raw_text = "2"
+											default_format = "#color_light_gray"
+										}
+										text_single = {
+											visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)2')]"
+											size = { 44 -1 }
+											autoresize = no
+											align = center|nobaseline
+											raw_text = "3"
+											default_format = "#color_orange"
+										}
+										text_single = {
+											visible = "[GreaterThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)2')]"
+											size = { 44 -1 }
+											autoresize = no
+											align = center|nobaseline
+											text = "[Add_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)1')]"
+											default_format = "#yellow_titles"
+										}
+									}
+
+									country_flag_small = {
+										datacontext = "[Scope.GetCountry]"
+									}
+
+									text_single = {
+										layoutpolicy_horizontal = expanding
+										layoutstretchfactor_horizontal = 1
+										autoresize = no
+										align = left|nobaseline
+										text = "[Country.GetLongNameWithNoTooltip]"
+										default_format = "#yellow_titles"
+										tooltipwidget = {
+											using = CountryTooltip
+										}
+									}
+
+									# Tier badge: top 3 = Great Power, next 4 = Regional Power, rest = Minor
+									# Power. Same overlapping trick as the rank number above: one fixed-size
+									# widget, 3 stacked alternatives, only one column's worth of width used.
+									widget = {
+										size = { 105 -1 }
+
+										text_single = {
+											visible = "[LessThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)3')]"
+											size = { 105 -1 }
+											autoresize = no
+											align = left|nobaseline
+											fontsize = 13
+											text = "BALANCE_GP_TIER_GREAT"
+											default_format = "#color_highlight"
+										}
+										text_single = {
+											visible = "[And(GreaterThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)2'), LessThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)7'))]"
+											size = { 105 -1 }
+											autoresize = no
+											align = left|nobaseline
+											fontsize = 13
+											text = "BALANCE_GP_TIER_REGIONAL"
+											default_format = "#color_green"
+										}
+										text_single = {
+											visible = "[GreaterThan_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)6')]"
+											size = { 105 -1 }
+											autoresize = no
+											align = left|nobaseline
+											fontsize = 13
+											text = "BALANCE_GP_TIER_MINOR"
+											default_format = "#color_light_gray"
+										}
+									}
+
+									text_single = {
+										size = { 70 -1 }
+										margin_right = 6
+										autoresize = no
+										align = right|nobaseline
+										text = "[Country.MakeScope.GetVariable('balance_gp_score').GetValue|2]"
+										default_format = "#important_number"
+
+										tooltipwidget = {
+											ContextualTooltipType = {
+												blockoverride "title_text" {
+													text = "BALANCE_GP_SCORE_TITLE"
+												}
+												blockoverride "concept_link" {
+													text = "BALANCE_GP_SCORE_TITLE"
+												}
+												blockoverride "tooltip_content" {
+													TooltipTextBlock = {
+														blockoverride "text" {
+															text = "BALANCE_GP_SCORE_BREAKDOWN_TT"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# The "type X = window {...}" block above only declares a reusable template;
+# this bare instantiation is what actually creates the live widget the
+# scripted_widgets registry (gui/scripted_widgets/balance_scripted_windows.txt)
+# looks up by name.
+balance_gp_window = {
+}

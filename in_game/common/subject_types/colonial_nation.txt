@@ -96,7 +96,7 @@ colonial_nation = {
 		global_population_capacity_modifier = 0.30
 		allow_rgo_slave_demand = yes
 		loyalty_to_overlord = 40
-		global_max_control = 0.30
+		global_max_control = 0.20
 		global_integration_speed_modifier = 0.5
 		wrong_culture_levy_size = 0.5
 	}

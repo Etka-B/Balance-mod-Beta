@@ -1,0 +1,959 @@
+# GENERATED FILE -- see generate_war_parties_mod.py. Do not hand-edit.
+#
+# Collects the countries fighting on each side of a war, up to 64 per side, and
+# each one's cumulative shadow-attrition figure at that moment. The war and
+# declaration slot banks copy these globals into their permanent slots, the same
+# way balance_battle_comp_side feeds bcw0..bcl9.
+#
+# Why it exists: the war log used to keep only four countries -- attacker,
+# defender, winner, loser -- so a war of five against five recorded two of them
+# and the ledger had to guess the rest from the battle log. Worse, "what this
+# war cost country X" could only be answered for those two, and only by
+# differencing their lifetime counters, which silently included any other war
+# they were in and any month they stayed in after making a separate peace.
+#
+# With this, every participant carries its own before-and-after, so the ledger
+# subtracts per country instead of per war leader.
+#
+# Called in WAR scope, once at on_war_declared and once at on_ending_war.
+#
+#   global_var:wpan / wpdn     how many were found on each side -- the TRUE
+#                              count even when it is larger than 64, so a
+#                              truncated record says so rather than lying about
+#                              the size of the war
+#   global_var:wpa0..wpa63      the attacking countries
+#   global_var:wqa0..wqa63      each one's shadow_attr at that moment
+#   global_var:wpd0..wpd63      the defending countries
+#   global_var:wqd0..wqd63      each one's shadow_attr at that moment
+#
+# THE CAPACITY WAS 10, AND 10 WAS MEASURED AS TOO FEW. The Tuscan war against
+# France ended with 15 attackers and 14 defenders, so five countries fell off
+# the record -- Switzerland among them, which the player had called into the war
+# personally. 64 is not a ceiling either: a Tibetan war in the same campaign
+# ended with 32 defenders. Anything wider than this belongs in a per-row bank
+# like bpart rather than in fixed columns.
+#
+# A country that has never run the monthly pulse has no shadow_attr yet; it is
+# read as 0 rather than skipped, so the pairing by slot index stays intact.
+
+balance_war_parties = {
+	set_global_variable = { name = wpan value = 0 }
+	set_global_variable = { name = wpa0 value = 0 }
+	set_global_variable = { name = wqa0 value = 0 }
+	set_global_variable = { name = wpa1 value = 0 }
+	set_global_variable = { name = wqa1 value = 0 }
+	set_global_variable = { name = wpa2 value = 0 }
+	set_global_variable = { name = wqa2 value = 0 }
+	set_global_variable = { name = wpa3 value = 0 }
+	set_global_variable = { name = wqa3 value = 0 }
+	set_global_variable = { name = wpa4 value = 0 }
+	set_global_variable = { name = wqa4 value = 0 }
+	set_global_variable = { name = wpa5 value = 0 }
+	set_global_variable = { name = wqa5 value = 0 }
+	set_global_variable = { name = wpa6 value = 0 }
+	set_global_variable = { name = wqa6 value = 0 }
+	set_global_variable = { name = wpa7 value = 0 }
+	set_global_variable = { name = wqa7 value = 0 }
+	set_global_variable = { name = wpa8 value = 0 }
+	set_global_variable = { name = wqa8 value = 0 }
+	set_global_variable = { name = wpa9 value = 0 }
+	set_global_variable = { name = wqa9 value = 0 }
+	set_global_variable = { name = wpa10 value = 0 }
+	set_global_variable = { name = wqa10 value = 0 }
+	set_global_variable = { name = wpa11 value = 0 }
+	set_global_variable = { name = wqa11 value = 0 }
+	set_global_variable = { name = wpa12 value = 0 }
+	set_global_variable = { name = wqa12 value = 0 }
+	set_global_variable = { name = wpa13 value = 0 }
+	set_global_variable = { name = wqa13 value = 0 }
+	set_global_variable = { name = wpa14 value = 0 }
+	set_global_variable = { name = wqa14 value = 0 }
+	set_global_variable = { name = wpa15 value = 0 }
+	set_global_variable = { name = wqa15 value = 0 }
+	set_global_variable = { name = wpa16 value = 0 }
+	set_global_variable = { name = wqa16 value = 0 }
+	set_global_variable = { name = wpa17 value = 0 }
+	set_global_variable = { name = wqa17 value = 0 }
+	set_global_variable = { name = wpa18 value = 0 }
+	set_global_variable = { name = wqa18 value = 0 }
+	set_global_variable = { name = wpa19 value = 0 }
+	set_global_variable = { name = wqa19 value = 0 }
+	set_global_variable = { name = wpa20 value = 0 }
+	set_global_variable = { name = wqa20 value = 0 }
+	set_global_variable = { name = wpa21 value = 0 }
+	set_global_variable = { name = wqa21 value = 0 }
+	set_global_variable = { name = wpa22 value = 0 }
+	set_global_variable = { name = wqa22 value = 0 }
+	set_global_variable = { name = wpa23 value = 0 }
+	set_global_variable = { name = wqa23 value = 0 }
+	set_global_variable = { name = wpa24 value = 0 }
+	set_global_variable = { name = wqa24 value = 0 }
+	set_global_variable = { name = wpa25 value = 0 }
+	set_global_variable = { name = wqa25 value = 0 }
+	set_global_variable = { name = wpa26 value = 0 }
+	set_global_variable = { name = wqa26 value = 0 }
+	set_global_variable = { name = wpa27 value = 0 }
+	set_global_variable = { name = wqa27 value = 0 }
+	set_global_variable = { name = wpa28 value = 0 }
+	set_global_variable = { name = wqa28 value = 0 }
+	set_global_variable = { name = wpa29 value = 0 }
+	set_global_variable = { name = wqa29 value = 0 }
+	set_global_variable = { name = wpa30 value = 0 }
+	set_global_variable = { name = wqa30 value = 0 }
+	set_global_variable = { name = wpa31 value = 0 }
+	set_global_variable = { name = wqa31 value = 0 }
+	set_global_variable = { name = wpa32 value = 0 }
+	set_global_variable = { name = wqa32 value = 0 }
+	set_global_variable = { name = wpa33 value = 0 }
+	set_global_variable = { name = wqa33 value = 0 }
+	set_global_variable = { name = wpa34 value = 0 }
+	set_global_variable = { name = wqa34 value = 0 }
+	set_global_variable = { name = wpa35 value = 0 }
+	set_global_variable = { name = wqa35 value = 0 }
+	set_global_variable = { name = wpa36 value = 0 }
+	set_global_variable = { name = wqa36 value = 0 }
+	set_global_variable = { name = wpa37 value = 0 }
+	set_global_variable = { name = wqa37 value = 0 }
+	set_global_variable = { name = wpa38 value = 0 }
+	set_global_variable = { name = wqa38 value = 0 }
+	set_global_variable = { name = wpa39 value = 0 }
+	set_global_variable = { name = wqa39 value = 0 }
+	set_global_variable = { name = wpa40 value = 0 }
+	set_global_variable = { name = wqa40 value = 0 }
+	set_global_variable = { name = wpa41 value = 0 }
+	set_global_variable = { name = wqa41 value = 0 }
+	set_global_variable = { name = wpa42 value = 0 }
+	set_global_variable = { name = wqa42 value = 0 }
+	set_global_variable = { name = wpa43 value = 0 }
+	set_global_variable = { name = wqa43 value = 0 }
+	set_global_variable = { name = wpa44 value = 0 }
+	set_global_variable = { name = wqa44 value = 0 }
+	set_global_variable = { name = wpa45 value = 0 }
+	set_global_variable = { name = wqa45 value = 0 }
+	set_global_variable = { name = wpa46 value = 0 }
+	set_global_variable = { name = wqa46 value = 0 }
+	set_global_variable = { name = wpa47 value = 0 }
+	set_global_variable = { name = wqa47 value = 0 }
+	set_global_variable = { name = wpa48 value = 0 }
+	set_global_variable = { name = wqa48 value = 0 }
+	set_global_variable = { name = wpa49 value = 0 }
+	set_global_variable = { name = wqa49 value = 0 }
+	set_global_variable = { name = wpa50 value = 0 }
+	set_global_variable = { name = wqa50 value = 0 }
+	set_global_variable = { name = wpa51 value = 0 }
+	set_global_variable = { name = wqa51 value = 0 }
+	set_global_variable = { name = wpa52 value = 0 }
+	set_global_variable = { name = wqa52 value = 0 }
+	set_global_variable = { name = wpa53 value = 0 }
+	set_global_variable = { name = wqa53 value = 0 }
+	set_global_variable = { name = wpa54 value = 0 }
+	set_global_variable = { name = wqa54 value = 0 }
+	set_global_variable = { name = wpa55 value = 0 }
+	set_global_variable = { name = wqa55 value = 0 }
+	set_global_variable = { name = wpa56 value = 0 }
+	set_global_variable = { name = wqa56 value = 0 }
+	set_global_variable = { name = wpa57 value = 0 }
+	set_global_variable = { name = wqa57 value = 0 }
+	set_global_variable = { name = wpa58 value = 0 }
+	set_global_variable = { name = wqa58 value = 0 }
+	set_global_variable = { name = wpa59 value = 0 }
+	set_global_variable = { name = wqa59 value = 0 }
+	set_global_variable = { name = wpa60 value = 0 }
+	set_global_variable = { name = wqa60 value = 0 }
+	set_global_variable = { name = wpa61 value = 0 }
+	set_global_variable = { name = wqa61 value = 0 }
+	set_global_variable = { name = wpa62 value = 0 }
+	set_global_variable = { name = wqa62 value = 0 }
+	set_global_variable = { name = wpa63 value = 0 }
+	set_global_variable = { name = wqa63 value = 0 }
+
+	every_attacker = {
+		save_scope_as = wp_c
+		set_local_variable = { name = wp_base value = 0 }
+		if = {
+			limit = { has_variable = shadow_attr }
+			set_local_variable = { name = wp_base value = var:shadow_attr }
+		}
+		if = {
+			limit = { global_var:wpan = 0 }
+			set_global_variable = { name = wpa0 value = scope:wp_c }
+			set_global_variable = { name = wqa0 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 1 }
+			set_global_variable = { name = wpa1 value = scope:wp_c }
+			set_global_variable = { name = wqa1 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 2 }
+			set_global_variable = { name = wpa2 value = scope:wp_c }
+			set_global_variable = { name = wqa2 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 3 }
+			set_global_variable = { name = wpa3 value = scope:wp_c }
+			set_global_variable = { name = wqa3 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 4 }
+			set_global_variable = { name = wpa4 value = scope:wp_c }
+			set_global_variable = { name = wqa4 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 5 }
+			set_global_variable = { name = wpa5 value = scope:wp_c }
+			set_global_variable = { name = wqa5 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 6 }
+			set_global_variable = { name = wpa6 value = scope:wp_c }
+			set_global_variable = { name = wqa6 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 7 }
+			set_global_variable = { name = wpa7 value = scope:wp_c }
+			set_global_variable = { name = wqa7 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 8 }
+			set_global_variable = { name = wpa8 value = scope:wp_c }
+			set_global_variable = { name = wqa8 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 9 }
+			set_global_variable = { name = wpa9 value = scope:wp_c }
+			set_global_variable = { name = wqa9 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 10 }
+			set_global_variable = { name = wpa10 value = scope:wp_c }
+			set_global_variable = { name = wqa10 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 11 }
+			set_global_variable = { name = wpa11 value = scope:wp_c }
+			set_global_variable = { name = wqa11 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 12 }
+			set_global_variable = { name = wpa12 value = scope:wp_c }
+			set_global_variable = { name = wqa12 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 13 }
+			set_global_variable = { name = wpa13 value = scope:wp_c }
+			set_global_variable = { name = wqa13 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 14 }
+			set_global_variable = { name = wpa14 value = scope:wp_c }
+			set_global_variable = { name = wqa14 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 15 }
+			set_global_variable = { name = wpa15 value = scope:wp_c }
+			set_global_variable = { name = wqa15 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 16 }
+			set_global_variable = { name = wpa16 value = scope:wp_c }
+			set_global_variable = { name = wqa16 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 17 }
+			set_global_variable = { name = wpa17 value = scope:wp_c }
+			set_global_variable = { name = wqa17 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 18 }
+			set_global_variable = { name = wpa18 value = scope:wp_c }
+			set_global_variable = { name = wqa18 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 19 }
+			set_global_variable = { name = wpa19 value = scope:wp_c }
+			set_global_variable = { name = wqa19 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 20 }
+			set_global_variable = { name = wpa20 value = scope:wp_c }
+			set_global_variable = { name = wqa20 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 21 }
+			set_global_variable = { name = wpa21 value = scope:wp_c }
+			set_global_variable = { name = wqa21 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 22 }
+			set_global_variable = { name = wpa22 value = scope:wp_c }
+			set_global_variable = { name = wqa22 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 23 }
+			set_global_variable = { name = wpa23 value = scope:wp_c }
+			set_global_variable = { name = wqa23 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 24 }
+			set_global_variable = { name = wpa24 value = scope:wp_c }
+			set_global_variable = { name = wqa24 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 25 }
+			set_global_variable = { name = wpa25 value = scope:wp_c }
+			set_global_variable = { name = wqa25 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 26 }
+			set_global_variable = { name = wpa26 value = scope:wp_c }
+			set_global_variable = { name = wqa26 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 27 }
+			set_global_variable = { name = wpa27 value = scope:wp_c }
+			set_global_variable = { name = wqa27 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 28 }
+			set_global_variable = { name = wpa28 value = scope:wp_c }
+			set_global_variable = { name = wqa28 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 29 }
+			set_global_variable = { name = wpa29 value = scope:wp_c }
+			set_global_variable = { name = wqa29 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 30 }
+			set_global_variable = { name = wpa30 value = scope:wp_c }
+			set_global_variable = { name = wqa30 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 31 }
+			set_global_variable = { name = wpa31 value = scope:wp_c }
+			set_global_variable = { name = wqa31 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 32 }
+			set_global_variable = { name = wpa32 value = scope:wp_c }
+			set_global_variable = { name = wqa32 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 33 }
+			set_global_variable = { name = wpa33 value = scope:wp_c }
+			set_global_variable = { name = wqa33 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 34 }
+			set_global_variable = { name = wpa34 value = scope:wp_c }
+			set_global_variable = { name = wqa34 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 35 }
+			set_global_variable = { name = wpa35 value = scope:wp_c }
+			set_global_variable = { name = wqa35 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 36 }
+			set_global_variable = { name = wpa36 value = scope:wp_c }
+			set_global_variable = { name = wqa36 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 37 }
+			set_global_variable = { name = wpa37 value = scope:wp_c }
+			set_global_variable = { name = wqa37 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 38 }
+			set_global_variable = { name = wpa38 value = scope:wp_c }
+			set_global_variable = { name = wqa38 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 39 }
+			set_global_variable = { name = wpa39 value = scope:wp_c }
+			set_global_variable = { name = wqa39 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 40 }
+			set_global_variable = { name = wpa40 value = scope:wp_c }
+			set_global_variable = { name = wqa40 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 41 }
+			set_global_variable = { name = wpa41 value = scope:wp_c }
+			set_global_variable = { name = wqa41 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 42 }
+			set_global_variable = { name = wpa42 value = scope:wp_c }
+			set_global_variable = { name = wqa42 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 43 }
+			set_global_variable = { name = wpa43 value = scope:wp_c }
+			set_global_variable = { name = wqa43 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 44 }
+			set_global_variable = { name = wpa44 value = scope:wp_c }
+			set_global_variable = { name = wqa44 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 45 }
+			set_global_variable = { name = wpa45 value = scope:wp_c }
+			set_global_variable = { name = wqa45 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 46 }
+			set_global_variable = { name = wpa46 value = scope:wp_c }
+			set_global_variable = { name = wqa46 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 47 }
+			set_global_variable = { name = wpa47 value = scope:wp_c }
+			set_global_variable = { name = wqa47 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 48 }
+			set_global_variable = { name = wpa48 value = scope:wp_c }
+			set_global_variable = { name = wqa48 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 49 }
+			set_global_variable = { name = wpa49 value = scope:wp_c }
+			set_global_variable = { name = wqa49 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 50 }
+			set_global_variable = { name = wpa50 value = scope:wp_c }
+			set_global_variable = { name = wqa50 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 51 }
+			set_global_variable = { name = wpa51 value = scope:wp_c }
+			set_global_variable = { name = wqa51 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 52 }
+			set_global_variable = { name = wpa52 value = scope:wp_c }
+			set_global_variable = { name = wqa52 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 53 }
+			set_global_variable = { name = wpa53 value = scope:wp_c }
+			set_global_variable = { name = wqa53 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 54 }
+			set_global_variable = { name = wpa54 value = scope:wp_c }
+			set_global_variable = { name = wqa54 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 55 }
+			set_global_variable = { name = wpa55 value = scope:wp_c }
+			set_global_variable = { name = wqa55 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 56 }
+			set_global_variable = { name = wpa56 value = scope:wp_c }
+			set_global_variable = { name = wqa56 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 57 }
+			set_global_variable = { name = wpa57 value = scope:wp_c }
+			set_global_variable = { name = wqa57 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 58 }
+			set_global_variable = { name = wpa58 value = scope:wp_c }
+			set_global_variable = { name = wqa58 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 59 }
+			set_global_variable = { name = wpa59 value = scope:wp_c }
+			set_global_variable = { name = wqa59 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 60 }
+			set_global_variable = { name = wpa60 value = scope:wp_c }
+			set_global_variable = { name = wqa60 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 61 }
+			set_global_variable = { name = wpa61 value = scope:wp_c }
+			set_global_variable = { name = wqa61 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 62 }
+			set_global_variable = { name = wpa62 value = scope:wp_c }
+			set_global_variable = { name = wqa62 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpan = 63 }
+			set_global_variable = { name = wpa63 value = scope:wp_c }
+			set_global_variable = { name = wqa63 value = local_var:wp_base }
+		}
+		change_global_variable = { name = wpan add = 1 }
+	}
+
+	set_global_variable = { name = wpdn value = 0 }
+	set_global_variable = { name = wpd0 value = 0 }
+	set_global_variable = { name = wqd0 value = 0 }
+	set_global_variable = { name = wpd1 value = 0 }
+	set_global_variable = { name = wqd1 value = 0 }
+	set_global_variable = { name = wpd2 value = 0 }
+	set_global_variable = { name = wqd2 value = 0 }
+	set_global_variable = { name = wpd3 value = 0 }
+	set_global_variable = { name = wqd3 value = 0 }
+	set_global_variable = { name = wpd4 value = 0 }
+	set_global_variable = { name = wqd4 value = 0 }
+	set_global_variable = { name = wpd5 value = 0 }
+	set_global_variable = { name = wqd5 value = 0 }
+	set_global_variable = { name = wpd6 value = 0 }
+	set_global_variable = { name = wqd6 value = 0 }
+	set_global_variable = { name = wpd7 value = 0 }
+	set_global_variable = { name = wqd7 value = 0 }
+	set_global_variable = { name = wpd8 value = 0 }
+	set_global_variable = { name = wqd8 value = 0 }
+	set_global_variable = { name = wpd9 value = 0 }
+	set_global_variable = { name = wqd9 value = 0 }
+	set_global_variable = { name = wpd10 value = 0 }
+	set_global_variable = { name = wqd10 value = 0 }
+	set_global_variable = { name = wpd11 value = 0 }
+	set_global_variable = { name = wqd11 value = 0 }
+	set_global_variable = { name = wpd12 value = 0 }
+	set_global_variable = { name = wqd12 value = 0 }
+	set_global_variable = { name = wpd13 value = 0 }
+	set_global_variable = { name = wqd13 value = 0 }
+	set_global_variable = { name = wpd14 value = 0 }
+	set_global_variable = { name = wqd14 value = 0 }
+	set_global_variable = { name = wpd15 value = 0 }
+	set_global_variable = { name = wqd15 value = 0 }
+	set_global_variable = { name = wpd16 value = 0 }
+	set_global_variable = { name = wqd16 value = 0 }
+	set_global_variable = { name = wpd17 value = 0 }
+	set_global_variable = { name = wqd17 value = 0 }
+	set_global_variable = { name = wpd18 value = 0 }
+	set_global_variable = { name = wqd18 value = 0 }
+	set_global_variable = { name = wpd19 value = 0 }
+	set_global_variable = { name = wqd19 value = 0 }
+	set_global_variable = { name = wpd20 value = 0 }
+	set_global_variable = { name = wqd20 value = 0 }
+	set_global_variable = { name = wpd21 value = 0 }
+	set_global_variable = { name = wqd21 value = 0 }
+	set_global_variable = { name = wpd22 value = 0 }
+	set_global_variable = { name = wqd22 value = 0 }
+	set_global_variable = { name = wpd23 value = 0 }
+	set_global_variable = { name = wqd23 value = 0 }
+	set_global_variable = { name = wpd24 value = 0 }
+	set_global_variable = { name = wqd24 value = 0 }
+	set_global_variable = { name = wpd25 value = 0 }
+	set_global_variable = { name = wqd25 value = 0 }
+	set_global_variable = { name = wpd26 value = 0 }
+	set_global_variable = { name = wqd26 value = 0 }
+	set_global_variable = { name = wpd27 value = 0 }
+	set_global_variable = { name = wqd27 value = 0 }
+	set_global_variable = { name = wpd28 value = 0 }
+	set_global_variable = { name = wqd28 value = 0 }
+	set_global_variable = { name = wpd29 value = 0 }
+	set_global_variable = { name = wqd29 value = 0 }
+	set_global_variable = { name = wpd30 value = 0 }
+	set_global_variable = { name = wqd30 value = 0 }
+	set_global_variable = { name = wpd31 value = 0 }
+	set_global_variable = { name = wqd31 value = 0 }
+	set_global_variable = { name = wpd32 value = 0 }
+	set_global_variable = { name = wqd32 value = 0 }
+	set_global_variable = { name = wpd33 value = 0 }
+	set_global_variable = { name = wqd33 value = 0 }
+	set_global_variable = { name = wpd34 value = 0 }
+	set_global_variable = { name = wqd34 value = 0 }
+	set_global_variable = { name = wpd35 value = 0 }
+	set_global_variable = { name = wqd35 value = 0 }
+	set_global_variable = { name = wpd36 value = 0 }
+	set_global_variable = { name = wqd36 value = 0 }
+	set_global_variable = { name = wpd37 value = 0 }
+	set_global_variable = { name = wqd37 value = 0 }
+	set_global_variable = { name = wpd38 value = 0 }
+	set_global_variable = { name = wqd38 value = 0 }
+	set_global_variable = { name = wpd39 value = 0 }
+	set_global_variable = { name = wqd39 value = 0 }
+	set_global_variable = { name = wpd40 value = 0 }
+	set_global_variable = { name = wqd40 value = 0 }
+	set_global_variable = { name = wpd41 value = 0 }
+	set_global_variable = { name = wqd41 value = 0 }
+	set_global_variable = { name = wpd42 value = 0 }
+	set_global_variable = { name = wqd42 value = 0 }
+	set_global_variable = { name = wpd43 value = 0 }
+	set_global_variable = { name = wqd43 value = 0 }
+	set_global_variable = { name = wpd44 value = 0 }
+	set_global_variable = { name = wqd44 value = 0 }
+	set_global_variable = { name = wpd45 value = 0 }
+	set_global_variable = { name = wqd45 value = 0 }
+	set_global_variable = { name = wpd46 value = 0 }
+	set_global_variable = { name = wqd46 value = 0 }
+	set_global_variable = { name = wpd47 value = 0 }
+	set_global_variable = { name = wqd47 value = 0 }
+	set_global_variable = { name = wpd48 value = 0 }
+	set_global_variable = { name = wqd48 value = 0 }
+	set_global_variable = { name = wpd49 value = 0 }
+	set_global_variable = { name = wqd49 value = 0 }
+	set_global_variable = { name = wpd50 value = 0 }
+	set_global_variable = { name = wqd50 value = 0 }
+	set_global_variable = { name = wpd51 value = 0 }
+	set_global_variable = { name = wqd51 value = 0 }
+	set_global_variable = { name = wpd52 value = 0 }
+	set_global_variable = { name = wqd52 value = 0 }
+	set_global_variable = { name = wpd53 value = 0 }
+	set_global_variable = { name = wqd53 value = 0 }
+	set_global_variable = { name = wpd54 value = 0 }
+	set_global_variable = { name = wqd54 value = 0 }
+	set_global_variable = { name = wpd55 value = 0 }
+	set_global_variable = { name = wqd55 value = 0 }
+	set_global_variable = { name = wpd56 value = 0 }
+	set_global_variable = { name = wqd56 value = 0 }
+	set_global_variable = { name = wpd57 value = 0 }
+	set_global_variable = { name = wqd57 value = 0 }
+	set_global_variable = { name = wpd58 value = 0 }
+	set_global_variable = { name = wqd58 value = 0 }
+	set_global_variable = { name = wpd59 value = 0 }
+	set_global_variable = { name = wqd59 value = 0 }
+	set_global_variable = { name = wpd60 value = 0 }
+	set_global_variable = { name = wqd60 value = 0 }
+	set_global_variable = { name = wpd61 value = 0 }
+	set_global_variable = { name = wqd61 value = 0 }
+	set_global_variable = { name = wpd62 value = 0 }
+	set_global_variable = { name = wqd62 value = 0 }
+	set_global_variable = { name = wpd63 value = 0 }
+	set_global_variable = { name = wqd63 value = 0 }
+
+	every_defender = {
+		save_scope_as = wp_c
+		set_local_variable = { name = wp_base value = 0 }
+		if = {
+			limit = { has_variable = shadow_attr }
+			set_local_variable = { name = wp_base value = var:shadow_attr }
+		}
+		if = {
+			limit = { global_var:wpdn = 0 }
+			set_global_variable = { name = wpd0 value = scope:wp_c }
+			set_global_variable = { name = wqd0 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 1 }
+			set_global_variable = { name = wpd1 value = scope:wp_c }
+			set_global_variable = { name = wqd1 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 2 }
+			set_global_variable = { name = wpd2 value = scope:wp_c }
+			set_global_variable = { name = wqd2 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 3 }
+			set_global_variable = { name = wpd3 value = scope:wp_c }
+			set_global_variable = { name = wqd3 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 4 }
+			set_global_variable = { name = wpd4 value = scope:wp_c }
+			set_global_variable = { name = wqd4 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 5 }
+			set_global_variable = { name = wpd5 value = scope:wp_c }
+			set_global_variable = { name = wqd5 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 6 }
+			set_global_variable = { name = wpd6 value = scope:wp_c }
+			set_global_variable = { name = wqd6 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 7 }
+			set_global_variable = { name = wpd7 value = scope:wp_c }
+			set_global_variable = { name = wqd7 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 8 }
+			set_global_variable = { name = wpd8 value = scope:wp_c }
+			set_global_variable = { name = wqd8 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 9 }
+			set_global_variable = { name = wpd9 value = scope:wp_c }
+			set_global_variable = { name = wqd9 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 10 }
+			set_global_variable = { name = wpd10 value = scope:wp_c }
+			set_global_variable = { name = wqd10 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 11 }
+			set_global_variable = { name = wpd11 value = scope:wp_c }
+			set_global_variable = { name = wqd11 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 12 }
+			set_global_variable = { name = wpd12 value = scope:wp_c }
+			set_global_variable = { name = wqd12 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 13 }
+			set_global_variable = { name = wpd13 value = scope:wp_c }
+			set_global_variable = { name = wqd13 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 14 }
+			set_global_variable = { name = wpd14 value = scope:wp_c }
+			set_global_variable = { name = wqd14 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 15 }
+			set_global_variable = { name = wpd15 value = scope:wp_c }
+			set_global_variable = { name = wqd15 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 16 }
+			set_global_variable = { name = wpd16 value = scope:wp_c }
+			set_global_variable = { name = wqd16 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 17 }
+			set_global_variable = { name = wpd17 value = scope:wp_c }
+			set_global_variable = { name = wqd17 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 18 }
+			set_global_variable = { name = wpd18 value = scope:wp_c }
+			set_global_variable = { name = wqd18 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 19 }
+			set_global_variable = { name = wpd19 value = scope:wp_c }
+			set_global_variable = { name = wqd19 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 20 }
+			set_global_variable = { name = wpd20 value = scope:wp_c }
+			set_global_variable = { name = wqd20 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 21 }
+			set_global_variable = { name = wpd21 value = scope:wp_c }
+			set_global_variable = { name = wqd21 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 22 }
+			set_global_variable = { name = wpd22 value = scope:wp_c }
+			set_global_variable = { name = wqd22 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 23 }
+			set_global_variable = { name = wpd23 value = scope:wp_c }
+			set_global_variable = { name = wqd23 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 24 }
+			set_global_variable = { name = wpd24 value = scope:wp_c }
+			set_global_variable = { name = wqd24 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 25 }
+			set_global_variable = { name = wpd25 value = scope:wp_c }
+			set_global_variable = { name = wqd25 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 26 }
+			set_global_variable = { name = wpd26 value = scope:wp_c }
+			set_global_variable = { name = wqd26 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 27 }
+			set_global_variable = { name = wpd27 value = scope:wp_c }
+			set_global_variable = { name = wqd27 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 28 }
+			set_global_variable = { name = wpd28 value = scope:wp_c }
+			set_global_variable = { name = wqd28 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 29 }
+			set_global_variable = { name = wpd29 value = scope:wp_c }
+			set_global_variable = { name = wqd29 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 30 }
+			set_global_variable = { name = wpd30 value = scope:wp_c }
+			set_global_variable = { name = wqd30 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 31 }
+			set_global_variable = { name = wpd31 value = scope:wp_c }
+			set_global_variable = { name = wqd31 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 32 }
+			set_global_variable = { name = wpd32 value = scope:wp_c }
+			set_global_variable = { name = wqd32 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 33 }
+			set_global_variable = { name = wpd33 value = scope:wp_c }
+			set_global_variable = { name = wqd33 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 34 }
+			set_global_variable = { name = wpd34 value = scope:wp_c }
+			set_global_variable = { name = wqd34 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 35 }
+			set_global_variable = { name = wpd35 value = scope:wp_c }
+			set_global_variable = { name = wqd35 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 36 }
+			set_global_variable = { name = wpd36 value = scope:wp_c }
+			set_global_variable = { name = wqd36 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 37 }
+			set_global_variable = { name = wpd37 value = scope:wp_c }
+			set_global_variable = { name = wqd37 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 38 }
+			set_global_variable = { name = wpd38 value = scope:wp_c }
+			set_global_variable = { name = wqd38 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 39 }
+			set_global_variable = { name = wpd39 value = scope:wp_c }
+			set_global_variable = { name = wqd39 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 40 }
+			set_global_variable = { name = wpd40 value = scope:wp_c }
+			set_global_variable = { name = wqd40 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 41 }
+			set_global_variable = { name = wpd41 value = scope:wp_c }
+			set_global_variable = { name = wqd41 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 42 }
+			set_global_variable = { name = wpd42 value = scope:wp_c }
+			set_global_variable = { name = wqd42 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 43 }
+			set_global_variable = { name = wpd43 value = scope:wp_c }
+			set_global_variable = { name = wqd43 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 44 }
+			set_global_variable = { name = wpd44 value = scope:wp_c }
+			set_global_variable = { name = wqd44 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 45 }
+			set_global_variable = { name = wpd45 value = scope:wp_c }
+			set_global_variable = { name = wqd45 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 46 }
+			set_global_variable = { name = wpd46 value = scope:wp_c }
+			set_global_variable = { name = wqd46 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 47 }
+			set_global_variable = { name = wpd47 value = scope:wp_c }
+			set_global_variable = { name = wqd47 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 48 }
+			set_global_variable = { name = wpd48 value = scope:wp_c }
+			set_global_variable = { name = wqd48 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 49 }
+			set_global_variable = { name = wpd49 value = scope:wp_c }
+			set_global_variable = { name = wqd49 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 50 }
+			set_global_variable = { name = wpd50 value = scope:wp_c }
+			set_global_variable = { name = wqd50 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 51 }
+			set_global_variable = { name = wpd51 value = scope:wp_c }
+			set_global_variable = { name = wqd51 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 52 }
+			set_global_variable = { name = wpd52 value = scope:wp_c }
+			set_global_variable = { name = wqd52 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 53 }
+			set_global_variable = { name = wpd53 value = scope:wp_c }
+			set_global_variable = { name = wqd53 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 54 }
+			set_global_variable = { name = wpd54 value = scope:wp_c }
+			set_global_variable = { name = wqd54 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 55 }
+			set_global_variable = { name = wpd55 value = scope:wp_c }
+			set_global_variable = { name = wqd55 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 56 }
+			set_global_variable = { name = wpd56 value = scope:wp_c }
+			set_global_variable = { name = wqd56 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 57 }
+			set_global_variable = { name = wpd57 value = scope:wp_c }
+			set_global_variable = { name = wqd57 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 58 }
+			set_global_variable = { name = wpd58 value = scope:wp_c }
+			set_global_variable = { name = wqd58 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 59 }
+			set_global_variable = { name = wpd59 value = scope:wp_c }
+			set_global_variable = { name = wqd59 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 60 }
+			set_global_variable = { name = wpd60 value = scope:wp_c }
+			set_global_variable = { name = wqd60 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 61 }
+			set_global_variable = { name = wpd61 value = scope:wp_c }
+			set_global_variable = { name = wqd61 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 62 }
+			set_global_variable = { name = wpd62 value = scope:wp_c }
+			set_global_variable = { name = wqd62 value = local_var:wp_base }
+		}
+		else_if = {
+			limit = { global_var:wpdn = 63 }
+			set_global_variable = { name = wpd63 value = scope:wp_c }
+			set_global_variable = { name = wqd63 value = local_var:wp_base }
+		}
+		change_global_variable = { name = wpdn add = 1 }
+	}
+}

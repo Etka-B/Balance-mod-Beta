@@ -1,0 +1,58 @@
+REPLACE:seat_of_cardinal = {
+	audio_tier = 3
+	is_special = yes
+	is_foreign = no
+	max_levels = 1
+	pop_type = clergy
+
+	employment_size = religious_building_employment
+
+	rural_settlement = yes
+	town = yes
+	city = yes
+	megalopolis = yes
+
+	category = religious_category
+
+	allow = {
+		always = no #requested with request_cardinal_seat
+	}
+
+	country_potential = {
+		custom_tooltip = {
+			text = seat_of_cardinal_why
+			always = no #build with catholic_flavor.1000
+		}
+	}
+
+	build_time = religious_building_time
+
+	possible_production_methods = {
+		cardinal_maintenance
+	}
+
+	construction_demand = cardinal_construction
+
+
+	modifier = {
+		local_max_literacy = 10
+		local_clergy_food_consumption = 0.2
+	}
+
+	raw_modifier = {
+		gives_cardinal = yes
+	}
+
+	is_indestructible = yes
+	can_close = no
+
+	remove_if = {
+		NOT = { owner = { religion ?= religion:catholic } }
+	}
+
+	can_destroy = {
+		situation:western_schism = {
+			situation_is_active = no
+		}
+	}
+}

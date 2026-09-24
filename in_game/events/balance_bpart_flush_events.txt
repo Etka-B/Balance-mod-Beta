@@ -1,0 +1,82 @@
+namespace = balance_bpart_flush
+
+# THE DAY AFTER A BATTLE -- where each country's row actually gets written.
+#
+# WHY IT IS NOT WRITTEN AT on_battle_won
+#   That on_action fires before the engine has finished removing the sub-units
+#   the battle destroyed. A country asked for its strength at that moment still
+#   answers with its pre-battle number. This was not guessed at: diagnostics
+#   written inside balance_bd_close recorded the stored reading and the engine's
+#   answer side by side, and they came back identical to the man across all ten
+#   categories, so the drop computed as zero. The drop then appeared on the next
+#   daily sweep, by which time that battle had closed and its ca had been
+#   cleared -- so it was charged to whichever battle closed next.
+#
+#   Matched exactly rather than reasoned about: Tuscany lost 277 men on
+#   1448.7.16, and 277 is the number that ended up in the row for its 1448.7.31
+#   battle. One battle late, to the man.
+#
+#   It costs nothing for an ordinary battle, where the surviving units are
+#   harvested at close and carry their own tallies. It costs everything for a
+#   wipe, which is the one case the country reading exists to cover: the army is
+#   gone and its tally with it, so the country total is all there is, and that
+#   was the reading being taken a full battle too early.
+#
+# WHAT IS SPLIT AND WHY
+#   balance_bd_close still runs at on_battle_won, because the units have to be
+#   harvested while they are still there to harvest. Only the country half waits
+#   for this event.
+#
+#   pend_b carries the battle number, because global_var:battle_count will have
+#   moved on by tomorrow. The on_action sets it after battle_increment_and_log,
+#   so it names THIS battle and not the one before it.
+#
+# WHY A DAY AND NOT LONGER
+#   One daily sweep is all it takes for the engine's number to settle, and every
+#   day beyond that is another day of attrition and reinforcement mixing into
+#   the same ca. The chained probe event already proves days = 1 re-fires
+#   reliably -- the whole per-category system runs on it.
+
+balance_bpart_flush.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	immediate = {
+		# pend_b is both the battle number and the guard. If it is missing the
+		# battle was never closed on this country and there is nothing to write;
+		# it is removed on the way out so a country cannot be written twice for
+		# the same battle.
+		#
+		# xbday is the second half of the guard, and it is there because an
+		# appointment can outlive the bank that booked it. balance_bd_close
+		# settles a bank left over from an earlier day itself, before it wipes
+		# cbd and opens a new one -- otherwise the earlier battle loses both its
+		# banked readings and the harvest its units handed over, which is what
+		# happened on 1448.11.7: of two battles closing that day, the one the
+		# engine puts at 2,448 dead has no row, and the other, which cost nobody
+		# anything, was handed 2,500.
+		#
+		# So by the time this fires, the bank standing on the country may belong
+		# to a battle that closed since. Settling that one would cut its day
+		# short -- the day being what the engine needs to finish removing the
+		# units it destroyed -- and write half a battle into the row, under the
+		# wrong number. A bank opened today is never this event's.
+		if = {
+			limit = {
+				has_variable = pend_b
+				has_variable = xbday
+				NOT = { var:xbday = current_date }
+			}
+			balance_bd_flush = yes
+			balance_bpart_write = yes
+			remove_variable = pend_b
+			# Cleared with it. pend_b is the guard, so a stale pend_s would be
+			# overwritten rather than misread, but leaving one behind invites a
+			# reader to trust it on a country that has no pending row.
+			remove_variable = pend_s
+		}
+	}
+}

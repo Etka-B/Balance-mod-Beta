@@ -1,0 +1,6 @@
+﻿l_english:
+ balance_conquistador_select_multiplier: "Expedition Size"
+ balance_conquistador_select_multiplier_desc: "Choose how large an expedition to outfit. Paying more silver and provisions sends a proportionally larger army, cavalry contingent, and supply train."
+ balance_conquistador_supply_line: "Conquistador Supply Line"
+ balance_conquistador_supply_line_desc: "Fresh gold and provisions sent from the homeland keep this expedition's army fed and paid while it establishes itself in the New World."
+ STATIC_MODIFIER_NAME_balance_conquistador_supply_line: "$balance_conquistador_supply_line$"

@@ -1,142 +1,270 @@
 ﻿
+# Age 1 units: raised from 2.5 to 2.75, now the same as age 2/3 units below.
 INJECT:a_armored_horsemen = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
 INJECT:a_mailed_knights = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
 INJECT:a_horsemen = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
+# Age 2+: original value minus 0.25.
 INJECT:a_cavalrymen = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_plated_knights = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_heavy_cavalrymen = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_lancers = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_cavaliers = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 
 INJECT:a_light_lancers = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_pistoleers = {
-    combat_power = 0
+    combat_power = -0.25
 }
 
 INJECT:a_late_cavaliers = {
-    combat_power = 0
+    combat_power = -0.25
 }
 
 INJECT:a_heavy_lancers = {
-    combat_power = 0
+    combat_power = -0.25
 }
 
 INJECT:a_akinji = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_lanzas_de_castilla = {
-    combat_power = -1.0
-}
-
-INJECT:a_hungarian_hussars = {
-    combat_power = 0
+    combat_power = -1.25
 }
 
 INJECT:a_winged_hussars = {
-    combat_power = 0
+    combat_power = -0.25
 }
 
 INJECT:a_serbian_hussars = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_mamluk_horsemen_renaissance = {
-    combat_power = -1
+    combat_power = -1.25
 }
 
+# Age 1: raised to match age 2/3 (see note near a_armored_horsemen above).
 INJECT:a_mamluk_horsemen_traditions = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
 INJECT:a_hobelars = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
+# Age 2+: original value minus 0.25.
 INJECT:a_hussars = {
-    combat_power = 1.0
+    combat_power = 0.75
 }
 
 INJECT:a_gallop_cavalry = {
-    combat_power = 1.0
+    combat_power = 0.75
 }
 
 
 INJECT:a_light_dragoons= {
-    combat_power = 1.5
+    combat_power = 1.25
 }
 
 INJECT:a_cuirassiers = {
-    combat_power = 1.5
+    combat_power = 1.25
 }
 
+# Age 1: raised to match age 2/3 (see note near a_armored_horsemen above).
 INJECT:a_byzantine_cataphracts = {
-    combat_power = -1.5
+    combat_power = -1.25
 }
 
+# Age 2+: original value minus 0.25.
 INJECT:a_byzantine_cataphracts_2 = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_byzantine_cataphracts_3 = {
-    combat_power = -1.0
+    combat_power = -1.25
 }
 
 INJECT:a_byzantine_cataphracts_4 = {
-    combat_power = 0
+    combat_power = -0.25
 }
 
 INJECT:a_byzantine_cataphracts_5 = {
-    combat_power = 1.0
+    combat_power = 0.75
 }
 
 INJECT:a_byzantine_cataphracts_6 = {
-    combat_power = 1.5
+    combat_power = 1.25
 }
 INJECT:a_late_winged_hussars = {
-	combat_power = 1.0
+	combat_power = 0.75
 }
 
+# Age 1: raised to match age 2/3 (see note near a_armored_horsemen above).
 INJECT:a_order_knights = {
-	combat_power = -1.5
+	combat_power = -1.25
 }
+# Age 2+: original value minus 0.25.
 INJECT:a_order_knights_2 = {
-	combat_power = -1.0
+	combat_power = -1.25
 }
 
+# Age 1: raised to match age 2/3 (see note near a_armored_horsemen above).
 INJECT:a_tribal_cavalry = {
-	combat_power = -1.5
+	combat_power = -1.25
 }
 
 INJECT:a_steppe_horde = {
-	combat_power = -1.0
+	combat_power = -1.25
+}
+
+# --- Vanilla cavalry units found during the full-scan pass that weren't in this file yet.
+# Same age-based deltas as the rest of the file: age 1 and age 2/3 both -1.25 (2.75 total). ---
+
+# a_steppe_horse_archers - age_1_traditions light cavalry
+INJECT:a_steppe_horse_archers = {
+    combat_power = -1.25
+}
+
+# a_light_jurchen_cavalry - age_1_traditions light cavalry
+INJECT:a_light_jurchen_cavalry = {
+    combat_power = -1.25
+}
+
+# a_iron_pagoda_cavalry - age_1_traditions heavy cavalry
+INJECT:a_iron_pagoda_cavalry = {
+    combat_power = -1.25
+}
+
+# a_mandekalu_cavalry - age_1_traditions heavy cavalry
+INJECT:a_mandekalu_cavalry = {
+    combat_power = -1.25
+}
+
+# a_farari_cavalry - age_1_traditions heavy cavalry
+INJECT:a_farari_cavalry = {
+    combat_power = -1.25
+}
+
+# a_clan_retainer_cavalry - age_1_traditions heavy cavalry
+INJECT:a_clan_retainer_cavalry = {
+    combat_power = -1.25
+}
+
+# a_teulu - age_1_traditions heavy cavalry
+INJECT:a_teulu = {
+    combat_power = -1.25
+}
+
+# a_noble_cavalry - age_1_traditions heavy cavalry
+INJECT:a_noble_cavalry = {
+    combat_power = -1.25
+}
+
+# a_indian_elephant_cavalry - age_1_traditions heavy cavalry
+INJECT:a_indian_elephant_cavalry = {
+    combat_power = -1.25
+}
+
+# a_muslim_riders_vijay - age_2_renaissance heavy cavalry
+INJECT:a_muslim_riders_vijay = {
+    combat_power = -1.25
+}
+
+# a_orissan_elephant_cavalry - age_2_renaissance heavy cavalry
+INJECT:a_orissan_elephant_cavalry = {
+    combat_power = -1.25
+}
+
+# a_bengali_elephant_cavalry - age_2_renaissance heavy cavalry
+INJECT:a_bengali_elephant_cavalry = {
+    combat_power = -1.25
+}
+
+# a_thai_elephant_cavalry - age_2_renaissance heavy cavalry
+INJECT:a_thai_elephant_cavalry = {
+    combat_power = -1.25
+}
+
+# a_bedouin_cavalry - age_2_renaissance light cavalry
+INJECT:a_bedouin_cavalry = {
+    combat_power = -1.25
+}
+
+# a_esho_cavalry_oyo - age_3_discovery light cavalry
+INJECT:a_esho_cavalry_oyo = {
+    combat_power = -1.25
+}
+
+# a_discovery_qizilbash - age_3_discovery light cavalry
+INJECT:a_discovery_qizilbash = {
+    combat_power = -1.25
+}
+
+# a_sowar_cavalry - age_4_reformation heavy cavalry
+INJECT:a_sowar_cavalry = {
+    combat_power = -0.25
+}
+
+# a_banner_cavalry - age_4_reformation heavy cavalry
+INJECT:a_banner_cavalry = {
+    combat_power = -0.25
+}
+
+# a_siamese_advanced_elephant_cavalry - age_4_reformation heavy cavalry
+INJECT:a_siamese_advanced_elephant_cavalry = {
+    combat_power = -0.25
+}
+
+# a_reformation_qizilbash - age_4_reformation light cavalry
+INJECT:a_reformation_qizilbash = {
+    combat_power = -0.25
+}
+
+# a_hakkapelitta - age_5_absolutism light cavalry
+INJECT:a_hakkapelitta = {
+    combat_power = 0.75
+}
+
+# a_provincial_cavalry - age_5_absolutism heavy cavalry
+INJECT:a_provincial_cavalry = {
+    combat_power = 0.75
+}
+
+# a_austrian_grenzhussar - age_6_revolutions light cavalry
+INJECT:a_austrian_grenzhussar = {
+    combat_power = 1.25
+}
+
+# a_gendarmerie - age_6_revolutions heavy cavalry
+INJECT:a_gendarmerie = {
+    combat_power = 1.25
 }
 
 TRY_REPLACE:a_age_1_traditions_light_cavalry = {
@@ -145,7 +273,7 @@ TRY_REPLACE:a_age_1_traditions_light_cavalry = {
 
 	buildable = no
 	max_strength = 0.2
-	combat_power = 2.5
+	combat_power = 2.75
 
 
 	age = "age_1_traditions"
@@ -157,7 +285,7 @@ TRY_REPLACE:a_age_1_traditions_heavy_cavalry = {
 
 	buildable = no
 	max_strength = 0.2
-	combat_power = 2.5
+	combat_power = 2.75
 	age = "age_1_traditions"
 }
 
@@ -166,7 +294,7 @@ TRY_REPLACE:a_age_2_renaissance_light_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.4
-	combat_power = 3.0
+	combat_power = 2.75
 
 	age = "age_2_renaissance"
 }
@@ -177,9 +305,9 @@ TRY_REPLACE:a_age_2_renaissance_heavy_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.4
-	combat_power = 3.0
+	combat_power = 2.75
 
-	
+
 	age = "age_2_renaissance"
 }
 
@@ -188,7 +316,7 @@ TRY_REPLACE:a_age_3_discovery_light_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.6
-	combat_power = 3.0
+	combat_power = 2.75
 	age = "age_3_discovery"
 }
 
@@ -197,7 +325,7 @@ TRY_REPLACE:a_age_3_discovery_heavy_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.6
-	combat_power = 3.0
+	combat_power = 2.75
 	age = "age_3_discovery"
 }
 
@@ -206,7 +334,7 @@ TRY_REPLACE:a_age_4_reformation_light_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.8
-	combat_power = 4.0
+	combat_power = 3.75
 
 	age = "age_4_reformation"
 }
@@ -216,10 +344,10 @@ TRY_REPLACE:a_age_4_reformation_heavy_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 0.8
-	combat_power = 4.0
+	combat_power = 3.75
 
 	age = "age_4_reformation"
-    
+
 }
 
 TRY_REPLACE:a_age_5_absolutism_light_cavalry = {
@@ -227,7 +355,7 @@ TRY_REPLACE:a_age_5_absolutism_light_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 1.0
-	combat_power = 5
+	combat_power = 4.75
 	age = "age_5_absolutism"
 }
 
@@ -236,7 +364,7 @@ TRY_REPLACE:a_age_5_absolutism_heavy_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 1.0
-	combat_power = 5
+	combat_power = 4.75
 	age = "age_5_absolutism"
 }
 
@@ -245,8 +373,8 @@ TRY_REPLACE:a_age_6_revolutions_light_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 1.2
-	combat_power = 5.5
-	
+	combat_power = 5.25
+
 	age = "age_6_revolutions"
 }
 
@@ -255,8 +383,8 @@ TRY_REPLACE:a_age_6_revolutions_heavy_cavalry = {
 	hide = yes
 	buildable = no
 	max_strength = 1.2
-	combat_power = 5.5
-	
+	combat_power = 5.25
+
 	age = "age_6_revolutions"
 }
 
@@ -265,10 +393,55 @@ a_early_winged_hussars = {
 	is_special = yes
 	upgrades_to = a_winged_hussars
 
-	buildable = yes 
-	combat_power = -1.0
+	buildable = yes
+	combat_power = -1.25
 	morale_damage_done = 0.25
     initiative = 2.0
 	gfx_tags = { spear_tag medium_tag }
 
+}
+
+# THE HUSSARS ARRIVE AN AGE EARLY HERE, SO THEY ARE BUILT ON THAT AGE.
+# balance_fla/FLA_country.txt moves hun_hungarian_hussars to age_3_discovery,
+# but the unit itself still copied a_age_4_reformation_light_cavalry and so kept
+# that age's numbers: max_strength 0.8 where every other age 3 light cavalry has
+# 0.6, and an age_4_reformation tag on a unit you can field in age 3. The two
+# templates differ in nothing else -- combat_power is 4 in both -- so this is
+# the vanilla unit with the age 3 template under it.
+#
+# NO combat_power LINE, AND THAT IS DELIBERATE. A unit's combat_power is ADDED
+# to the one it copies, and this file has already rewritten the templates
+# themselves: age 3 cavalry is 2.75 here, age 4 is 3.75, where the game ships
+# 4 for every age. The INJECT offsets further up were written against the
+# game's 4 -- 4 minus 1.25 is the 2.75 the age 3 template now carries -- so on
+# top of the rewritten template they land twice. Measured in game: with
+# -1.25 written here the hussars showed 1.50, against 2.75 for a plain age 3
+# light cavalry, which is why they stopped hitting. Nothing added, they take
+# the template's 2.75, the same as any other age 3 light cavalry -- which is
+# how the game itself builds its uniques: same power as their age, the edge
+# coming from initiative, the noble mercenaries and the terrain, all below.
+#
+# (The same double count is sitting on a_akinji, a_lanzas_de_castilla and the
+# rest of the INJECT list above; left alone, not asked for.)
+TRY_REPLACE:a_hungarian_hussars = {
+	copy_from = a_age_3_discovery_light_cavalry
+	is_special = yes
+	upgrades_to = a_hussars
+
+	#root = location. Checks location_potential first so don't need that scripting in
+	mercenaries_per_location = {
+		pop_type = nobles
+		multiply = 0.3
+	}
+
+	buildable = yes
+
+	initiative = 2
+
+	impact = {
+		flatland = -0.25
+		mountains = -0.25
+	}
+
+	gfx_tags = { medium_tag }
 }

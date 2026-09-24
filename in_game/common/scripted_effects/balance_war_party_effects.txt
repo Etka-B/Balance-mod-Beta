@@ -1,0 +1,180 @@
+﻿# Capture effects for the war-membership and peace-treaty banks.
+#
+# THE SCOPES, taken from the base game's own on_action/_hardcoded.txt rather
+# than guessed. Two rounds were lost to guessing before it was found:
+#
+#   on_join_war                        root = the joining country, scope:war
+#   on_pre_losing_war                  root = the country, scope:winner,
+#   on_pre_winning_war                 scope:loser, scope:war
+#   on_took_location_in_peace_treaty   root = winner, scope:location,
+#                                      scope:winner = new owner,
+#                                      scope:loser = old owner
+#
+# The country is ROOT in all of them, which is exactly where the first two
+# attempts never looked -- they hunted through scope:actor / recipient /
+# target / winner / loser. Taking scope:loser was also what produced four
+# identical rows for France leaving war 1040187394 on 1467.4.2: both departure
+# hooks fire, root differs each time and scope:loser does not.
+#
+# These effects are called straight from the on_action's effect block, so the
+# current scope here IS root.
+
+
+# WHICH SIDE, shared by both paths below. Sets global_var:wpar_side to 1 for an
+# attacker, 2 for a defender, 0 if the war places it on neither.
+#
+# is_an_attacker / is_a_defender on the WAR, and not a guess: the base game uses
+# exactly this inside on_join_war itself -- the HRE block in
+# common/on_action/_hardcoded.txt asks the war scope `is_a_defender = root` --
+# so a joining country is already placed on its side by the time the hook fires.
+#
+# scope:wpar_c rather than root, because root is not dependable inside an
+# on_action's effect block (see the note on the same problem in
+# balance_battle_deaths_effects.txt). 0 is left in place when the war can place
+# it on neither side, so a broken reading shows as 0 rather than as "attacker".
+#
+# It has to be read while the country is still IN the war, which is why the
+# departure path reads it at the peace and carries the answer forward instead of
+# asking again a day later, when the answer would always be 0.
+balance_wpar_read_side = {
+	set_global_variable = { name = wpar_side value = 0 }
+	if = {
+		limit = { scope:war = { is_an_attacker = scope:wpar_c } }
+		set_global_variable = { name = wpar_side value = 1 }
+	}
+	else_if = {
+		limit = { scope:war = { is_a_defender = scope:wpar_c } }
+		set_global_variable = { name = wpar_side value = 2 }
+	}
+}
+
+
+# JOINING A WAR (k = 1). Written straight away: a join is unambiguous. The
+# country is in the war the moment the hook fires, and it stays in it.
+#
+# Measured: Switzerland joined the Tuscan war against France on 1466.10.17 and
+# came through with the right war and the right day. Before this bank existed
+# the only record of it was war_manager, which is deleted with the war.
+balance_wpar_join = {
+	save_scope_as = wpar_c
+	set_global_variable = { name = wpar_kind value = 1 }
+	set_global_variable = { name = wpar_base value = 0 }
+	set_global_variable = { name = wpar_side value = 0 }
+	set_global_variable = { name = wpar_date value = current_date }
+
+	if = {
+		limit = { exists = scope:war }
+		scope:war = { save_scope_as = wpar_war }
+
+		# One row per country per war per day, kept in case this hook ever
+		# double-fires the way the departure hooks do.
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_variable = wpar_day }
+					NOT = { var:wpar_day = current_date }
+					NOT = { var:wpar_lastwar = { this = scope:wpar_war } }
+					NOT = { var:wpar_k = 1 }
+				}
+			}
+			set_variable = { name = wpar_day value = current_date }
+			set_variable = { name = wpar_lastwar value = scope:wpar_war }
+			set_variable = { name = wpar_k value = 1 }
+			balance_wpar_read_side = yes
+			if = {
+				limit = { has_variable = shadow_attr }
+				set_global_variable = { name = wpar_base value = var:shadow_attr }
+			}
+			wpar_increment_and_log = yes
+		}
+	}
+}
+
+
+# LEAVING A WAR (k = 2) -- parked today, written tomorrow, and only if the
+# country is really gone.
+#
+# WHY IT CANNOT BE WRITTEN AT THE HOOK
+#   on_pre_losing_war / on_pre_winning_war do not fire only for whoever is
+#   walking away. They fire for every country on both sides of the peace being
+#   signed, and most of those are still at war afterwards.
+#
+#   Measured on the Tuscan war against France. Great Britain signed a separate
+#   peace on 1467.8.2 and SEVENTEEN countries got a departure row that day --
+#   France and its thirteen allies among them. Those fourteen kept fighting for
+#   another six weeks and got a SECOND departure row on 1467.9.13, when the war
+#   actually ended. Only three of the seventeen had left on the 2nd: Great
+#   Britain, Pale and AAA58.
+#
+#   Nothing in scope at the hook separates the two. scope:loser is the country
+#   the peace was signed against, not the set of countries leaving, and it holds
+#   the same value for the ones staying as for the ones going.
+#
+# SO ASK A DAY LATER
+#   A country that left is no longer in the war; one that stayed still is. That
+#   is the whole test, and it is only answerable after the fact. The reading is
+#   parked on the country and balance_wpar_flush.1 takes it tomorrow -- the same
+#   shape as the battle rows, which wait a day for the engine to finish removing
+#   what a battle destroyed (see events/balance_bpart_flush_events.txt).
+#
+#   The date, the side and the attrition figure are all captured NOW and carried
+#   forward. Asked tomorrow they would be wrong or gone: the side of a war you
+#   have left is nothing, and the attrition counter keeps moving.
+#
+#   One parking space, so a second peace on the same day is dropped rather than
+#   overwriting the first -- which also handles the two departure hooks firing
+#   for the same event, the thing the old per-day guard was there for. Two
+#   peaces for one country on consecutive days, in different wars, can still
+#   lose the second: the flush clears the space, but only once it runs. pend_b
+#   carries the same single-slot limit for the same reason, and is left alone
+#   for the same reason -- the alternative is a queue on a country, and the case
+#   has never been seen.
+balance_wpar_leave = {
+	save_scope_as = wpar_c
+
+	if = {
+		limit = {
+			exists = scope:war
+			NOT = { has_variable = wpar_pw }
+		}
+		scope:war = { save_scope_as = wpar_war }
+		balance_wpar_read_side = yes
+
+		# The closing reading for this country in this war. Inside the same
+		# guard as the parked wpar row, so a peace that fires this for both
+		# sides still writes one row each and not two.
+		scope:war = { save_scope_as = cst_w }
+		balance_cstat_snapshot = yes
+
+		set_variable = { name = wpar_pw value = scope:wpar_war }
+		set_variable = { name = wpar_pd value = current_date }
+		set_variable = { name = wpar_ps value = global_var:wpar_side }
+		set_variable = { name = wpar_pa value = 0 }
+		if = {
+			limit = { has_variable = shadow_attr }
+			set_variable = { name = wpar_pa value = var:shadow_attr }
+		}
+		trigger_event_silently = { id = balance_wpar_flush.1 days = 1 }
+	}
+}
+
+
+# One location handed over as a treaty term. terr_* records the same flip as a
+# plain ownership change; this says it was a treaty term, so a war's actual
+# spoils can be told apart from everything else that changed hands while it ran.
+#
+# Confirmed working on 1467.9.13: six locations France -> Tuscany at the peace
+# that ended the Tuscan war, matching terr_* row for row on the same day.
+balance_ptr_capture = {
+	if = {
+		limit = {
+			exists = scope:location
+			exists = scope:winner
+			exists = scope:loser
+		}
+		scope:location = { save_scope_as = ptr_loc }
+		scope:winner = { save_scope_as = ptr_to }
+		scope:loser = { save_scope_as = ptr_from }
+		ptr_increment_and_log = yes
+	}
+}

@@ -1,0 +1,536 @@
+﻿###############################################################################
+# SHADOW ATTRITION - a script copy of the engine's land attrition, for the
+# ledger. Same inputs and constants as the engine, with one deliberate
+# difference: nothing dies here. No strength is removed and no modifier is
+# applied; the month's dead are only counted and written to a country variable,
+# because the game deletes a war's attrition figure along with the war and this
+# is the only way to keep it.
+#
+# MEASURED, NOT ASSUMED (2026-09-08, controlled test: armies parked where they
+# could not be fed, two saves in one session, 1439.9.1 -> 1441.2.27)
+#
+#   cumulative, ours vs the game's own war record
+#     France    118,994 vs 118,638   1.003
+#     Castile    50,289 vs  50,111   1.004
+#   the 18-month increase, world-wide
+#     land      107,121 vs 107,856   0.993
+#
+#   The in-game tooltip said "Currently, taking 5.00% Attrition each month /
+#   Lack of Food +5.00%" for an army whose rate this effect computed as exactly
+#   5.00. A starving army's deaths compound at a fixed ratio (0.9487 a month
+#   over six months), i.e. a flat rate on a shrinking strength, which is what
+#   this does.
+#
+# WHY IT HAS TO BE RECOMPUTED
+#   Nothing in the script API exposes attrition - no trigger, no effect, no
+#   event target. The GUI has Unit.GetAttrition, but that layer cannot hand a
+#   number back to script, and the engine's kill logic itself lives in the
+#   binary: a full scan of every .txt/.gui/.info in the game folder turns up
+#   only data (constants, modifier definitions) and GUI calls into the engine.
+#
+# WHERE THE NUMBERS COME FROM - the game itself, not a rebuild
+#   Script can read a composed modifier total with the `modifier:` promote, the
+#   way the base game does (`value = modifier:local_manpower` in the institution
+#   files, `scope:actor.modifier:diplomatic_reputation` in hre.txt). So the
+#   location is asked for its own total instead of it being rebuilt from
+#   "winter_severe is 2, looted is 5" - a rebuild would silently miss buildings,
+#   advances, weather, vegetation, climate and whatever a patch adds.
+#
+#     modifier:local_army_attrition     location  winter/terrain/weather/looting
+#     modifier:local_hostile_attrition  location  extra vs hostile armies
+#     modifier:global_hostile_attrition country   same, country-wide (defender)
+#     modifier:local_forced_attrition   location  unavoidable (plague) share
+#     modifier:max_attrition            location  the ceiling
+#     modifier:land_unit_attrition      unit      the unit's own multiplier
+#
+#   ATTRITION_LACK_OF_FOOD = 5 and REGIMENT_SIZE = 1000 come from
+#   loading_screen/common/defines/00_defines.txt (NUnit). `food_percentage`
+#   returns 0..1 and is stores over capacity (confirmed against the game's food
+#   tooltip: 136.73 current of 474.50 capacity reads 0.288), so `<= 0` is the
+#   right test. Scored against war_manager; the table is at step (4) below.
+#
+#   Category surcharges (in_game/common/unit_categories): both cavalry
+#   categories carry attrition_loss = 0.25, artillery 0.5. Applied to the dead,
+#   not to the rate - which is why the engine kills ~1.33x the tooltip's 5% for
+#   a cavalry-heavy army.
+#
+#   Fort shelter: game_concept_non_avoidable_attrition and
+#   game_concept_winter_level both say an army inside a friendly fort's zone of
+#   control takes no local attrition at all, winter included, and that only
+#   "unavoidable" sources get through - which is what local_forced_attrition is
+#   named in the loc file ("Unavoidable Attrition", used by the two plagues).
+#
+# WHAT IS KNOWINGLY LEFT OUT
+#   - Naval attrition: see the note further down. The game does not record it.
+#   - Armies wiped out inside a month are never seen by a monthly pulse, so
+#     their last month is lost. Measured at 1.25% of the world total, and it is
+#     all in countries losing a few hundred men; the big belligerents are
+#     unaffected.
+#   - The counter starts at zero when the mod first runs, so a war already in
+#     progress is undercounted from its start. Georgia read 0.42 against the
+#     game for that reason alone - its war began two years before the mod - yet
+#     0.96 over the window where both were counting.
+#   - Over the supply limit: no file gives a number for it and the arithmetic I
+#     guessed was 2.5x too heavy, so it is commented out inside attr_shadow_army
+#     with the measurement beside it.
+#
+# Read by the ledger tool as:
+#   country:X.var:shadow_attr        cumulative men, all time
+#   country:X.var:shadow_attr_land   same figure, kept separate because saves
+#                                    written before 2026-09-08 have sea mixed
+#                                    into shadow_attr
+#   country:X.var:shadow_attr_rate   last non-zero monthly rate (liveness check)
+###############################################################################
+
+
+# Bank one unit's month of dead, given local_var:ash_rate as a monthly
+# percentage. Called in UNIT scope; $LEDGER$ is the split variable to credit.
+attr_shadow_bank = {
+	if = {
+		limit = { local_var:ash_rate > 0 }
+		root = { set_variable = { name = shadow_attr_rate value = local_var:ash_rate } }
+		every_sub_unit = {
+			# subunit_strength has to be read here, in sub_unit scope - reading
+			# it from the root block is rejected outright ("Wrong scope for
+			# trigger for compare trigger 'subunit_strength' (got country,
+			# expected sub_unit)"). REGIMENT_SIZE = 1000, so the men come out
+			# of the x 1000.
+			set_local_variable = {
+				name = ash_dead
+				value = {
+					value = subunit_strength
+					multiply = { value = local_var:ash_rate divide = 100 }
+					multiply = 1000
+					# unit_categories: attrition_loss 0.25 on both cavalry
+					# categories, 0.5 on artillery.
+					if = {
+						limit = {
+							OR = {
+								sub_unit_category = { this = sub_unit_category:army_light_cavalry }
+								sub_unit_category = { this = sub_unit_category:army_heavy_cavalry }
+							}
+						}
+						multiply = 1.25
+					}
+					if = {
+						limit = { sub_unit_category = { this = sub_unit_category:army_artillery } }
+						multiply = 1.5
+					}
+					min = 0
+				}
+			}
+			root = {
+				change_variable = { name = shadow_attr add = local_var:ash_dead }
+			# DIAGNOSTIC, remove with the rest: what this month alone came to.
+			change_variable = { name = shadow_attr_last add = local_var:ash_dead }
+				change_variable = { name = $LEDGER$ add = local_var:ash_dead }
+			}
+		}
+	}
+}
+
+
+# One army: monthly percentage, then bank it.
+attr_shadow_army = {
+	unit_location = { save_scope_as = ash_loc }
+
+	# Standing on ground held by someone hostile to us? Then the defender's
+	# hostile-attrition modifiers apply on top. local_hostile_attrition is
+	# documented as "attrition of hostile armies in a location we own and
+	# control", so it is read off the location's controller.
+	set_local_variable = { name = ash_hostile value = 0 }
+	if = {
+		limit = {
+			exists = scope:ash_loc.controller
+			scope:ash_loc.controller = { is_hostile_with = root }
+		}
+		set_local_variable = { name = ash_hostile value = 1 }
+	}
+
+	# Inside a friendly fort's zone of control nothing local applies.
+	set_local_variable = { name = ash_shelter value = 0 }
+	if = {
+		limit = { scope:ash_loc = { in_zone_of_control = yes } }
+		set_local_variable = { name = ash_shelter value = 1 }
+	}
+
+	set_local_variable = {
+		name = ash_rate
+		value = {
+			value = 0
+
+			# (1) what the location itself does: winter, weather, topography,
+			# vegetation, climate, looting - already summed by the engine.
+			if = {
+				limit = { local_var:ash_shelter = 0 }
+				add = { value = scope:ash_loc.modifier:local_army_attrition }
+			}
+
+			# (2) hostile ground -- NOT gated on shelter, and that gate was a bug.
+			# The game's own concept text says a friendly fort's zone of control
+			# shelters an army from LOCAL attrition sources, winter included --
+			# local. Hostile attrition is applied BY the defending country, not by
+			# the ground, so standing near a fort does not cancel it.
+			#
+			# Caught from the game's own attrition tooltip at Durres, 1466.7.1,
+			# where the besieging Ottoman army was taking 5.50% a month:
+			#
+			#     Prepared Defense   +0.50%   (in this Location)
+			#     Lack of Food       +5.00%   (external to this Location)
+			#     Maximum of +10.00% in Durres
+			#
+			# "Prepared Defense" is the static modifier `prepared_defence` -- note
+			# the British spelling, which is why searching the files for
+			# "prepared_defense" turns up nothing -- and it is nothing but
+			# `global_hostile_attrition = 0.5` on the defender's COUNTRY. Exactly
+			# what this block already reads, skipped only because the army's
+			# ash_shelter came back 1.
+			#
+			# That flag cannot be trusted here in any case: `in_zone_of_control`
+			# takes no country and its own loc string is just "Is in a zone of
+			# control", so an army besieging an ENEMY fort reads as sheltered by it.
+			if = {
+				limit = { local_var:ash_hostile = 1 }
+				add = { value = scope:ash_loc.modifier:local_hostile_attrition }
+				add = { value = scope:ash_loc.controller.modifier:global_hostile_attrition }
+			}
+
+			# (3) over the supply limit -- DISABLED, and deliberately so.
+			#
+			# No file gives a number for this. Every other line in this effect
+			# comes from the game's own data; this one was my arithmetic, and
+			# measurement threw it out:
+			#
+			#   without it   96,046 real vs 105,517 ours   (+8%)
+			#   with it     368,626 real vs 935,488 ours   (+154%)
+			#
+			# It also produced attrition for armies that were never at war --
+			# 1,792 of our land total before, 131,254 after -- which the era
+			# does not do. Whatever the engine does with unit weight over the
+			# supply limit, it is not "penalty x ATTRITION_ON_FOOD_CONSUMPTION_
+			# IMPACT as percentage points"; the defines call that penalty a
+			# *food consumption* penalty, so it most likely drains the
+			# stockpile faster and kills through the lack-of-food term below,
+			# which is already counted. Left here rather than deleted so the
+			# next attempt starts from the measurement, not from scratch.
+			#
+			# if = {
+			# 	limit = { scope:ash_loc.modifier:supply_limit > 0 }
+			# 	add = {
+			# 		value = root.var:ash_weight
+			# 		divide = { value = scope:ash_loc.modifier:supply_limit }
+			# 		subtract = 1
+			# 		min = 0
+			# 		max = 3
+			# 		multiply = 2
+			# 	}
+			# }
+
+			# (4) out of food: ATTRITION_LACK_OF_FOOD
+			# `<= 0`: only an army whose stores are actually empty. `food_percentage`
+			# is stores over capacity (confirmed against the game's food tooltip:
+			# 136.73 current of 474.50 capacity reads 0.288), so `< 1` would mean
+			# "anything not completely full" -- and the game plainly does not kill 5%
+			# of an army sitting on 90% of its stores.
+			#
+			# SCORED AGAINST war_manager, which is the game's own attrition ledger:
+			# per war, per participant, per unit category, `losses={ losses={
+			# army_light_infantry={ Battle=N Attrition=N } } }`, cumulative from the
+			# war's start. Difference two saves for a month. Country refs there carry
+			# a high-byte tag -- mask with & 0xFFFFFF. Six month-start saves,
+			# 1466.4 -> 1466.9, restricted to countries actually at war (war_manager
+			# records nothing for a country at peace, so including peacetime armies
+			# on our side is not a fair comparison):
+			#
+			#     threshold   ours    vs ledger   invented   missed
+			#     <=0       15,159       0.25            0   45,274
+			#     <0.25     24,394       0.40        2,430   38,470
+			#     <0.45     39,535       0.65        9,909   31,026
+			#     <1.00     53,105       0.88       23,041   30,589
+			#     ledger    60,433       1.00
+			#
+			# `< 1` was tried for one run and reverted. It makes the world total look
+			# right (1.01) but only because two large errors cancel: going 0 -> 1 buys
+			# 14,685 real deaths and invents 23,041 that never happened, landing them
+			# on the wrong countries -- Lithuania was credited 4,406 where the game
+			# recorded 1. A ledger that never lies and reads low is worth more than
+			# one whose total is right and whose per-country attribution is not.
+			#
+			# WHY IT READS LOW, and neither cause is the threshold:
+			#   - 30,589 of the 45,274 is four countries (SLZ, BGR, PIE, PLB) whose
+			#     armies are raised and destroyed inside a month. SLZ took 31,814
+			#     battle deaths and has 9 regiments left standing; a monthly pulse
+			#     only ever sees what is alive when it fires. No threshold reaches it.
+			#   - The rest is timing. monthly_country_pulse runs after the engine has
+			#     charged AND refilled, so an army the engine starved reads 0.1-0.5 by
+			#     the time we see it. Only armies that cannot be resupplied at all
+			#     still read 0. Fixing this properly means a daily flag, not a wider
+			#     threshold -- the mod already runs a daily chain for battles
+			#     (balance_combat_probe_on_action.txt), though it is deliberately
+			#     limited to player wars because a world-wide daily sweep froze the
+			#     game.
+			#
+			# DO NOT SCORE THIS AGAINST attrition_losses_per_month. That per-regiment
+			# ring is not ground truth, twice over: a destroyed regiment takes its
+			# record with it (29,191 against the ledger's 61,236 for this window), and
+			# the engine never clears a slot in a quiet month, so last year's figure
+			# for that month reads as fresh. Scoring against it is what produced a
+			# naval crisis and a supply-limit crisis that do not exist. If it is read
+			# at all, a slot is current only when last_month_for_attrition equals it.
+			# This whole effect runs on the LAST DAY of the month now (see
+			# attr_shadow_seed and balance_attr_probe.1), which is what makes `<= 0`
+			# the correct test in practice and not only in principle. Read at the
+			# monthly pulse instead, it was reading the wrong moment: the engine
+			# charges on the 1st and refills the stores in the same breath, so an
+			# army it had just starved showed 0.1-0.5 and `<= 0` never fired. Out of
+			# 350 land armies on province supply in one save, exactly ONE still read
+			# 0 at the pulse.
+			#
+			# Measured over three clean ticks (saves on the last day and the 1st of
+			# May, June and July 1466), scored against what the engine actually took:
+			#
+			#     tick      engine   at the pulse   on the probe day
+			#     1466.5     5,418    3,080  57%     4,969  92%
+			#     1466.6     6,742    3,903  58%     6,506  97%
+			#     1466.7     6,821    1,281  19%     6,406  94%
+			#     total     18,981    8,264  44%    17,881  94%
+			#
+			# Split by source, the probe day reading is not just better, it is
+			# complete: of 17,882 men the engine killed for lack of food it finds
+			# 17,877. The 1,069 it does not find are winter/terrain losses at rates of
+			# 0.1-3%, which no food reading can see. Neither reading ever fires on an
+			# army the engine left alone -- zero false positives in all three ticks.
+			#
+			# A wider threshold was tried instead and is the wrong fix: `< 1` reaches
+			# the same men by charging every army that is not completely full, which
+			# invents 23,041 deaths to recover 14,685 real ones and puts them on the
+			# wrong countries. The day is the problem, not the threshold.
+			if = {
+				limit = { food_percentage <= 0 }
+				add = 5
+			}
+
+			# (5) unavoidable sources get through the fort as well
+			add = { value = scope:ash_loc.modifier:local_forced_attrition }
+
+			# (6) the location's own ceiling
+			# The ceiling, and it is a real one: measured. The tooltip writes it as
+			# "Maximum of +10.00%", which reads like a bonus, so this line was taken
+			# out for one save and the value logged instead -- on the theory that
+			# script might see 0 here and clamp the whole rate, food and all, to
+			# nothing. It does not. Across 254 countries in the 1466.5.10 save the
+			# modifier came back 10 in 229 of them, and 12, 15 or 17 in the rest
+			# (plague locations). The clamp never bound at rates of 1 and 5, and the
+			# undercount is not here. Put back unchanged.
+			max = { value = scope:ash_loc.modifier:max_attrition }
+
+			# (7) the unit's own attrition modifier, read in unit scope
+			multiply = {
+				value = 1
+				add = { value = modifier:land_unit_attrition }
+				min = 0
+			}
+			min = 0
+		}
+	}
+
+	# DIAGNOSTIC, remove with the rest. Written on the ARMY, not the country,
+	# so the save can be read back army by army -- and the army carries its own
+	# location, so 'which land did this come from' needs nothing else stored.
+	#
+	#   ash_seen     the rate this effect computed for it this month
+	#   ash_shelt    whether the zone-of-control test fired, which is what
+	#                skips local_army_attrition and both hostile terms and
+	#                leaves only food -- the suspect for armies that are fed
+	#                and still bleeding. Lanciano, 9,450 men with 54 food in
+	#                store, lost 146 in April and 284 in May and we wrote none
+	#                of it.
+	set_variable = { name = ash_seen value = local_var:ash_rate }
+	set_variable = { name = ash_shelt value = local_var:ash_shelter }
+
+	# MEASUREMENT, remove with the rest. The shelter rule is the biggest thing
+	# left after the food reading moves to the probe day: armies this effect
+	# calls sheltered are charged by the engine anyway, 1,139 men across two
+	# measured months, all of it non-food (winter/terrain).
+	#
+	# The suspect is that `in_zone_of_control` cannot say WHOSE fort. Its own
+	# loc string is just "Is in a zone of control" -- no owner -- while the game
+	# concept says the shelter comes from a fort "owned and controlled by
+	# themselves, their direct subjects, or their direct overlord". So an army
+	# standing inside an ENEMY fort's zone of control reads as sheltered here.
+	#
+	# ash_hostile is already computed above and was simply never written down;
+	# ash_onown says whether we control the ground at all. If the charged-but-
+	# sheltered armies turn out to be hostile or not-our-ground, the shelter test
+	# gains that condition and the gap closes. Location ownership is not readable
+	# from the save in any usable form, which is why this has to be measured from
+	# inside the game rather than worked out afterwards.
+	set_variable = { name = ash_hostile value = local_var:ash_hostile }
+	set_variable = { name = ash_onown value = 0 }
+	if = {
+		limit = {
+			exists = scope:ash_loc.controller
+			scope:ash_loc.controller = { this = root }
+		}
+		set_variable = { name = ash_onown value = 1 }
+	}
+
+	# DIAGNOSTIC, remove with the rest: did this army produce a rate at all?
+	if = {
+		limit = { local_var:ash_rate > 0 }
+		root = { change_variable = { name = shadow_attr_hit add = 1 } }
+	}
+	else = {
+		root = { change_variable = { name = shadow_attr_skip add = 1 } }
+	}
+	attr_shadow_bank = { LEDGER = shadow_attr_land }
+
+	# DIAGNOSTIC, remove with the rest: the army's own food reading, which is
+	# what the threshold above is now measured against.
+	#
+	# A per-REGIMENT version of this was tried and does not work: the engine
+	# feeds an army regiment by regiment (at Kruje 15 of 42 took losses and 27
+	# took none, which is where an army-wide 2.87% comes from), so reading
+	# food per regiment would have been the exact answer. It cannot be had --
+	# `set_variable` inside `every_sub_unit` wrote nothing at all, 0 occurrences
+	# anywhere in subunit_manager, and no error in the log either: sub-units
+	# simply do not carry script variables. Every variable this mod keeps on a
+	# unit, ud0/us0 included, lives on the ARMY for the same reason.
+	#
+	# Not needed in the end. The army-level reading is graded (Kruje sat at
+	# 0.09-0.15, Zakynthos at 0.47-0.52) and the engine charges a flat 5% right
+	# across that range, so the threshold alone recovers most of it.
+	set_variable = { name = ash_foodA value = food_percentage }
+}
+
+
+# NAVAL ATTRITION IS NOT COUNTED, deliberately.
+#
+# The game does not record it. war_manager holds no `navy_*` attrition entry at
+# all -- checked across two campaigns -- and the user confirmed it at the table:
+# sixty ships taken to a coast and sunk produced no attrition dead anywhere in
+# the war screen. Ships are damaged and lost, but not as "attrition losses".
+#
+# Our own figure was also wrong in its unit. Ship strength was being multiplied
+# by REGIMENT_SIZE = 1000, a constant that means "men in a regiment" and means
+# nothing for a hull. That produced 196,235 phantom men in one campaign with no
+# counterpart in any of the game's records.
+#
+# So the whole naval path is gone rather than left running: an unverifiable
+# number that doubles the ledger's total is worse than no number. The land
+# figure is validated (0.993 against the game's own war record over 18 months);
+# this one never could be.
+
+# Entry point, once a month per country. root is the country throughout:
+# monthly_country_pulse is country-scoped and no iterator below changes it.
+attr_shadow_tick = {
+	if = {
+		limit = { NOT = { has_variable = shadow_attr } }
+		set_variable = { name = shadow_attr value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = shadow_attr_land } }
+		set_variable = { name = shadow_attr_land value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = shadow_attr_months } }
+		set_variable = { name = shadow_attr_months value = 0 }
+	}
+
+	# DIAGNOSTIC. The counter is one running total with no dates on it, so a
+	# save cannot say whether a shortfall is 'charged every month but too
+	# little' or 'skipped most months'. These four separate the two. months
+	# accumulates; the other three are rewritten each month and describe the
+	# month just gone.
+	#
+	# What they are here to settle: armies that are NOT starving still lose men
+	# to the engine and we write nothing for them -- Tuscany at Lucca lost 493
+	# over two months with 4,938 food in store. If hit stays near zero while
+	# skipped is large, the rate itself is coming out zero for them, and the
+	# shelter test is the only thing that can be doing that.
+	change_variable = { name = shadow_attr_months add = 1 }
+	set_variable = { name = shadow_attr_hit value = 0 }
+	set_variable = { name = shadow_attr_skip value = 0 }
+	set_variable = { name = shadow_attr_last value = 0 }
+
+	# Tells the next monthly pulse that this month was banked, so the pulse's
+	# fallback does not bank a second time. See attr_shadow_seed below.
+	set_variable = { name = ash_banked value = 1 }
+
+	every_army = { attr_shadow_army = yes }
+}
+
+
+# Called from monthly_country_pulse on the 1st. Two jobs, neither of them the
+# calculation itself -- that now runs on the LAST day of the month, in
+# balance_attr_probe.1, because that is where the numbers are right:
+#
+#   FOOD. The engine charges on the 1st and refills the stores in the same
+#   moment, and this pulse runs after both, so an army it just starved reads
+#   0.1-0.5 here. Out of 350 land armies on province supply in one save,
+#   exactly ONE still read 0 at the pulse. On the last day of the month the
+#   same armies read 0 and `food_percentage <= 0` is true again.
+#
+#   STRENGTH. The engine takes its cut from the strength an army has BEFORE
+#   the tick; the strength visible here is what is left after. Banking here
+#   therefore applies the rate to an already-reduced number and comes out
+#   short by exactly (1 - rate) -- measured at 17,030 against the engine's
+#   17,881, or 0.952, on the armies it does catch. The last day of the month
+#   is the pre-tick strength.
+#
+# Measured on three clean tick pairs (saves on the last day AND the 1st of
+# May, June and July 1466), food deaths only:
+#
+#     read at the pulse       8,264 of 17,882    46%
+#     read on the last day   17,877 of 17,882   100%
+#
+attr_shadow_seed = {
+	# Fallback, and the reason ash_banked exists. If last month's probe never
+	# ran -- a country that did not exist when the pulse seeded it, a chain
+	# broken by a save/load -- that month would otherwise be banked by nobody at
+	# all. Bank it here instead, late and on post-tick strength, which is worth
+	# more than losing the month. A normal month never reaches this: the probe
+	# sets ash_banked and this clears it again.
+	if = {
+		limit = { NOT = { has_variable = ash_banked } }
+		set_variable = { name = ash_banked value = 0 }
+	}
+	if = {
+		limit = { var:ash_banked = 0 }
+		attr_shadow_tick = yes
+	}
+	set_variable = { name = ash_banked value = 0 }
+
+	# Land the probe on the LAST day of this month, one day before the engine
+	# charges on the 1st. The offset has to follow the month length or it
+	# misses: 30 lands on the 31st of a 31-day month, but in a 30-day month it
+	# lands on the 1st -- the tick day itself, too late to see anything.
+	#
+	#     Feb                     27  -> the 28th
+	#     Apr Jun Sep Nov         29  -> the 30th
+	#     everything else         30  -> the 31st
+	#
+	# Verified in game rather than assumed: monthly_country_pulse fires on day 1
+	# for every country (1,165 of them in lockstep, ash_pulse_day), the probe
+	# landed on the 30th, 31st and 30th of April, May and June (ash_probe_day),
+	# and the calendar is flat -- February is always 28, checked against every
+	# date in a save.
+	if = {
+		limit = { current_month = 2 }
+		trigger_event_silently = { id = balance_attr_probe.1 days = 27 }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				current_month = 4
+				current_month = 6
+				current_month = 9
+				current_month = 11
+			}
+		}
+		trigger_event_silently = { id = balance_attr_probe.1 days = 29 }
+	}
+	else = {
+		trigger_event_silently = { id = balance_attr_probe.1 days = 30 }
+	}
+}

@@ -1,0 +1,77 @@
+# bday -- one row per unit per day of fighting (LAND).
+#
+# Replaces balance_bday_slots_effects.txt, which spelled out 191,843 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="bday_d"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (17), each a map of its own:
+#     d        <- global_var:bdday
+#     loc      <- scope:bd_uloc
+#     c        <- scope:bd_owner
+#     p        <- global_var:bstr
+#     q        <- global_var:bdrop
+#     d0       <- global_var:bdc0
+#     d1       <- global_var:bdc1
+#     d2       <- global_var:bdc2
+#     d3       <- global_var:bdc3
+#     d4       <- global_var:bdc4
+#     d5       <- global_var:bdc5
+#     s0       <- local_var:bcd0
+#     s1       <- local_var:bcd1
+#     s2       <- local_var:bcd2
+#     s3       <- local_var:bcd3
+#     s4       <- local_var:bcd4
+#     s5       <- local_var:bcd5
+#
+# global_var:bday_count is still the row count and still the last key written.
+
+# WHY THESE READ local_var AND NOT global_var
+#   bdday, bstr, bdrop and bdc0..bdc9 were globals when this file was written.
+#   The slowdown fix converted 63 global operations in balance_bd_unit_step to
+#   locals -- a global write costs ~124 us against a local's 0.2 -- and these
+#   reads were not moved with them. Reading an unset global writes nothing and
+#   raises nothing, so from that day the daily log recorded only the country,
+#   the location and the standing counts: no date, no strength, no per-day
+#   losses. Measured in the 1482 save -- rows 1..3210 carry dates and losses and
+#   predate the change, rows 3211..6850 carry standing and nothing else.
+bday_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = bday_count } }
+		set_global_variable = { name = bday_count value = 0 }
+	}
+	change_global_variable = { name = bday_count add = 1 }
+
+	add_to_global_variable_map = { name = bday_d key = global_var:bday_count value = local_var:bdday }
+	add_to_global_variable_map = { name = bday_loc key = global_var:bday_count value = scope:bd_uloc }
+	add_to_global_variable_map = { name = bday_c key = global_var:bday_count value = scope:bd_owner }
+	add_to_global_variable_map = { name = bday_p key = global_var:bday_count value = local_var:bstr }
+	add_to_global_variable_map = { name = bday_q key = global_var:bday_count value = local_var:bdrop }
+	# which unit, which fight, what kind of row -- see balance_bd_row_ids
+	add_to_global_variable_map = { name = bday_u key = global_var:bday_count value = local_var:bdu }
+	add_to_global_variable_map = { name = bday_b key = global_var:bday_count value = local_var:bdb }
+	add_to_global_variable_map = { name = bday_k key = global_var:bday_count value = local_var:bdk }
+	add_to_global_variable_map = { name = bday_d0 key = global_var:bday_count value = local_var:bdc0 }
+	add_to_global_variable_map = { name = bday_d1 key = global_var:bday_count value = local_var:bdc1 }
+	add_to_global_variable_map = { name = bday_d2 key = global_var:bday_count value = local_var:bdc2 }
+	add_to_global_variable_map = { name = bday_d3 key = global_var:bday_count value = local_var:bdc3 }
+	add_to_global_variable_map = { name = bday_d4 key = global_var:bday_count value = local_var:bdc4 }
+	add_to_global_variable_map = { name = bday_d5 key = global_var:bday_count value = local_var:bdc5 }
+	add_to_global_variable_map = { name = bday_s0 key = global_var:bday_count value = local_var:bcd0 }
+	add_to_global_variable_map = { name = bday_s1 key = global_var:bday_count value = local_var:bcd1 }
+	add_to_global_variable_map = { name = bday_s2 key = global_var:bday_count value = local_var:bcd2 }
+	add_to_global_variable_map = { name = bday_s3 key = global_var:bday_count value = local_var:bcd3 }
+	add_to_global_variable_map = { name = bday_s4 key = global_var:bday_count value = local_var:bcd4 }
+	add_to_global_variable_map = { name = bday_s5 key = global_var:bday_count value = local_var:bcd5 }
+}

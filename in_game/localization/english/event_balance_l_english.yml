@@ -1,51 +1,21 @@
 ﻿l_english:
- # Flavor Minor Events
+ # Flavor Minor Events (Switzerland, Hesse, Flanders, Brandenburg, Florence, Milan)
  flavor_minor.1.title: "Rise of a Regional Power"
  flavor_minor.1.desc: "Our realm stands at a crucial historical juncture. Through strategic diplomacy, internal stability, and economic growth, our nation is beginning to punch above its weight class. The decisions we make today will secure our position among the regional powers for decades to come."
- flavor_minor.1Based on the provided event files, here is a detailed breakdown of all the triggers, requirements, and outcomes for the `flavor_minor`, `flavor_muscovy`, and `flavor_sweden` events.
+ flavor_minor.1.a: "We shall chart our own destiny."
 
----
+ flavor_minor.2.title: "Rise of a Regional Power"
+ flavor_minor.2.desc: "Our realm stands at a crucial historical juncture. Through strategic diplomacy, internal stability, and economic growth, our nation is beginning to punch above its weight class. The decisions we make today will secure our position among the regional powers for decades to come."
+ flavor_minor.2.a: "We shall chart our own destiny."
 
-### **Flavor Minor Events (`flavor_minor`)**
+ # Muscovy Event
+ flavor_muscovy.1.title: "The Rising Power of the North"
+ flavor_muscovy.1.desc: "Rising from the depths of the northern lands and forests, our principality is beginning to establish dominance over the surrounding territories. By strengthening our military might and administrative structure, we must prove that we are the true masters of the Russian lands."
+ flavor_muscovy.1.a: "The Muscovite lands shall be united!"
 
-All events in this file target a specific country tag, require `is_human = yes`[cite: 1], and share the following timeline specifications[cite: 1]:
-* **Timeframe:** January 1, 1337 – January 1, 1350[cite: 1]
-* **Monthly Chance:** 100%[cite: 1]
-* **One-time event:** Yes (`fire_only_once = yes`)[cite: 1]
-
-| Event ID | Target Tag | Effects / Outcomes |
-| :--- | :--- | :--- |
-| **`flavor_minor.1`** | `SWI` (Switzerland)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1] and the `minor_massive_bonus` country modifier for 50 years[cite: 1]. |
-| **`flavor_minor.2`** | `HES` (Hesse)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1], mild legitimacy bonus (`legitimacy_mild_bonus`)[cite: 1], and `minor_massive_bonus` for 50 years[cite: 1]. |
-| **`flavor_minor.3`** | `FLA` (Flanders)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1], mild legitimacy bonus (`legitimacy_mild_bonus`)[cite: 1], and `minor_massive_bonus` for 50 years[cite: 1]. |
-| **`flavor_minor.4`** | `BRA` (Brandenburg)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1], mild legitimacy bonus (`legitimacy_mild_bonus`)[cite: 1], and `minor_massive_bonus` for 50 years[cite: 1]. |
-| **`flavor_minor.5`** | `FLO` (Florence)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1] and the `minor_massive_bonus.2` country modifier for 50 years[cite: 1]. |
-| **`flavor_minor.6`** | `MLO` (Milan)[cite: 1] | * **Option A:** Gains severe stability bonus (`stability_severe_bonus`)[cite: 1] and the `minor_massive_bonus.2` country modifier for 50 years[cite: 1]. |
-
----
-
-### **Flavor Muscovy Event (`flavor_muscovy`)**
-
-**`flavor_muscovy.1`**
-* **Target:** `MOS` (Muscovy)[cite: 2]
-* **Timeframe:** January 1, 1337 – January 1, 1350 (Monthly Chance: 100%, Fire once)[cite: 2]
-* **Trigger:** `is_human = yes`[cite: 2]
-* **Option A:** Adds the `muscovy_massive_bonus` country modifier for 50 years[cite: 2].
-
----
-
-### **Flavor Sweden Event (`flavor_sweden`)**
-
-**`flavor_sweden.1` ("The Legacy of Ragnar")**
-* **Target:** `SWE` (Sweden)[cite: 3]
-* **Timeframe:** January 1, 1337 – January 1, 1470 (Monthly Chance: 3%, Fire once)[cite: 3]
-* **Triggers:**
-  * Religion is Catholic[cite: 3]
-  * Owns the location of Stockholm[cite: 3]
-  * At peace (`at_war = no`)[cite: 3]
-  * Is not a subject country[cite: 3]
-  * Has no active regent[cite: 3]
-* **Immediate Effects:** Creates the `lodbrok_dynasty`[cite: 3] and generates a highly-skilled Norse Swedish character named Ragnar Lodbrok (Stats: 80–100 across ADM, DIP, MIL)[cite: 3].
-* **Options:**
-  * **Option A (Historical):** Rejects the heretic[cite: 3]. Grants a severe stability bonus (`stability_severe_bonus`)[cite: 3], a mild legitimacy bonus (`legitimacy_mild_bonus`)[cite: 3], and the `minor_massive_bonus` country modifier for 50 years[cite: 3].
-  * **Option B:** Reverts to the Old Gods[cite: 3]. Sets Ragnar Lodbrok as ruler[cite: 3], converts the country, ruler, and ruling family to the Norse religion[cite: 3], reduces stability by 60[cite: 3], and reduces legitimacy by 30[cite: 3]. Removes `enacted_placitum_regium` if active[cite: 3].
+ # Sweden Event (Legacy of Ragnar)
+ flavor_sweden.1.title: "The Legacy of Ragnar"
+ flavor_sweden.1.desc: "Though generations have passed since Christianity took root in Swedish lands, whispers of the old gods still linger. A skilled leader claiming descent from the legendary Ragnar Lodbrok has emerged. While the Catholic Church views him as a threat, many long for a return to the ancient ways."
+ flavor_sweden.1.historical_info: "Following Sweden's Christianization, pagan traditions and the legacy of legendary figures like Ragnar Lodbrok left a profound mark on Nordic heritage."
+ flavor_sweden.1.a: "There is no place for heretics in our court! We remain faithful to Christ."
+ flavor_sweden.1.b: "Valhalla calls to us! Hail Ragnar, return to the old gods!"

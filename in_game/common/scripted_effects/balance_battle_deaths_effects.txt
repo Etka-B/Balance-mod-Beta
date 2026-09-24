@@ -1,0 +1,1867 @@
+###############################################################################
+# BATTLE LOSSES BY UNIT CATEGORY -- the column the engine never hands over.
+#
+# THE PROBLEM
+#   on_battle_won reports the dead as one number per side
+#   (scope:killed_land_units / scope:lost_land_units). Nothing in script
+#   splits them by unit type: no loss trigger on a country, a unit or a
+#   sub_unit, and no on_action fires before a battle. Checked across all 129
+#   hardcoded on_actions, the 28 unit triggers and the 11 sub_unit ones.
+#
+# THE METHOD
+#   Survivors are countable -- they are still there. Read them daily, and a
+#   category that shrank lost the difference. Accumulate the drops and you
+#   have the losses split by category without ever being told them.
+#
+#   min = 0 on every subtraction is what keeps a growth from counting as a
+#   negative loss. Units in combat do not replenish, so within a fighting
+#   unit a drop is casualties and nothing else.
+#
+# WHY THE READING IS KEPT IN THREE PLACES
+#   The method needs yesterday's number. The only question is where to keep
+#   it, and each place fails differently -- so all three are kept, and the
+#   closing step takes whichever saw the most.
+#
+#   ON THE UNIT (us/ud). Exact, and immune to anything happening elsewhere:
+#   each unit carries its own reading, so another army marching about or an
+#   ally arriving cannot touch it. Verified on a three-country land battle at
+#   35,513 against the engine's 35,512, and on an army that fought two
+#   battles a day apart carrying nothing from the first into the second.
+#   Fails completely when the unit is destroyed: the engine deletes it and
+#   the reading goes with it. Measured: battles of 30, 20 and 662 dead all
+#   recorded as zero, and a naval battle where France lost its whole fleet
+#   recorded as zero.
+#
+#   ON THE LOCATION (lp/la). Survives the unit's deletion, and is immune to
+#   recruitment anywhere else -- troops raised in the next province do not
+#   touch this location's count. Fails when an ally ARRIVES at the battle
+#   mid-fight, because the arrival offsets the day's losses in the total.
+#
+#   ON THE COUNTRY (cs/ca). Survives deletion, and is immune to an ally
+#   arriving, because another country's troops are not in this country's
+#   total. Fails when the country itself raises troops elsewhere that day,
+#   which offsets its own losses. Also the only one of the three that sees a
+#   CAPTURED unit leave: a captured hull stays on the same seazone, so the
+#   location total does not move, but it has left that navy.
+#
+#   The two aggregate readings cover each other's blind spot, and masking
+#   always understates, never overstates -- so taking the larger of what the
+#   unit tally and the country tally saw is safe.
+#
+# WHY THE AGGREGATES ACCUMULATE RATHER THAN JUST HOLD A READING
+#   A daily reading alone would only ever give the LAST day. A four-day
+#   battle that loses 10k a day and is wiped on the fourth would read 10k,
+#   not 40k, because the first three days were only ever recorded on a unit
+#   that no longer exists. So la and ca add up each day's drop and are
+#   cleared when a battle collects them; lp and cs hold the reading.
+#
+# HOW GOOD IT IS -- checkable on every battle
+#   The engine still reports each side's own total, so the sum of our
+#   categories has to match it. Not an assumption to trust but a test that
+#   runs every time, and the gap when it fails is exactly what was missed.
+#
+# WHAT NO AMOUNT OF THIS FIXES
+#   A battle that begins and ends before a single daily reading was ever
+#   taken has nothing to difference against, and comes out as zero. That is
+#   not a bug to fix but a floor: the chain has to have been running before
+#   the battle. Measured repeatedly -- reloading an old save and fighting
+#   within three days recorded nothing at all.
+#
+# Per unit:     us0..us9   -- yesterday's strength
+#               ud0..ud9   -- its losses in the fight it is in
+# Per location: lp0..lp9   -- yesterday's total of everything standing here
+#               la0..la9   -- losses accumulated here, cleared by a battle
+#               lday       -- the day this location was last read, so the
+#                             per-country sweep only accumulates it once
+# Per country:  cs0..cs9   -- yesterday's total
+#               ca0..ca9   -- its losses accumulated, cleared by a battle
+#               cbd0..cbd9 -- THIS battle's losses, read into the
+#                             participant log and then overwritten
+# Globals:      bcd0..bcd9 -- whatever is being measured right now (scratch)
+#   0 light infantry  1 heavy infantry  2 light cavalry   (men)
+#   3 heavy cavalry   4 artillery       5 auxiliary       (men)
+#   6 galley  7 light ship  8 heavy ship  9 transport     (hulls)
+#
+# The scratch values are globals rather than local variables because a local
+# written in one scope is not readable from another -- measured while
+# building the attrition shadow, where that returned zero on every country.
+###############################################################################
+
+# COUNTRY scope. Nothing can be added to a variable that does not yet
+# exist, so each set is created first -- and each on ITS OWN guard.
+# Sharing one guard is a real bug, not a tidiness point: the pending
+# bucket was once added behind the cbd guard, so every country that
+# already had cbd0 from an earlier session skipped the block, never got
+# a cpen, and every write to it failed silently.
+balance_bd_init = {
+	if = {
+		limit = { NOT = { has_variable = cbd0 } }
+		set_variable = { name = cbd0 value = 0 }
+		set_variable = { name = cbd1 value = 0 }
+		set_variable = { name = cbd2 value = 0 }
+		set_variable = { name = cbd3 value = 0 }
+		set_variable = { name = cbd4 value = 0 }
+		set_variable = { name = cbd5 value = 0 }
+		set_variable = { name = cbd6 value = 0 }
+		set_variable = { name = cbd7 value = 0 }
+		set_variable = { name = cbd8 value = 0 }
+		set_variable = { name = cbd9 value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = xcnt } }
+		set_variable = { name = xcnt value = 0 }
+	}
+}
+
+
+# One unit: measure it, charge what it lost since yesterday to its own
+# tally, then leave today's reading behind for tomorrow. UNIT scope.
+# $ACC$ = yes charges the drop; no only refreshes the reading, because
+# a unit that is not fighting also loses men to attrition and
+# disbanding and those are not battle casualties.
+# $CLR$ = yes lets the out-of-combat block below wipe the tally; close
+# passes no, because it is about to collect that tally.
+balance_bd_unit_step = {
+	if = {
+		limit = { NOT = { has_variable = ud0 } }
+		set_variable = { name = ud0 value = 0 }
+		set_variable = { name = ud1 value = 0 }
+		set_variable = { name = ud2 value = 0 }
+		set_variable = { name = ud3 value = 0 }
+		set_variable = { name = ud4 value = 0 }
+		set_variable = { name = ud5 value = 0 }
+		set_variable = { name = ud6 value = 0 }
+		set_variable = { name = ud7 value = 0 }
+		set_variable = { name = ud8 value = 0 }
+		set_variable = { name = ud9 value = 0 }
+	}
+
+	set_local_variable = { name = bcd0 value = 0 }
+	set_local_variable = { name = bcd1 value = 0 }
+	set_local_variable = { name = bcd2 value = 0 }
+	set_local_variable = { name = bcd3 value = 0 }
+	set_local_variable = { name = bcd4 value = 0 }
+	set_local_variable = { name = bcd5 value = 0 }
+	set_local_variable = { name = bcd6 value = 0 }
+	set_local_variable = { name = bcd7 value = 0 }
+	set_local_variable = { name = bcd8 value = 0 }
+	set_local_variable = { name = bcd9 value = 0 }
+	# This unit's own reading and its own drop, as two plain scalars, for
+	# balance_bd_day_add to pick up on the way past. They are zeroed for
+	# EVERY unit and filled only inside the ACC block below: a unit that
+	# fails that guard has to leave nothing behind, or the next unit in
+	# the walk adds its neighbour's numbers into the day a second time.
+	#
+	# Adding the ten categories together is safe here in a way it is not
+	# anywhere else in this file. Land is counted in men and sea in
+	# hulls, but a unit is either an army or a navy and a location is
+	# either land or sea, so the two never meet in one row.
+	set_local_variable = { name = bstr value = 0 }
+	set_local_variable = { name = bdrop value = 0 }
+	# The mirror of bdrop: what this unit GAINED since yesterday. A unit
+	# that lost nobody but grew has been reinforced, or is a fresh stack
+	# arriving at a fight already under way, and that is worth a row even
+	# though nothing died. Same shape as the bdrop lines below, so the
+	# same min = 0 clamp does the work.
+	set_local_variable = { name = bgain value = 0 }
+	# The same drop, kept by category instead of only as a total. bdrop is
+	# the sum of these ten; they are split out so a day of a battle can be
+	# read back as "2,000 heavy cavalry and 1,000 archers died on the 3rd"
+	# rather than only "3,000 died". Nothing new is measured here -- the
+	# per-category difference was already being computed to feed ud0..ud9,
+	# it was just never carried out of this effect.
+	set_local_variable = { name = bdc0 value = 0 }
+	set_local_variable = { name = bdc1 value = 0 }
+	set_local_variable = { name = bdc2 value = 0 }
+	set_local_variable = { name = bdc3 value = 0 }
+	set_local_variable = { name = bdc4 value = 0 }
+	set_local_variable = { name = bdc5 value = 0 }
+	set_local_variable = { name = bdc6 value = 0 }
+	set_local_variable = { name = bdc7 value = 0 }
+	set_local_variable = { name = bdc8 value = 0 }
+	set_local_variable = { name = bdc9 value = 0 }
+	every_sub_unit = {
+		if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_light_infantry } }
+			change_local_variable = { name = bcd0 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_heavy_infantry } }
+			change_local_variable = { name = bcd1 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_light_cavalry } }
+			change_local_variable = { name = bcd2 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_heavy_cavalry } }
+			change_local_variable = { name = bcd3 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_artillery } }
+			change_local_variable = { name = bcd4 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_auxiliary } }
+			change_local_variable = { name = bcd5 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_galley } }
+			change_local_variable = { name = bcd6 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_light_ship } }
+			change_local_variable = { name = bcd7 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_heavy_ship } }
+			change_local_variable = { name = bcd8 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_transport } }
+			change_local_variable = { name = bcd9 add = 1 }
+		}
+	}
+
+	# The walk is done, so bcd is finished being accumulated. Everything
+	# below reads it dozens of times, and until now every one of those reads
+	# went through the global variable table -- 180,000+ entries and growing
+	# with every row the ledger writes. Nothing outside this effect has read
+	# bcd since the location tier was removed, so it is copied onto the unit
+	# once here and read locally from then on: ~85 global lookups per unit
+	# per day become ~25. The walk itself still has to use globals, because
+	# its scope is the SUB-unit and `prev` appears nowhere in this game's
+	# own files -- one copy is the cheapest correct way across that boundary.
+	set_variable = { name = bcd0 value = local_var:bcd0 }
+	set_variable = { name = bcd1 value = local_var:bcd1 }
+	set_variable = { name = bcd2 value = local_var:bcd2 }
+	set_variable = { name = bcd3 value = local_var:bcd3 }
+	set_variable = { name = bcd4 value = local_var:bcd4 }
+	set_variable = { name = bcd5 value = local_var:bcd5 }
+	set_variable = { name = bcd6 value = local_var:bcd6 }
+	set_variable = { name = bcd7 value = local_var:bcd7 }
+	set_variable = { name = bcd8 value = local_var:bcd8 }
+	set_variable = { name = bcd9 value = local_var:bcd9 }
+
+
+	if = {
+		limit = {
+			# `always = $ACC$`, not `$ACC$ = yes`: the parameter is pasted
+			# in as text, and the second spelling becomes the trigger
+			# `yes = yes`, which the engine does not know and which
+			# therefore silently never passes.
+			always = $ACC$
+			# nothing to difference against on a unit's first day
+			has_variable = us0
+			# A unit measuring nothing, out of any fight, is not what we are
+			# looking at any more -- its regiments or ships went somewhere
+			# else, and charging its whole previous reading would turn a
+			# transfer into a total loss.
+			#
+			# IN a fight, or standing at the battle its close is reading, an
+			# empty unit lost what it had. Measured by ship id at Cape Sicie:
+			# a Tuscan fleet read 3 galleys on the morning of 1481.11.5 and
+			# nothing at the close, another 6 galleys and a light ship before
+			# 1481.11.13 and nothing at its close, and none of those 10 ships
+			# exists anywhere in the next save. With the guard as it was they
+			# were booked by nobody.
+			OR = {
+				num_subunits > 0
+				in_combat = yes
+				AND = {
+					exists = scope:bc_loc
+					unit_location = { this = scope:bc_loc }
+				}
+			}
+		}
+		change_variable = { name = ud0 add = { value = var:us0 subtract = var:bcd0 min = 0 } }
+		change_variable = { name = ud1 add = { value = var:us1 subtract = var:bcd1 min = 0 } }
+		change_variable = { name = ud2 add = { value = var:us2 subtract = var:bcd2 min = 0 } }
+		change_variable = { name = ud3 add = { value = var:us3 subtract = var:bcd3 min = 0 } }
+		change_variable = { name = ud4 add = { value = var:us4 subtract = var:bcd4 min = 0 } }
+		change_variable = { name = ud5 add = { value = var:us5 subtract = var:bcd5 min = 0 } }
+		change_variable = { name = ud6 add = { value = var:us6 subtract = var:bcd6 min = 0 } }
+		change_variable = { name = ud7 add = { value = var:us7 subtract = var:bcd7 min = 0 } }
+		change_variable = { name = ud8 add = { value = var:us8 subtract = var:bcd8 min = 0 } }
+		change_variable = { name = ud9 add = { value = var:us9 subtract = var:bcd9 min = 0 } }
+		change_local_variable = { name = bstr add = var:bcd0 }
+		change_local_variable = { name = bstr add = var:bcd1 }
+		change_local_variable = { name = bstr add = var:bcd2 }
+		change_local_variable = { name = bstr add = var:bcd3 }
+		change_local_variable = { name = bstr add = var:bcd4 }
+		change_local_variable = { name = bstr add = var:bcd5 }
+		change_local_variable = { name = bstr add = var:bcd6 }
+		change_local_variable = { name = bstr add = var:bcd7 }
+		change_local_variable = { name = bstr add = var:bcd8 }
+		change_local_variable = { name = bstr add = var:bcd9 }
+		change_local_variable = { name = bdrop add = { value = var:us0 subtract = var:bcd0 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us1 subtract = var:bcd1 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us2 subtract = var:bcd2 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us3 subtract = var:bcd3 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us4 subtract = var:bcd4 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us5 subtract = var:bcd5 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us6 subtract = var:bcd6 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us7 subtract = var:bcd7 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us8 subtract = var:bcd8 min = 0 } }
+		change_local_variable = { name = bdrop add = { value = var:us9 subtract = var:bcd9 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd0 subtract = var:us0 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd1 subtract = var:us1 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd2 subtract = var:us2 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd3 subtract = var:us3 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd4 subtract = var:us4 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd5 subtract = var:us5 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd6 subtract = var:us6 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd7 subtract = var:us7 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd8 subtract = var:us8 min = 0 } }
+		change_local_variable = { name = bgain add = { value = var:bcd9 subtract = var:us9 min = 0 } }
+		change_local_variable = { name = bdc0 add = { value = var:us0 subtract = var:bcd0 min = 0 } }
+		change_local_variable = { name = bdc1 add = { value = var:us1 subtract = var:bcd1 min = 0 } }
+		change_local_variable = { name = bdc2 add = { value = var:us2 subtract = var:bcd2 min = 0 } }
+		change_local_variable = { name = bdc3 add = { value = var:us3 subtract = var:bcd3 min = 0 } }
+		change_local_variable = { name = bdc4 add = { value = var:us4 subtract = var:bcd4 min = 0 } }
+		change_local_variable = { name = bdc5 add = { value = var:us5 subtract = var:bcd5 min = 0 } }
+		change_local_variable = { name = bdc6 add = { value = var:us6 subtract = var:bcd6 min = 0 } }
+		change_local_variable = { name = bdc7 add = { value = var:us7 subtract = var:bcd7 min = 0 } }
+		change_local_variable = { name = bdc8 add = { value = var:us8 subtract = var:bcd8 min = 0 } }
+		change_local_variable = { name = bdc9 add = { value = var:us9 subtract = var:bcd9 min = 0 } }
+	}
+
+	# Out of combat, whatever this unit still carries belongs to a
+	# fight already settled. Keeping it would let the next battle count
+	# the same casualties again.
+	#
+	# $CLR$ = no turns this off, and balance_bd_close is the only caller
+	# that passes it. Close's whole job is to collect what units have been
+	# carrying, and it only ever looks at units that are out of combat --
+	# so without the switch this block fired on every single one of them,
+	# one line before the harvest, and the harvest collected zero. Every
+	# figure the mod has recorded so far came from the country tier alone;
+	# the unit tier measured all of it and then threw it away. It shows in
+	# a save as every ud0..ud9 sitting empty while every us0..us9 holds a
+	# real reading. Nothing needs to clear the tally here anyway --
+	# balance_bd_harvest zeroes it itself once it has been banked.
+	if = {
+		limit = {
+			always = $CLR$
+			NOT = { in_combat = yes }
+			# A unit that LEFT a fight that is still going carries that fight's
+			# number until the fight's own close collects its tally. Wiping it
+			# here is what used to lose a retreating stack's casualties.
+			NOT = { has_variable = bdcid }
+		}
+		set_variable = { name = ud0 value = 0 }
+		set_variable = { name = ud1 value = 0 }
+		set_variable = { name = ud2 value = 0 }
+		set_variable = { name = ud3 value = 0 }
+		set_variable = { name = ud4 value = 0 }
+		set_variable = { name = ud5 value = 0 }
+		set_variable = { name = ud6 value = 0 }
+		set_variable = { name = ud7 value = 0 }
+		set_variable = { name = ud8 value = 0 }
+		set_variable = { name = ud9 value = 0 }
+	}
+
+	set_variable = { name = us0 value = var:bcd0 }
+	set_variable = { name = us1 value = var:bcd1 }
+	set_variable = { name = us2 value = var:bcd2 }
+	set_variable = { name = us3 value = var:bcd3 }
+	set_variable = { name = us4 value = var:bcd4 }
+	set_variable = { name = us5 value = var:bcd5 }
+	set_variable = { name = us6 value = var:bcd6 }
+	set_variable = { name = us7 value = var:bcd7 }
+	set_variable = { name = us8 value = var:bcd8 }
+	set_variable = { name = us9 value = var:bcd9 }
+}
+
+
+
+
+# COUNTRY scope, from on_battle_won. Banks the pre-battle reading of
+# every unit of this country at the battle, onto the country.
+balance_bd_bank = {
+	if = {
+		limit = { NOT = { has_variable = wp0 } }
+		set_variable = { name = wp0 value = 0 }
+		set_variable = { name = wp1 value = 0 }
+		set_variable = { name = wp2 value = 0 }
+		set_variable = { name = wp3 value = 0 }
+		set_variable = { name = wp4 value = 0 }
+		set_variable = { name = wp5 value = 0 }
+		set_variable = { name = wp6 value = 0 }
+		set_variable = { name = wp7 value = 0 }
+		set_variable = { name = wp8 value = 0 }
+		set_variable = { name = wp9 value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = wpend } }
+		set_variable = { name = wpend value = 1 }
+		set_variable = { name = wp0 value = 0 }
+		set_variable = { name = wp1 value = 0 }
+		set_variable = { name = wp2 value = 0 }
+		set_variable = { name = wp3 value = 0 }
+		set_variable = { name = wp4 value = 0 }
+		set_variable = { name = wp5 value = 0 }
+		set_variable = { name = wp6 value = 0 }
+		set_variable = { name = wp7 value = 0 }
+		set_variable = { name = wp8 value = 0 }
+		set_variable = { name = wp9 value = 0 }
+		set_variable = { name = wcnt value = 0 }
+		balance_bd_bank_walk = yes
+	}
+}
+
+
+# COUNTRY scope, from balance_bd_bank once it has decided the bank is
+# open. Split out only so the guard above stays readable.
+balance_bd_bank_walk = {
+	save_scope_as = bd_owner
+
+	every_army = {
+		limit = {
+			# At the battle, and with a reading to carry. A unit that
+			# has never been swept has nothing to say about yesterday.
+			unit_location = { this = scope:bc_loc }
+			has_variable = us0
+			has_only_prisoners = no
+		}
+		set_variable = { name = wmark value = 1 }
+		# This unit's OWN share of what is being banked, kept on the unit.
+		# balance_bd_settle gives it back if the unit is still alive
+		# tomorrow, which is what leaves wp holding only the units that
+		# are gone. us0..us9 is overwritten every day, so it cannot be
+		# read back tomorrow -- this is a snapshot, not a second reading.
+		set_variable = { name = wu0 value = var:us0 }
+		set_variable = { name = wu1 value = var:us1 }
+		set_variable = { name = wu2 value = var:us2 }
+		set_variable = { name = wu3 value = var:us3 }
+		set_variable = { name = wu4 value = var:us4 }
+		set_variable = { name = wu5 value = var:us5 }
+		set_variable = { name = wu6 value = var:us6 }
+		set_variable = { name = wu7 value = var:us7 }
+		set_variable = { name = wu8 value = var:us8 }
+		set_variable = { name = wu9 value = var:us9 }
+		set_global_variable = { name = bdd0 value = var:us0 }
+		set_global_variable = { name = bdd1 value = var:us1 }
+		set_global_variable = { name = bdd2 value = var:us2 }
+		set_global_variable = { name = bdd3 value = var:us3 }
+		set_global_variable = { name = bdd4 value = var:us4 }
+		set_global_variable = { name = bdd5 value = var:us5 }
+		set_global_variable = { name = bdd6 value = var:us6 }
+		set_global_variable = { name = bdd7 value = var:us7 }
+		set_global_variable = { name = bdd8 value = var:us8 }
+		set_global_variable = { name = bdd9 value = var:us9 }
+		scope:bd_owner = {
+			change_variable = { name = wp0 add = global_var:bdd0 }
+			change_variable = { name = wp1 add = global_var:bdd1 }
+			change_variable = { name = wp2 add = global_var:bdd2 }
+			change_variable = { name = wp3 add = global_var:bdd3 }
+			change_variable = { name = wp4 add = global_var:bdd4 }
+			change_variable = { name = wp5 add = global_var:bdd5 }
+			change_variable = { name = wp6 add = global_var:bdd6 }
+			change_variable = { name = wp7 add = global_var:bdd7 }
+			change_variable = { name = wp8 add = global_var:bdd8 }
+			change_variable = { name = wp9 add = global_var:bdd9 }
+			change_variable = { name = wcnt add = 1 }
+		}
+	}
+	every_navy = {
+		limit = {
+			# At the battle, and with a reading to carry. A unit that
+			# has never been swept has nothing to say about yesterday.
+			unit_location = { this = scope:bc_loc }
+			has_variable = us0
+		}
+		set_variable = { name = wmark value = 1 }
+		# This unit's OWN share of what is being banked, kept on the unit.
+		# balance_bd_settle gives it back if the unit is still alive
+		# tomorrow, which is what leaves wp holding only the units that
+		# are gone. us0..us9 is overwritten every day, so it cannot be
+		# read back tomorrow -- this is a snapshot, not a second reading.
+		set_variable = { name = wu0 value = var:us0 }
+		set_variable = { name = wu1 value = var:us1 }
+		set_variable = { name = wu2 value = var:us2 }
+		set_variable = { name = wu3 value = var:us3 }
+		set_variable = { name = wu4 value = var:us4 }
+		set_variable = { name = wu5 value = var:us5 }
+		set_variable = { name = wu6 value = var:us6 }
+		set_variable = { name = wu7 value = var:us7 }
+		set_variable = { name = wu8 value = var:us8 }
+		set_variable = { name = wu9 value = var:us9 }
+		set_global_variable = { name = bdd0 value = var:us0 }
+		set_global_variable = { name = bdd1 value = var:us1 }
+		set_global_variable = { name = bdd2 value = var:us2 }
+		set_global_variable = { name = bdd3 value = var:us3 }
+		set_global_variable = { name = bdd4 value = var:us4 }
+		set_global_variable = { name = bdd5 value = var:us5 }
+		set_global_variable = { name = bdd6 value = var:us6 }
+		set_global_variable = { name = bdd7 value = var:us7 }
+		set_global_variable = { name = bdd8 value = var:us8 }
+		set_global_variable = { name = bdd9 value = var:us9 }
+		scope:bd_owner = {
+			change_variable = { name = wp0 add = global_var:bdd0 }
+			change_variable = { name = wp1 add = global_var:bdd1 }
+			change_variable = { name = wp2 add = global_var:bdd2 }
+			change_variable = { name = wp3 add = global_var:bdd3 }
+			change_variable = { name = wp4 add = global_var:bdd4 }
+			change_variable = { name = wp5 add = global_var:bdd5 }
+			change_variable = { name = wp6 add = global_var:bdd6 }
+			change_variable = { name = wp7 add = global_var:bdd7 }
+			change_variable = { name = wp8 add = global_var:bdd8 }
+			change_variable = { name = wp9 add = global_var:bdd9 }
+			change_variable = { name = wcnt add = 1 }
+		}
+	}
+}
+
+
+# COUNTRY scope, a day after the battle. What was banked at the battle and is
+# no longer there was destroyed, and is missing by exactly what it was worth.
+#
+# HOW IT DECIDES, AND WHY IT CHANGED
+#   It used to add up the CURRENT strength of every surviving unit into wq and
+#   charge wp - wq. That reads the survivors a day late, so for a unit that
+#   lived through the battle wp - wq is not the battle at all -- it is whatever
+#   that unit lost on the day AFTER, and the next daily sweep writes those same
+#   men down a second time.
+#
+#   Caught on the battle of 1467.1.8 at Cerdagne, which Switzerland won:
+#
+#       1467.1.8   wipe row        6,670 standing, 1,127 charged
+#       1467.1.9   the daily sweep 5,542 standing, 1,127 charged
+#
+#   6,670 - 5,542 = 1,128. The wipe was measuring the 9th and filing it under
+#   the 8th. The engine puts Switzerland's loss at 2,030 and the recorder had
+#   3,157 -- over by 1,127, the wipe row to the man.
+#
+#   So a survivor is now subtracted rather than counted. Each unit's share of
+#   the bank is kept on the unit itself (wu0..wu9, written by
+#   balance_bd_bank_walk), and a unit still standing tomorrow takes its own
+#   share back out of wp. What is left in wp is the units that never came back,
+#   which is the wipe and nothing else. wq is gone.
+#
+#   Nothing is lost for the survivor: its own tally (ud0..ud9) already covers
+#   every day including the last, because balance_bd_close steps it once more
+#   before harvesting it.
+#
+#   A day later rather than at once, because the engine has not applied the
+#   casualties when on_battle_won fires -- measured: the readings it gives
+#   there are the pre-battle ones, to the man.
+#
+# WHAT THIS STILL CANNOT SEE
+#   A unit that leaves the army list without all of its men dying -- retreating
+#   into another stack, or being folded into one -- is not walked here either,
+#   so its whole banked strength is charged. Measured on the same campaign:
+#   Hungary's 13,663-strong army at Sárvár, 1467.1.24, vanished from the list
+#   and was booked in full while the engine records 5,786 dead. Script has no
+#   handle on it: the unit is gone, and there is nothing left to ask. The
+#   ledger catches it instead, by scaling a side back to the engine's own
+#   figure for that battle -- see cap_battle_rows_to_engine in parse_save.py.
+balance_bd_settle = {
+	set_variable = { name = wsur value = 0 }
+	save_scope_as = bd_owner
+	balance_bd_freed = yes
+
+	every_army = {
+		limit = { has_variable = wmark }
+		set_global_variable = { name = bdd0 value = var:wu0 }
+		set_global_variable = { name = bdd1 value = var:wu1 }
+		set_global_variable = { name = bdd2 value = var:wu2 }
+		set_global_variable = { name = bdd3 value = var:wu3 }
+		set_global_variable = { name = bdd4 value = var:wu4 }
+		set_global_variable = { name = bdd5 value = var:wu5 }
+		set_global_variable = { name = bdd6 value = var:wu6 }
+		set_global_variable = { name = bdd7 value = var:wu7 }
+		set_global_variable = { name = bdd8 value = var:wu8 }
+		set_global_variable = { name = bdd9 value = var:wu9 }
+		scope:bd_owner = {
+			change_variable = { name = wp0 subtract = global_var:bdd0 }
+			change_variable = { name = wp1 subtract = global_var:bdd1 }
+			change_variable = { name = wp2 subtract = global_var:bdd2 }
+			change_variable = { name = wp3 subtract = global_var:bdd3 }
+			change_variable = { name = wp4 subtract = global_var:bdd4 }
+			change_variable = { name = wp5 subtract = global_var:bdd5 }
+			change_variable = { name = wp6 subtract = global_var:bdd6 }
+			change_variable = { name = wp7 subtract = global_var:bdd7 }
+			change_variable = { name = wp8 subtract = global_var:bdd8 }
+			change_variable = { name = wp9 subtract = global_var:bdd9 }
+			change_variable = { name = wsur add = 1 }
+		}
+		remove_variable = wmark
+		remove_variable = wu0
+		remove_variable = wu1
+		remove_variable = wu2
+		remove_variable = wu3
+		remove_variable = wu4
+		remove_variable = wu5
+		remove_variable = wu6
+		remove_variable = wu7
+		remove_variable = wu8
+		remove_variable = wu9
+	}
+	every_navy = {
+		limit = { has_variable = wmark }
+		set_global_variable = { name = bdd0 value = var:wu0 }
+		set_global_variable = { name = bdd1 value = var:wu1 }
+		set_global_variable = { name = bdd2 value = var:wu2 }
+		set_global_variable = { name = bdd3 value = var:wu3 }
+		set_global_variable = { name = bdd4 value = var:wu4 }
+		set_global_variable = { name = bdd5 value = var:wu5 }
+		set_global_variable = { name = bdd6 value = var:wu6 }
+		set_global_variable = { name = bdd7 value = var:wu7 }
+		set_global_variable = { name = bdd8 value = var:wu8 }
+		set_global_variable = { name = bdd9 value = var:wu9 }
+		scope:bd_owner = {
+			change_variable = { name = wp0 subtract = global_var:bdd0 }
+			change_variable = { name = wp1 subtract = global_var:bdd1 }
+			change_variable = { name = wp2 subtract = global_var:bdd2 }
+			change_variable = { name = wp3 subtract = global_var:bdd3 }
+			change_variable = { name = wp4 subtract = global_var:bdd4 }
+			change_variable = { name = wp5 subtract = global_var:bdd5 }
+			change_variable = { name = wp6 subtract = global_var:bdd6 }
+			change_variable = { name = wp7 subtract = global_var:bdd7 }
+			change_variable = { name = wp8 subtract = global_var:bdd8 }
+			change_variable = { name = wp9 subtract = global_var:bdd9 }
+			change_variable = { name = wsur add = 1 }
+		}
+		remove_variable = wmark
+		remove_variable = wu0
+		remove_variable = wu1
+		remove_variable = wu2
+		remove_variable = wu3
+		remove_variable = wu4
+		remove_variable = wu5
+		remove_variable = wu6
+		remove_variable = wu7
+		remove_variable = wu8
+		remove_variable = wu9
+	}
+
+	# What was banked and did not come back, ADDED to what the units
+	# themselves already accounted for -- not taken as the larger of the
+	# two, because they cover different days and do not overlap.
+	#
+	# An army of 20,000 that fights down 15,000 / 10,000 / 5,000 and is
+	# destroyed on the fourth day has 15,000 in its own tally, harvested
+	# at close: three days of drops it lived through. The 5,000 it still
+	# had going into the fourth day is not in that tally and never can
+	# be, because the casualties that finished it are applied after
+	# on_battle_won -- which is precisely what wp holds. Taking the
+	# larger of the two would report 15,000 and lose the day it died.
+	#
+	# The same holds for a unit that survives: its tally covers the days
+	# that were swept, and wp - wq is the last day, which the sweep has
+	# not reached yet. Adding is right in both cases.
+	if = {
+		limit = { has_variable = wp0 }
+		change_variable = { name = cbd0 add = { value = var:wp0 min = 0 } }
+		change_variable = { name = cbd1 add = { value = var:wp1 min = 0 } }
+		change_variable = { name = cbd2 add = { value = var:wp2 min = 0 } }
+		change_variable = { name = cbd3 add = { value = var:wp3 min = 0 } }
+		change_variable = { name = cbd4 add = { value = var:wp4 min = 0 } }
+		change_variable = { name = cbd5 add = { value = var:wp5 min = 0 } }
+		change_variable = { name = cbd6 add = { value = var:wp6 min = 0 } }
+		change_variable = { name = cbd7 add = { value = var:wp7 min = 0 } }
+		change_variable = { name = cbd8 add = { value = var:wp8 min = 0 } }
+		change_variable = { name = cbd9 add = { value = var:wp9 min = 0 } }
+	}
+
+		# The same correction, written as a day-by-day row too, so bday and
+		# bpart end up telling the same story instead of two different ones.
+		#
+		# bday is fed from the unit tier alone -- the daily sweep differences
+		# each unit's own reading -- and a unit the engine deletes after
+		# on_battle_won never shows that last drop there. Exactly the hole wp
+		# and wq exist to fill for bpart. Rather than a second mechanism, the
+		# same numbers are pushed through the same write path: wploc and wpday,
+		# parked by balance_bd_close, say where and when to file them.
+		#
+		# It is a row of its own rather than an addition to the last one,
+		# because that row was already written when the day turned. Two rows
+		# for the closing day of a battle, one from the sweep and one from the
+		# wipe, and the ledger adds them the way it adds any two rows.
+		if = {
+			limit = {
+				has_variable = wploc
+				has_variable = wpday
+			}
+			# The wipe correction, split the same way the daily rows are: what was
+			# banked and never came back, written as a land row if it was an army
+			# and a naval one if it was a fleet. A country that lost both in the
+			# same battle writes one of each -- wp0..wp5 come from the every_army
+			# walk and wp6..wp9 from every_navy, so the two never contaminate.
+			set_local_variable = { name = bstr value = 0 }
+			set_local_variable = { name = bdrop value = 0 }
+			set_local_variable = { name = bdc0 value = { value = var:wp0 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc0 }
+			change_local_variable = { name = bstr add = local_var:bdc0 }
+			set_local_variable = { name = bdc1 value = { value = var:wp1 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc1 }
+			change_local_variable = { name = bstr add = local_var:bdc1 }
+			set_local_variable = { name = bdc2 value = { value = var:wp2 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc2 }
+			change_local_variable = { name = bstr add = local_var:bdc2 }
+			set_local_variable = { name = bdc3 value = { value = var:wp3 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc3 }
+			change_local_variable = { name = bstr add = local_var:bdc3 }
+			set_local_variable = { name = bdc4 value = { value = var:wp4 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc4 }
+			change_local_variable = { name = bstr add = local_var:bdc4 }
+			set_local_variable = { name = bdc5 value = { value = var:wp5 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc5 }
+			change_local_variable = { name = bstr add = local_var:bdc5 }
+			set_local_variable = { name = bdu value = 0 }
+			set_local_variable = { name = bdb value = 0 }
+			set_local_variable = { name = bdk value = 3 }
+			if = {
+				limit = { has_variable = wpcid }
+				set_local_variable = { name = bdb value = var:wpcid }
+			}
+			if = {
+				limit = { local_var:bdrop > 0 }
+				set_local_variable = { name = bdday value = var:wpday }
+				var:wploc = { save_scope_as = bd_uloc }
+				bday_increment_and_log = yes
+			}
+			set_local_variable = { name = bstr value = 0 }
+			set_local_variable = { name = bdrop value = 0 }
+			set_local_variable = { name = bdc6 value = { value = var:wp6 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc6 }
+			change_local_variable = { name = bstr add = local_var:bdc6 }
+			set_local_variable = { name = bdc7 value = { value = var:wp7 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc7 }
+			change_local_variable = { name = bstr add = local_var:bdc7 }
+			set_local_variable = { name = bdc8 value = { value = var:wp8 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc8 }
+			change_local_variable = { name = bstr add = local_var:bdc8 }
+			set_local_variable = { name = bdc9 value = { value = var:wp9 min = 0 } }
+			change_local_variable = { name = bdrop add = local_var:bdc9 }
+			change_local_variable = { name = bstr add = local_var:bdc9 }
+			if = {
+				limit = { local_var:bdrop > 0 }
+				set_local_variable = { name = bdday value = var:wpday }
+				var:wploc = { save_scope_as = bd_uloc }
+				bdsea_increment_and_log = yes
+			}
+			remove_variable = wploc
+			remove_variable = wpday
+			remove_variable = wpcid
+		}
+	set_variable = { name = wp0 value = 0 }
+	set_variable = { name = wp1 value = 0 }
+	set_variable = { name = wp2 value = 0 }
+	set_variable = { name = wp3 value = 0 }
+	set_variable = { name = wp4 value = 0 }
+	set_variable = { name = wp5 value = 0 }
+	set_variable = { name = wp6 value = 0 }
+	set_variable = { name = wp7 value = 0 }
+	set_variable = { name = wp8 value = 0 }
+	set_variable = { name = wp9 value = 0 }
+	# Bank closed, so the next battle to reach this country may open
+	# one. Until this line runs, balance_bd_bank leaves the standing
+	# bank alone rather than starting a fresh one over it.
+	remove_variable = wpend
+}
+
+
+# COUNTRY scope, with cbd0..cbd9 holding what this country lost in the battle
+# named by pend_b. Sends the land half to bpart and the naval half to bpsea.
+#
+# WHY TWO BANKS
+#   The ten categories shared one slot until now, and a row is almost always
+#   land or sea and not both: 41 of 5,499 rows in the 1469.3 save carried
+#   anything naval, 0.7%. Four columns rode on every land row to serve seven
+#   rows in a thousand.
+#
+#   A country that lost an army AND a fleet in the same battle writes one row in
+#   each, and both carry pend_b, so the two rejoin on the battle number with
+#   nothing inferred.
+#
+# THE EMPTY ROW IS DELIBERATE
+#   A country that lost nothing at all still gets a land row. That row is not
+#   noise -- it is the only record that the country was AT the battle, and the
+#   same reasoning as the arrival row in bday: of 497 country-location runs in
+#   that save, 406 never lost a man. So the land write fires when there are land
+#   losses OR when there was no naval row to carry the country's presence.
+balance_bpart_write = {
+	set_global_variable = { name = bpsea_hit value = 0 }
+	if = {
+		limit = {
+			OR = {
+				var:cbd6 > 0
+				var:cbd7 > 0
+				var:cbd8 > 0
+				var:cbd9 > 0
+			}
+		}
+		set_global_variable = { name = bpsea_hit value = 1 }
+		bpsea_increment_and_log = yes
+	}
+	if = {
+		limit = {
+			OR = {
+				var:cbd0 > 0
+				var:cbd1 > 0
+				var:cbd2 > 0
+				var:cbd3 > 0
+				var:cbd4 > 0
+				var:cbd5 > 0
+				global_var:bpsea_hit = 0
+			}
+		}
+		bpart_increment_and_log = yes
+	}
+}
+
+
+# COUNTRY scope, once a day. Diagnostics only -- see the docstring
+# in the generator for what used to be here and why it is not.
+#
+# xcday is the day the daily sweep last reached the end of itself
+# for this country, and xcnt how many times it ever has. They stay
+# because they are how a silent failure gets caught: an lday that
+# was read before it existed once threw from inside this sweep and
+# stopped it short, and nothing said so for a whole session except
+# that every figure came out zero.
+balance_bd_country_step = {
+	set_variable = { name = xcday value = current_date }
+	change_variable = { name = xcnt add = 1 }
+}
+
+
+# UNIT scope, called with scope:bd_uloc already naming where this unit is.
+# Decides whether this is the unit's FIRST day of fighting at this location and
+# leaves the answer in local_var:bdnew for balance_bd_day_add to read.
+#
+# WHY THE ROW IS WORTH WRITING WHEN NOTHING HAPPENED
+#   A unit that joins a fight and never bleeds has no other record anywhere. It
+#   is not in bpart -- balance_bd_close only reaches countries with a unit still
+#   standing at the battle when it ends -- and it is not in the battle's own
+#   composition, which photographs the location at that same instant. Measured
+#   on the 1469.3 save: of 497 (location, country) runs in bday, 406 never lost
+#   a man and 355 of those have no bpart row at all. A 23,227-strong British
+#   army sat at one location for 21 days and the only trace of it in the whole
+#   ledger is that first row.
+#
+# WHY THE REPEATS ARE NOT
+#   Every day after that, while nothing changes, the row is a byte-for-byte
+#   copy of the one before: same unit, same location, same strength, no loss.
+#   1,387 of 2,854 rows in that save were exactly this -- 49% of the bank spent
+#   restating what the previous row already said.
+#
+#   The cost of dropping them is real but small: how many DAYS a unit stayed,
+#   and which day it left. Rows stop both when a unit leaves and when it simply
+#   sits, and nothing tells the two apart afterwards.
+#
+# bdlast is cleared the moment a unit is out of combat (see balance_bd_daily),
+# so a unit that leaves and comes back writes a fresh arrival row rather than
+# rejoining silently.
+balance_bd_mark_new = {
+	set_local_variable = { name = bdnew value = 0 }
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_variable = bdlast }
+				NOT = { var:bdlast = { this = scope:bd_uloc } }
+			}
+		}
+		set_local_variable = { name = bdnew value = 1 }
+	}
+	set_variable = { name = bdlast value = scope:bd_uloc }
+}
+
+
+# COUNTRY scope, called once per fighting unit per day from the sweep, with
+# local_var:bstr, bdrop and bdc0..bdc9 holding what that unit is worth today
+# and what it lost since yesterday. Those globals ARE the row; it is written
+# here and then forgotten.
+#
+# WHY PER UNIT, WITH NOTHING ACCUMULATED
+#   This used to keep one bucket on the country -- dloc, dday, dfs, dfd -- and
+#   flush it whenever the sweep moved to another location. It measured clean
+#   for every country fighting in one place and lost figures for the one
+#   country fighting in several: of 86 country-battle rows checked against the
+#   battle totals, 70 agreed to the man, and every miss was France's -- 0.63 of
+#   its real losses over 24 battles -- while Tuscany went 5 of 5 and Hungary,
+#   Austria and the small countries all came out at 1.00. Days where a country
+#   had rows at four to six locations wrote nothing at all 78% of the time,
+#   against 19% for single-location days.
+#
+#   The battle tally never had the problem because it lives on the unit
+#   (ud0..ud9), one box each, which cannot collide. Same lesson, learned twice:
+#   a shared box on the country breaks for whoever is big enough to need two at
+#   once. The wipe correction is the one thing that still belongs on the
+#   country, and for the opposite reason -- the unit it describes no longer
+#   exists to hold it.
+balance_bd_day_add = {
+	if = {
+		limit = {
+			OR = {
+				# somebody died
+				local_var:bdrop > 0
+				# or the unit grew -- reinforced, or a fresh stack joining a
+				# fight already under way
+				local_var:bgain > 0
+				# or this is its first day fighting here. bstr > 0 keeps a unit
+				# the ACC guard skipped (no reading yet, or nothing left to
+				# measure) from writing an empty row, exactly as before.
+				AND = {
+					local_var:bdnew = 1
+					local_var:bstr > 0
+				}
+			}
+		}
+		set_local_variable = { name = bdday value = current_date }
+		bday_increment_and_log = yes
+	}
+}
+# The same, for a FLEET. balance_bd_daily and balance_bd_close each walk armies
+# and navies in separate loops, so which of the two to call is already decided
+# at the call site -- nothing has to be sniffed here.
+#
+# Why naval rows live in their own bank: a row is an army's or a fleet's, never
+# both, so the four naval columns were dead weight in every land row and the six
+# land columns dead in every naval one. 29 of 2,854 rows in the 1469.3 save were
+# naval -- 1.0% -- and the land rows were paying four columns each to carry
+# them. p and q need no translation: they are already this unit's own totals,
+# hulls for a fleet exactly as they are men for an army.
+balance_bd_day_add_sea = {
+	if = {
+		limit = {
+			OR = {
+				local_var:bdrop > 0
+				local_var:bgain > 0
+				AND = {
+					local_var:bdnew = 1
+					local_var:bstr > 0
+				}
+			}
+		}
+		set_local_variable = { name = bdday value = current_date }
+		bdsea_increment_and_log = yes
+	}
+}
+
+
+
+
+# UNIT scope. The three columns every day row carries, left in locals for the
+# row writers: bdu the unit, bdb the fight, bdk what kind of row it is.
+#   0 daily reading   1 closing reading   2 left the fight
+#   3 settling bank   4 fleet seen for the first time
+# The ledger joins a row to its unit and its battle on these instead of on the
+# date and the place, which is what let rows from one fight leak into another
+# (Ventimiglia 1481.11.5 picked up 40,406 men from rows written on 1481.9.2).
+balance_bd_row_ids = {
+	set_local_variable = { name = bdu value = 0 }
+	set_local_variable = { name = bdb value = 0 }
+	set_local_variable = { name = bdk value = $K$ }
+	if = {
+		limit = { has_variable = bduid }
+		set_local_variable = { name = bdu value = var:bduid }
+	}
+	if = {
+		limit = { has_variable = bdcid }
+		set_local_variable = { name = bdb value = var:bdcid }
+	}
+}
+
+
+# UNIT scope, in combat, after balance_bd_mark_new has set local_var:bdnew and
+# scope:bd_uloc. Gives the unit its number once for life, and on its first day
+# in a fight the fight's number: copied from any unit already fighting here --
+# either side, a combat is one fight -- or a new one if it is the first.
+#
+# Only on arrival. A unit still marked in combat after its fight closed would
+# otherwise pick up a new number the same day and file phantom rows under it.
+balance_bd_tag_fight = {
+	if = {
+		limit = { NOT = { has_variable = bduid } }
+		if = {
+			limit = { NOT = { has_global_variable = bduid_count } }
+			set_global_variable = { name = bduid_count value = 0 }
+		}
+		change_global_variable = { name = bduid_count add = 1 }
+		set_variable = { name = bduid value = global_var:bduid_count }
+	}
+	if = {
+		limit = { local_var:bdnew = 1 }
+		set_local_variable = { name = bdpeer value = 0 }
+		save_scope_as = bd_self
+		scope:bd_uloc = {
+			random_unit_in_location = {
+				limit = {
+					NOT = { this = scope:bd_self }
+					has_variable = bdcid
+					has_variable = bdlast
+					var:bdlast = { this = scope:bd_uloc }
+				}
+				set_local_variable = { name = bdpeer value = var:bdcid }
+			}
+		}
+		if = {
+			limit = { local_var:bdpeer = 0 }
+			if = {
+				limit = { NOT = { has_global_variable = bdcid_count } }
+				set_global_variable = { name = bdcid_count value = 0 }
+			}
+			change_global_variable = { name = bdcid_count add = 1 }
+			set_local_variable = { name = bdpeer value = global_var:bdcid_count }
+		}
+		# Arriving in a different fight while still carrying an uncollected
+		# tally from an earlier one: that tally is not this fight's. Today's own
+		# drop (bdc0..9, just measured) is.
+		if = {
+			limit = {
+				has_variable = bdcid
+				NOT = { var:bdcid = local_var:bdpeer }
+			}
+			set_variable = { name = ud0 value = local_var:bdc0 }
+			set_variable = { name = ud1 value = local_var:bdc1 }
+			set_variable = { name = ud2 value = local_var:bdc2 }
+			set_variable = { name = ud3 value = local_var:bdc3 }
+			set_variable = { name = ud4 value = local_var:bdc4 }
+			set_variable = { name = ud5 value = local_var:bdc5 }
+			set_variable = { name = ud6 value = local_var:bdc6 }
+			set_variable = { name = ud7 value = local_var:bdc7 }
+			set_variable = { name = ud8 value = local_var:bdc8 }
+			set_variable = { name = ud9 value = local_var:bdc9 }
+		}
+		set_variable = { name = bdcid value = local_var:bdpeer }
+	}
+}
+
+
+# UNIT scope, out of combat today but fighting at the last sweep (bdlast) in a
+# fight that has not closed (bdcid). Measures its last day -- the losses of the
+# day it broke off -- and leaves the numbers for one row, filed where it fought.
+# The tally stays on the unit for that fight's close (see the CLR guard above).
+balance_bd_leave = {
+	balance_bd_unit_step = { ACC = yes  CLR = no }
+	set_local_variable = { name = bdday value = current_date }
+	var:bdlast = { save_scope_as = bd_uloc }
+	balance_bd_row_ids = { K = 2 }
+}
+
+
+# The daily step, COUNTRY scope, called from the chained event.
+balance_bd_daily = {
+	balance_bd_init = yes
+	# unit_step writes nothing to the country, but harvest does, and
+	# root is not dependable -- inside on_battle_won it is the
+	# battle's winner whichever country the effect was called on.
+	# Naming the country here means every caller reaches the same one.
+	save_scope_as = bd_owner
+	every_army = {
+		if = {
+			limit = {
+				in_combat = yes
+				# Prisoners stand with their captor and read as in combat with it,
+				# but they fight nothing and die of nothing the battle does.
+				has_only_prisoners = no
+			}
+			balance_bd_unit_step = { ACC = yes  CLR = yes }
+			# The day-by-day row. unit_step has just left this unit's
+			# reading in bstr and its drop in bdrop; naming the location
+			# as a scope is what lets the country tell one of its battles
+			# from another without walking anything twice.
+			unit_location = { save_scope_as = bd_uloc }
+			# Not on the day its own fight closed: a unit can still read as in
+			# combat after on_battle_won, and taken as an arrival it would open a
+			# fight that does not exist.
+			if = {
+				limit = {
+					OR = {
+						NOT = { has_variable = bdcd }
+						NOT = { var:bdcd = current_date }
+					}
+				}
+				balance_bd_mark_new = yes
+				balance_bd_tag_fight = yes
+				balance_bd_row_ids = { K = 0 }
+				balance_bd_day_add = yes
+			}
+		}
+		else_if = {
+			# PRISONERS ON A FIELD. No fighters and no casualties, but the engine
+			# counts an army of prisoners in what its side brought to a battle --
+			# Tuscany's 1,884 French prisoners from Carmagnola 1481.8.4 are the
+			# whole gap in its total at Carmagnola 8.9, Saluzzo and Asti. One row
+			# of kind 7 on arrival says how many; nothing else is written for them.
+			limit = {
+				in_combat = yes
+				has_only_prisoners = yes
+				# not on the day their fight closed (see the close)
+				OR = {
+					NOT = { has_variable = bdcd }
+					NOT = { var:bdcd = current_date }
+				}
+			}
+			balance_bd_unit_step = { ACC = no  CLR = yes }
+			unit_location = { save_scope_as = bd_uloc }
+			balance_bd_mark_new = yes
+			if = {
+				limit = { local_var:bdnew = 1 }
+				balance_bd_tag_fight = yes
+				# Not the men taken in THIS fight: the engine leaves prisoners made
+				# during a battle out of what the battle began with (Cuneo
+				# 1481.12.5: Tuscany 34,286 without the 1,566 taken that day).
+				if = {
+					limit = {
+						OR = {
+							NOT = { has_variable = bdpcid }
+							NOT = { has_variable = bdcid }
+							NOT = { var:bdpcid = var:bdcid }
+						}
+					}
+					set_local_variable = { name = bstr value = local_var:bcd0 }
+					change_local_variable = { name = bstr add = local_var:bcd1 }
+					change_local_variable = { name = bstr add = local_var:bcd2 }
+					change_local_variable = { name = bstr add = local_var:bcd3 }
+					change_local_variable = { name = bstr add = local_var:bcd4 }
+					change_local_variable = { name = bstr add = local_var:bcd5 }
+					set_local_variable = { name = bdrop value = 0 }
+					set_local_variable = { name = bdday value = current_date }
+					balance_bd_row_ids = { K = 7 }
+					bday_increment_and_log = yes
+				}
+			}
+		}
+		else = {
+			if = {
+				# Left a fight that is still going: one row for the day it broke
+				# off, so it is known to have left rather than gone silent.
+				limit = {
+					has_variable = bdlast
+					has_variable = bdcid
+					has_only_prisoners = no
+				}
+				balance_bd_leave = yes
+				bday_increment_and_log = yes
+			}
+			else = {
+				balance_bd_unit_step = { ACC = no  CLR = yes }
+				# prisoners keep no tally; off the field their fight number goes
+				if = {
+					limit = {
+						has_only_prisoners = yes
+						has_variable = bdcid
+					}
+					remove_variable = bdcid
+				}
+			}
+			# Out of combat, so the next time this unit fights anywhere --
+			# including back here -- it counts as an arrival again.
+			remove_variable = bdlast
+		}
+		# The location tier used to run here: every unit, every day,
+		# rolling lt -> lp and charging la on the location it stood on.
+		# It is gone. Its only output was battle_<n>_lc0..lc9, and nothing
+		# read those -- parse_save.py named the fields and no other line in
+		# the codebase, the site included, ever looked at them. It was the
+		# second-largest item in the daily sweep and it produced dead data.
+		# The land/sea split that once leaned on it now uses is_land on the
+		# location, which is the base game's own idiom and costs nothing.
+	}
+	every_navy = {
+		if = {
+			limit = { in_combat = yes }
+			balance_bd_unit_step = { ACC = yes  CLR = yes }
+			# The day-by-day row. unit_step has just left this unit's
+			# reading in bstr and its drop in bdrop; naming the location
+			# as a scope is what lets the country tell one of its battles
+			# from another without walking anything twice.
+			unit_location = { save_scope_as = bd_uloc }
+			# Not on the day its own fight closed: a unit can still read as in
+			# combat after on_battle_won, and taken as an arrival it would open a
+			# fight that does not exist.
+			if = {
+				limit = {
+					OR = {
+						NOT = { has_variable = bdcd }
+						NOT = { var:bdcd = current_date }
+					}
+				}
+				balance_bd_mark_new = yes
+				balance_bd_tag_fight = yes
+				balance_bd_row_ids = { K = 0 }
+				balance_bd_day_add_sea = yes
+			}
+		}
+		else = {
+			if = {
+				limit = {
+					has_variable = bdlast
+					has_variable = bdcid
+				}
+				balance_bd_leave = yes
+				bdsea_increment_and_log = yes
+			}
+			else = {
+				balance_bd_unit_step = { ACC = no  CLR = yes }
+			}
+			# Out of combat, so the next time this unit fights anywhere --
+			# including back here -- it counts as an arrival again.
+			remove_variable = bdlast
+		}
+	}
+	balance_bd_country_step = yes
+}
+
+
+# UNIT scope. Hand this unit's tally to scope:bd_owner and wipe it, so
+# the next battle it fights starts from nothing rather than counting
+# these casualties a second time.
+balance_bd_harvest = {
+	set_global_variable = { name = bdd0 value = var:ud0 }
+	set_global_variable = { name = bdd1 value = var:ud1 }
+	set_global_variable = { name = bdd2 value = var:ud2 }
+	set_global_variable = { name = bdd3 value = var:ud3 }
+	set_global_variable = { name = bdd4 value = var:ud4 }
+	set_global_variable = { name = bdd5 value = var:ud5 }
+	set_global_variable = { name = bdd6 value = var:ud6 }
+	set_global_variable = { name = bdd7 value = var:ud7 }
+	set_global_variable = { name = bdd8 value = var:ud8 }
+	set_global_variable = { name = bdd9 value = var:ud9 }
+	scope:bd_owner = {
+		change_variable = { name = cbd0 add = global_var:bdd0 }
+		change_variable = { name = cbd1 add = global_var:bdd1 }
+		change_variable = { name = cbd2 add = global_var:bdd2 }
+		change_variable = { name = cbd3 add = global_var:bdd3 }
+		change_variable = { name = cbd4 add = global_var:bdd4 }
+		change_variable = { name = cbd5 add = global_var:bdd5 }
+		change_variable = { name = cbd6 add = global_var:bdd6 }
+		change_variable = { name = cbd7 add = global_var:bdd7 }
+		change_variable = { name = cbd8 add = global_var:bdd8 }
+		change_variable = { name = cbd9 add = global_var:bdd9 }
+	}
+	set_variable = { name = ud0 value = 0 }
+	set_variable = { name = ud1 value = 0 }
+	set_variable = { name = ud2 value = 0 }
+	set_variable = { name = ud3 value = 0 }
+	set_variable = { name = ud4 value = 0 }
+	set_variable = { name = ud5 value = 0 }
+	set_variable = { name = ud6 value = 0 }
+	set_variable = { name = ud7 value = 0 }
+	set_variable = { name = ud8 value = 0 }
+	set_variable = { name = ud9 value = 0 }
+}
+
+
+# The closing step, COUNTRY scope, run from on_battle_won for every
+# country that had a unit where the battle was.
+#
+# Not "standing where the battle was": a beaten force can have moved
+# by the time this runs. What separates a unit that has finished from
+# one that has not is in_combat -- a unit still fighting elsewhere
+# keeps its tally until its own battle closes, so two simultaneous
+# battles cannot take each other's casualties.
+#
+# Then the country tally is allowed to raise the figure. It knows what
+# destroyed units took with them, and masking only ever understates,
+# so taking the larger of the two is safe: add the excess of ca over
+# what the units themselves accounted for, and nothing when the units
+# already saw more.
+balance_bd_close = {
+	balance_bd_init = yes
+	save_scope_as = bd_owner
+
+	# SETTLE YESTERDAY BEFORE TOUCHING ANYTHING.
+	#
+	# A battle leaves two things standing on the country until its flush
+	# event wakes up the next day: the banked readings, and cbd -- the
+	# harvest its units handed over. If another battle closes first, the
+	# line below wipes cbd and the bank is opened over, so the earlier
+	# battle loses BOTH. Measured on 1448.11.7, where two battles closed
+	# the same day: the one the engine puts at 2,448 dead has no row at
+	# all, and the other -- which the engine says cost nobody anything --
+	# was handed 2,500.
+	#
+	# Waiting a day was never for the arithmetic; it was for the engine,
+	# which has not removed the destroyed units when on_battle_won fires.
+	# A bank opened yesterday has had that day, so settling it now is not
+	# early -- it is exactly on time, just arriving by a different route.
+	# Only a bank opened TODAY has to keep waiting.
+	#
+	# xbday is the day the standing bank was opened; balance_bd_close
+	# writes it at the end. Of 115 days in the save this was written
+	# against, 19 had a battle on the day after another one.
+	if = {
+		limit = {
+			has_variable = pend_b
+			has_variable = xbday
+			NOT = { var:xbday = current_date }
+		}
+		balance_bd_settle = yes
+		balance_bpart_write = yes
+		remove_variable = pend_b
+	}
+
+	set_variable = { name = cbd0 value = 0 }
+	set_variable = { name = cbd1 value = 0 }
+	set_variable = { name = cbd2 value = 0 }
+	set_variable = { name = cbd3 value = 0 }
+	set_variable = { name = cbd4 value = 0 }
+	set_variable = { name = cbd5 value = 0 }
+	set_variable = { name = cbd6 value = 0 }
+	set_variable = { name = cbd7 value = 0 }
+	set_variable = { name = cbd8 value = 0 }
+	set_variable = { name = cbd9 value = 0 }
+
+	every_army = {
+		limit = {
+			# Only a country the daily sweep is reading. A country out of every
+			# player's war keeps readings from whenever it was last swept -- months
+			# or years old -- and differencing against them invents losses: Mark
+			# at Wesel 1483.1.10 was booked 4,857 from a side of 2,300.
+			scope:bd_owner = { has_variable = cprobe_running }
+			has_variable = ud0
+			# THIS FIGHT'S UNITS ONLY. The guard used to be "out of combat, or
+			# here", and out of combat is every idle army the country has
+			# anywhere on the map: each was stepped, each wrote a row, and an
+			# army that had split that morning handed the halves it lost to this
+			# battle. Cuneo 1481.9.2 was booked 68,348 French dead against the
+			# engine's 7,392 -- the 60,956 between them being five armies
+			# reorganising at Puget-Theniers, Digne and Ventimiglia. Across the
+			# campaign 3,713 of 7,622 day rows were written this way.
+			# not prisoners -- see the daily sweep
+			has_only_prisoners = no
+			OR = {
+				# carries this fight's number: fought here, stayed or broke off --
+				# but not one already fighting somewhere else, which belongs to
+				# that fight now. France's stack left Acqui on 1481.2.23 and was
+				# fighting at Alessandria when Acqui closed on 2.26; taken here,
+				# its first day there (1,326 men) went into Acqui's tally and the
+				# sweep then skipped it as closed.
+				AND = {
+					local_var:bdbcid > 0
+					has_variable = bdcid
+					var:bdcid = local_var:bdbcid
+					NOT = {
+						AND = {
+							in_combat = yes
+							NOT = { unit_location = { this = scope:bc_loc } }
+						}
+					}
+				}
+				# stands here in no fight the sweep knows of: arrived and fought
+				# today before any sweep reached it -- carrying no number, or the
+				# number of a fight it broke off whose close never came to its
+				# country (Toulouse at Cuneo 1482.1.21, still carrying Acqui's).
+				# A unit carrying ANOTHER fight's number and fighting in it
+				# (bdlast) is in that fight, even standing here -- a stack
+				# overrun at a place where a bigger battle goes on closes only
+				# itself.
+				AND = {
+					unit_location = { this = scope:bc_loc }
+					OR = {
+						NOT = { has_variable = bdcid }
+						NOT = { has_variable = bdlast }
+					}
+				}
+			}
+		}
+		# an earlier fight's uncollected tally is not this fight's
+		if = {
+			limit = {
+				has_variable = bdcid
+				NOT = { var:bdcid = local_var:bdbcid }
+			}
+			set_variable = { name = ud0 value = 0 }
+			set_variable = { name = ud1 value = 0 }
+			set_variable = { name = ud2 value = 0 }
+			set_variable = { name = ud3 value = 0 }
+			set_variable = { name = ud4 value = 0 }
+			set_variable = { name = ud5 value = 0 }
+			set_variable = { name = ud6 value = 0 }
+			set_variable = { name = ud7 value = 0 }
+			set_variable = { name = ud8 value = 0 }
+			set_variable = { name = ud9 value = 0 }
+		}
+		balance_bd_unit_step = { ACC = yes  CLR = no }
+
+		# One closing row for every unit that was in the fight at its end, even
+		# one that lost nobody today: it is what says the unit was still there,
+		# so a stack that stood silent to the end is not mistaken for one that
+		# left. A unit that broke off earlier already wrote its leaving row and
+		# only has its tally collected. A unit merely standing here, out of
+		# combat and unhurt, was never in the fight and writes nothing.
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						local_var:bdbcid > 0
+						has_variable = bdcid
+						var:bdcid = local_var:bdbcid
+						has_variable = bdlast
+					}
+					AND = {
+						unit_location = { this = scope:bc_loc }
+						OR = {
+							in_combat = yes
+							local_var:bdrop > 0
+						}
+					}
+				}
+			}
+			scope:bc_loc = { save_scope_as = bd_uloc }
+			set_local_variable = { name = bdday value = current_date }
+			balance_bd_row_ids = { K = 1 }
+			if = {
+				limit = { local_var:bdbcid > 0 }
+				set_local_variable = { name = bdb value = local_var:bdbcid }
+			}
+			bday_increment_and_log = yes
+		}
+
+		balance_bd_harvest = yes
+		# The fight is over for this unit: its next one is a new arrival.
+		remove_variable = bdlast
+		remove_variable = bdcid
+		set_variable = { name = bdcd value = current_date }
+	}
+	# Prisoners standing here that no sweep saw in this fight -- it began and ended
+	# between two sweeps. The engine counts them in what their side brought:
+	# France's prisoners from Acqui 1482.1.23 were the whole gap in its total at
+	# Acqui 1482.1.24. Not the men taken in this very fight, which it leaves out.
+	every_army = {
+		limit = {
+			# Any country: a prisoner army is read as it stands, not differenced
+			# against an older reading, so the sweep's gate is not needed here --
+			# and the country holding it may be one nobody reads. 202 at Lanzo
+			# 1482.12.13 went in with 1,225, 600 of them its own.
+			has_only_prisoners = yes
+			unit_location = { this = scope:bc_loc }
+			OR = {
+				NOT = { has_variable = bdcid }
+				NOT = { var:bdcid = local_var:bdbcid }
+			}
+			OR = {
+				NOT = { has_variable = bdpcid }
+				NOT = { var:bdpcid = local_var:bdbcid }
+			}
+		}
+		balance_bd_unit_step = { ACC = no  CLR = yes }
+		set_local_variable = { name = bstr value = local_var:bcd0 }
+		change_local_variable = { name = bstr add = local_var:bcd1 }
+		change_local_variable = { name = bstr add = local_var:bcd2 }
+		change_local_variable = { name = bstr add = local_var:bcd3 }
+		change_local_variable = { name = bstr add = local_var:bcd4 }
+		change_local_variable = { name = bstr add = local_var:bcd5 }
+		set_local_variable = { name = bdrop value = 0 }
+		set_local_variable = { name = bdday value = current_date }
+		scope:bc_loc = { save_scope_as = bd_uloc }
+		balance_bd_row_ids = { K = 7 }
+		# 8: standing here but not in the combat. Nice 1481.5.7 left 225 such
+		# prisoners out of Tuscany's total, Cuneo 1481.8.4-8.8 counted theirs;
+		# the kind says which case each row was.
+		if = {
+			limit = { NOT = { in_combat = yes } }
+			set_local_variable = { name = bdk value = 8 }
+		}
+		set_local_variable = { name = bdb value = local_var:bdbcid }
+		if = {
+			limit = { local_var:bstr > 0 }
+			bday_increment_and_log = yes
+		}
+	}
+	# The fight is over for its prisoners too. Read into it by the sweep, an army
+	# of prisoners carried the number on past the close, and a new fight at the
+	# same place copied it from them: Nice 1481.9.13 and 1481.9.26 both came out
+	# 55, and a capture at Nice on 9.27 was filed under 55 as well.
+	every_army = {
+		limit = {
+			has_only_prisoners = yes
+			has_variable = bdcid
+			var:bdcid = local_var:bdbcid
+		}
+		remove_variable = bdcid
+		remove_variable = bdlast
+		set_variable = { name = bdcd value = current_date }
+	}
+	# PRISONERS WHO MAY BE SET FREE. When the side holding an army of prisoners
+	# is overrun, the engine frees them and books them as imprisoned FROM the
+	# holder -- and no capture fires. Asti 1481.12.29: France held 136 and lost
+	# them, the engine has France -136 and Tuscany +136, the capture log nothing.
+	# Whether it happened is only known once the army is gone, so each prisoner
+	# army here is marked with what it holds, and balance_bd_freed books what
+	# vanished by the next day. Not the men taken in this very fight. One fight
+	# at a time per country; the marks lapse after five days.
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_variable = bdfrc }
+				var:bdfrc = local_var:bdbcid
+			}
+		}
+		every_army = {
+			limit = {
+				has_only_prisoners = yes
+				unit_location = { this = scope:bc_loc }
+				NOT = { has_variable = bdfr }
+				OR = {
+					NOT = { has_variable = bdpcid }
+					NOT = { var:bdpcid = local_var:bdbcid }
+				}
+			}
+			balance_bd_unit_step = { ACC = no  CLR = yes }
+			set_variable = { name = bdfr value = local_var:bdbcid days = 5 }
+			set_variable = { name = bdfs0 value = local_var:bcd0 days = 5 }
+			set_variable = { name = bdfs1 value = local_var:bcd1 days = 5 }
+			set_variable = { name = bdfs2 value = local_var:bcd2 days = 5 }
+			set_variable = { name = bdfs3 value = local_var:bcd3 days = 5 }
+			set_variable = { name = bdfs4 value = local_var:bcd4 days = 5 }
+			set_variable = { name = bdfs5 value = local_var:bcd5 days = 5 }
+			scope:bd_owner = {
+				if = {
+					limit = { NOT = { has_variable = bdfrc } }
+					set_variable = { name = bdfrc value = local_var:bdbcid days = 5 }
+					set_variable = { name = bdfrd value = current_date days = 5 }
+					set_variable = { name = bdfrl value = scope:bc_loc days = 5 }
+					set_variable = { name = bdfr0 value = 0 days = 5 }
+					set_variable = { name = bdfr1 value = 0 days = 5 }
+					set_variable = { name = bdfr2 value = 0 days = 5 }
+					set_variable = { name = bdfr3 value = 0 days = 5 }
+					set_variable = { name = bdfr4 value = 0 days = 5 }
+					set_variable = { name = bdfr5 value = 0 days = 5 }
+					# who frees them: the other side's leader
+					if = {
+						limit = {
+							exists = scope:target
+							exists = scope:actor
+							scope:actor.owner = { this = scope:bd_owner }
+						}
+						scope:target.owner = { save_scope_as = bd_frw }
+					}
+					else_if = {
+						limit = { exists = scope:actor }
+						scope:actor.owner = { save_scope_as = bd_frw }
+					}
+					if = {
+						limit = { exists = scope:bd_frw }
+						set_variable = { name = bdfrw value = scope:bd_frw days = 5 }
+					}
+				}
+				change_variable = { name = bdfr0 add = local_var:bcd0 }
+				change_variable = { name = bdfr1 add = local_var:bcd1 }
+				change_variable = { name = bdfr2 add = local_var:bcd2 }
+				change_variable = { name = bdfr3 add = local_var:bcd3 }
+				change_variable = { name = bdfr4 add = local_var:bcd4 }
+				change_variable = { name = bdfr5 add = local_var:bcd5 }
+			}
+		}
+	}
+	every_navy = {
+		limit = {
+			# Only a country the daily sweep is reading. A country out of every
+			# player's war keeps readings from whenever it was last swept -- months
+			# or years old -- and differencing against them invents losses: Mark
+			# at Wesel 1483.1.10 was booked 4,857 from a side of 2,300.
+			scope:bd_owner = { has_variable = cprobe_running }
+			has_variable = ud0
+			# THIS FIGHT'S UNITS ONLY. The guard used to be "out of combat, or
+			# here", and out of combat is every idle army the country has
+			# anywhere on the map: each was stepped, each wrote a row, and an
+			# army that had split that morning handed the halves it lost to this
+			# battle. Cuneo 1481.9.2 was booked 68,348 French dead against the
+			# engine's 7,392 -- the 60,956 between them being five armies
+			# reorganising at Puget-Theniers, Digne and Ventimiglia. Across the
+			# campaign 3,713 of 7,622 day rows were written this way.
+			OR = {
+				# carries this fight's number: fought here, stayed or broke off --
+				# but not one already fighting somewhere else, which belongs to
+				# that fight now. France's stack left Acqui on 1481.2.23 and was
+				# fighting at Alessandria when Acqui closed on 2.26; taken here,
+				# its first day there (1,326 men) went into Acqui's tally and the
+				# sweep then skipped it as closed.
+				AND = {
+					local_var:bdbcid > 0
+					has_variable = bdcid
+					var:bdcid = local_var:bdbcid
+					NOT = {
+						AND = {
+							in_combat = yes
+							NOT = { unit_location = { this = scope:bc_loc } }
+						}
+					}
+				}
+				# stands here in no fight the sweep knows of: arrived and fought
+				# today before any sweep reached it -- carrying no number, or the
+				# number of a fight it broke off whose close never came to its
+				# country (Toulouse at Cuneo 1482.1.21, still carrying Acqui's).
+				# A unit carrying ANOTHER fight's number and fighting in it
+				# (bdlast) is in that fight, even standing here -- a stack
+				# overrun at a place where a bigger battle goes on closes only
+				# itself.
+				AND = {
+					unit_location = { this = scope:bc_loc }
+					OR = {
+						NOT = { has_variable = bdcid }
+						NOT = { has_variable = bdlast }
+					}
+				}
+			}
+		}
+		# an earlier fight's uncollected tally is not this fight's
+		if = {
+			limit = {
+				has_variable = bdcid
+				NOT = { var:bdcid = local_var:bdbcid }
+			}
+			set_variable = { name = ud0 value = 0 }
+			set_variable = { name = ud1 value = 0 }
+			set_variable = { name = ud2 value = 0 }
+			set_variable = { name = ud3 value = 0 }
+			set_variable = { name = ud4 value = 0 }
+			set_variable = { name = ud5 value = 0 }
+			set_variable = { name = ud6 value = 0 }
+			set_variable = { name = ud7 value = 0 }
+			set_variable = { name = ud8 value = 0 }
+			set_variable = { name = ud9 value = 0 }
+		}
+		balance_bd_unit_step = { ACC = yes  CLR = no }
+
+		# One closing row for every unit that was in the fight at its end, even
+		# one that lost nobody today: it is what says the unit was still there,
+		# so a stack that stood silent to the end is not mistaken for one that
+		# left. A unit that broke off earlier already wrote its leaving row and
+		# only has its tally collected. A unit merely standing here, out of
+		# combat and unhurt, was never in the fight and writes nothing.
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						local_var:bdbcid > 0
+						has_variable = bdcid
+						var:bdcid = local_var:bdbcid
+						has_variable = bdlast
+					}
+					AND = {
+						unit_location = { this = scope:bc_loc }
+						OR = {
+							in_combat = yes
+							local_var:bdrop > 0
+						}
+					}
+				}
+			}
+			scope:bc_loc = { save_scope_as = bd_uloc }
+			set_local_variable = { name = bdday value = current_date }
+			balance_bd_row_ids = { K = 1 }
+			if = {
+				limit = { local_var:bdbcid > 0 }
+				set_local_variable = { name = bdb value = local_var:bdbcid }
+			}
+			bdsea_increment_and_log = yes
+		}
+
+		balance_bd_harvest = yes
+		# The fight is over for this unit: its next one is a new arrival.
+		remove_variable = bdlast
+		remove_variable = bdcid
+		set_variable = { name = bdcd value = current_date }
+	}
+
+	# No country reading here, and no row written here either. Both wait
+	# a day, because on_battle_won fires before the engine has taken the
+	# destroyed sub-units out: a country asked for its strength at this
+	# instant still answers with the pre-battle number. Diagnostics put
+	# in this very spot proved it -- the stored reading and the engine
+	# answer came back identical to the man on every one of the ten
+	# categories, so the drop computed as zero, and it then turned up on
+	# the following sweep and was charged to whichever battle closed
+	# next. Not inferred but matched exactly: Tuscany lost 277 men on
+	# 1448.7.16, and 277 is what went into the row for its 1448.7.31
+	# battle.
+	#
+	# The unit harvest above has to happen now, while the units are still
+	# carrying their tallies. balance_bd_flush takes the country reading
+	# tomorrow, and the on_action parks pend_b on the way past to say
+	# which battle it was -- parked there rather than here because this
+	# effect runs before battle_increment_and_log, so battle_count does
+	# not name this battle yet.
+	set_variable = { name = xbday value = current_date }
+
+	# Where and when this battle finished, parked for balance_bd_settle:
+	# it runs tomorrow, when the location and the day are long gone from
+	# scope, and it needs both to file the wipe as a day-by-day row.
+	# And carry every reading off the units while they are still here to
+	# carry it off. This is the only moment there is: the battle is
+	# known, and the engine has not yet deleted what it destroyed.
+	#
+	# The place, day and fight go with the bank or not at all: parked for a
+	# country with no bank, tomorrow's settle read wp0..wp9 that were never
+	# written (8 errors in the 1483.3.14 save's error.log).
+	if = {
+		limit = { has_variable = cprobe_running }
+		set_variable = { name = wploc value = scope:bc_loc }
+		set_variable = { name = wpday value = current_date }
+		set_variable = { name = wpcid value = local_var:bdbcid }
+		balance_bd_bank = yes
+	}
+
+	# Nothing is closed here any more. There is no day in hand to close:
+	# the two loops above have already written each unit's last day as its
+	# own row on the way past, and the wipe -- the men the engine has not
+	# deleted yet -- goes out tomorrow from balance_bd_settle, under wploc
+	# and wpday.
+}
+
+
+# COUNTRY scope, a day after the battle, called from
+# balance_bpart_flush.1. This is where the country reading is taken,
+# and it is here rather than in close because of when the engine does
+# its bookkeeping.
+#
+# on_battle_won fires before the destroyed sub-units have been removed.
+# A country measured at that instant still reports its pre-battle
+# strength: diagnostics written inside close had xs (the stored
+# reading) and xn (what the engine answered) identical to the man,
+# across all ten categories, so the drop came out as nothing. It then
+# appeared on the next daily sweep, by which time that battle had
+# closed, and it was charged to whichever battle closed next. Proved
+# exactly rather than inferred: Tuscany lost 277 men on 1448.7.16, and
+# 277 is the number the recorder wrote against its 1448.7.31 battle.
+#
+#
+# WHAT IT DOES NOT READ, AND WHY
+#   Every country-wide aggregate has now been tried here and every one
+#   of them reported losses that did not happen, because none of them
+#   can say which battle a drop belongs to.
+#
+#   ca counted everything the country owned anywhere: it put 773 dead
+#   on a France the engine records losing nothing.
+#
+#   ka counted only what was in combat, which sounded narrow enough --
+#   and is worse, because a battle ENDING empties it. The winner walks
+#   away, the fighting total falls to nothing the next day, and the
+#   whole army is charged as destroyed. Measured on the battle of
+#   1448.9.1: France went in with 19,949 and the engine records it
+#   losing not one man; ka booked 21,218. Tuscany, wiped there for
+#   1,699, was booked at 2,787 -- with 384 light cavalry and 200
+#   artillery in the row, neither of which it had at that battle at
+#   all. Both figures were units fighting somewhere else.
+#
+#   So nothing aggregate is read here. balance_bd_settle works from
+#   readings taken off the units that were at THIS battle, and that is
+#   the whole of it.
+balance_bd_flush = {
+	# The banked readings: who came back, and how much less of them.
+	# Whatever was banked and never came back was destroyed, and is
+	# missing by exactly what it was worth.
+	#
+	# The check that this bank is old enough to settle lives in the
+	# event, not here -- it has to gate the row write and the clearing of
+	# pend_b as well, and those are the event's.
+	balance_bd_settle = yes
+}
+
+
+# COUNTRY scope, from balance_bd_settle: a day or more after a close marked the
+# prisoner armies standing at it (see "PRISONERS WHO MAY BE SET FREE" in
+# balance_bd_close). A marked army still here holds what it held; what vanished
+# was set free, and goes into the capture log as a row with cap_f = 1, taken
+# from the country that held them by the other side's leader, in that fight.
+balance_bd_freed = {
+	if = {
+		limit = {
+			has_variable = bdfrc
+			has_variable = bdfrd
+			NOT = { var:bdfrd = current_date }
+		}
+		every_army = {
+			limit = {
+				has_variable = bdfr
+				has_variable = bdfs5
+			}
+			balance_bd_unit_step = { ACC = no  CLR = yes }
+			# the larger of now and then: prisoners die off by the month, and an
+			# army that took another one in has grown -- neither was set free
+			set_local_variable = { name = bdfk0 value = var:bdfs0 }
+			if = {
+				limit = { local_var:bcd0 > var:bdfs0 }
+				set_local_variable = { name = bdfk0 value = local_var:bcd0 }
+			}
+			set_local_variable = { name = bdfk1 value = var:bdfs1 }
+			if = {
+				limit = { local_var:bcd1 > var:bdfs1 }
+				set_local_variable = { name = bdfk1 value = local_var:bcd1 }
+			}
+			set_local_variable = { name = bdfk2 value = var:bdfs2 }
+			if = {
+				limit = { local_var:bcd2 > var:bdfs2 }
+				set_local_variable = { name = bdfk2 value = local_var:bcd2 }
+			}
+			set_local_variable = { name = bdfk3 value = var:bdfs3 }
+			if = {
+				limit = { local_var:bcd3 > var:bdfs3 }
+				set_local_variable = { name = bdfk3 value = local_var:bcd3 }
+			}
+			set_local_variable = { name = bdfk4 value = var:bdfs4 }
+			if = {
+				limit = { local_var:bcd4 > var:bdfs4 }
+				set_local_variable = { name = bdfk4 value = local_var:bcd4 }
+			}
+			set_local_variable = { name = bdfk5 value = var:bdfs5 }
+			if = {
+				limit = { local_var:bcd5 > var:bdfs5 }
+				set_local_variable = { name = bdfk5 value = local_var:bcd5 }
+			}
+			scope:bd_owner = {
+				change_variable = { name = bdfr0 subtract = local_var:bdfk0 }
+				change_variable = { name = bdfr1 subtract = local_var:bdfk1 }
+				change_variable = { name = bdfr2 subtract = local_var:bdfk2 }
+				change_variable = { name = bdfr3 subtract = local_var:bdfk3 }
+				change_variable = { name = bdfr4 subtract = local_var:bdfk4 }
+				change_variable = { name = bdfr5 subtract = local_var:bdfk5 }
+			}
+			remove_variable = bdfr
+			remove_variable = bdfs0
+			remove_variable = bdfs1
+			remove_variable = bdfs2
+			remove_variable = bdfs3
+			remove_variable = bdfs4
+			remove_variable = bdfs5
+		}
+		set_local_variable = { name = cap0 value = { value = var:bdfr0 min = 0 } }
+		set_local_variable = { name = cap1 value = { value = var:bdfr1 min = 0 } }
+		set_local_variable = { name = cap2 value = { value = var:bdfr2 min = 0 } }
+		set_local_variable = { name = cap3 value = { value = var:bdfr3 min = 0 } }
+		set_local_variable = { name = cap4 value = { value = var:bdfr4 min = 0 } }
+		set_local_variable = { name = cap5 value = { value = var:bdfr5 min = 0 } }
+		set_local_variable = { name = cap6 value = 0 }
+		set_local_variable = { name = cap7 value = 0 }
+		set_local_variable = { name = cap8 value = 0 }
+		set_local_variable = { name = cap9 value = 0 }
+		set_local_variable = { name = captot value = local_var:cap0 }
+		change_local_variable = { name = captot add = local_var:cap1 }
+		change_local_variable = { name = captot add = local_var:cap2 }
+		change_local_variable = { name = captot add = local_var:cap3 }
+		change_local_variable = { name = captot add = local_var:cap4 }
+		change_local_variable = { name = captot add = local_var:cap5 }
+		if = {
+			limit = {
+				local_var:captot > 0.5
+				has_variable = bdfrw
+				has_variable = bdfrl
+			}
+			var:bdfrw = { save_scope_as = cap_owner }
+			var:bdfrw = { save_scope_as = winner }
+			var:bdfrl = { save_scope_as = cap_loc }
+			save_scope_as = cap_victim
+			set_local_variable = { name = capcid value = var:bdfrc }
+			set_local_variable = { name = capf value = 1 }
+			cap_increment_and_log = yes
+			remove_local_variable = capf
+		}
+		remove_variable = bdfrc
+		remove_variable = bdfrd
+		remove_variable = bdfrl
+		remove_variable = bdfrw
+		remove_variable = bdfr0
+		remove_variable = bdfr1
+		remove_variable = bdfr2
+		remove_variable = bdfr3
+		remove_variable = bdfr4
+		remove_variable = bdfr5
+	}
+}

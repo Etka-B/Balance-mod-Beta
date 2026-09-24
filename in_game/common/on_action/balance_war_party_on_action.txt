@@ -1,0 +1,85 @@
+﻿# War membership and peace-treaty spoils.
+#
+# THE SCOPES are not guesses any more. They are in the base game's own
+# common/on_action/_hardcoded.txt, and the country is ROOT in all four:
+#
+#   on_join_war                        root = the joining country, scope:war
+#   on_pre_losing_war                  root = the country, scope:winner,
+#   on_pre_winning_war                 scope:loser, scope:war
+#   on_took_location_in_peace_treaty   root = winner, scope:location,
+#                                      scope:winner / scope:loser
+#
+# The on_actions dump gives "Expected Scope: none" for all four, which only says
+# the root is not a country -- the named scopes come separately and are not in
+# that dump at all. Two rounds were lost hunting scope:actor / recipient /
+# target before _hardcoded.txt was read instead. See
+# scripted_effects/balance_war_party_effects.txt for the whole story and for
+# what each of these does.
+
+# ---------------------------------------------------------------- joining a war
+on_join_war = {
+	on_actions = {
+		balance_log_war_join
+	}
+}
+
+balance_log_war_join = {
+	effect = {
+		balance_wpar_join = yes
+		# The baseline reading for this war: root is the joining country and
+		# this fires before anything has been spent. Later rows come from the
+		# quarterly pulse, and a last one when it leaves.
+		scope:war = { save_scope_as = cst_w }
+		balance_cstat_snapshot = yes
+	}
+}
+
+# ------------------------------------------------- leaving one, or it ending
+# A separate peace takes a country out of a war the others keep fighting. The
+# war log only photographs the belligerents at the declaration and at the end,
+# so until this bank existed that country's share was whatever its lifetime
+# counter happened to have moved by then -- including every month after it
+# walked away.
+#
+# BOTH of these fire for BOTH sides of any peace, not just for whoever is
+# leaving, so balance_wpar_leave parks the reading and a flush event a day later
+# decides whether the country really went. Seventeen countries fired these hooks
+# when Great Britain made its separate peace on 1467.8.2 and three of them had
+# actually left.
+on_pre_losing_war = {
+	on_actions = {
+		balance_log_war_leave
+	}
+}
+
+on_pre_winning_war = {
+	on_actions = {
+		balance_log_war_leave
+	}
+}
+
+balance_log_war_leave = {
+	effect = {
+		balance_wpar_leave = yes
+	}
+}
+
+# --------------------------------------------- a location taken in the treaty
+# terr_* already records the ownership flip, but it records every flip -- a
+# conquest, a gift, an inheritance, a treaty term, all the same shape. This
+# fires only for treaty terms, so a war's actual spoils can be told apart from
+# whatever else happened to change hands while it ran.
+#
+# Confirmed working: six locations France -> Tuscany on 1467.9.13, the peace
+# that ended the Tuscan war, matching terr_* row for row.
+on_took_location_in_peace_treaty = {
+	on_actions = {
+		balance_log_peace_transfer
+	}
+}
+
+balance_log_peace_transfer = {
+	effect = {
+		balance_ptr_capture = yes
+	}
+}

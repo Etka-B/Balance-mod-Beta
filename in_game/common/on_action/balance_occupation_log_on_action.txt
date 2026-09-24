@@ -1,0 +1,40 @@
+# Records every military OCCUPATION (control changing hands during a war),
+# as distinct from territory_* which tracks legal OWNERSHIP changes
+# (usually settled at the peace treaty). A location can be occupied and
+# retaken several times before a war ends, so this is a genuinely different,
+# more frequent event than a territory/ownership change.
+#
+# Two vanilla hooks together cover every way a location's controller can
+# flip during a war: on_siege_won (fortified locations, after a completed
+# siege) and on_location_occupied (unfortified locations, no siege needed).
+# Both share the same scopes: root = country (the new occupier),
+# scope:target = location, scope:character = the leading general.
+#
+# Uses the same pre-declared numbered-slot trick as the battle/war/territory
+# logs (see balance_battle_log_on_action.txt) instead of
+# add_to_global_variable_list, since that de-duplicates by value. Slot names
+# are kept short (occ_<n>_loc, not balance_occupation_<n>_location) since
+# they're repeated many times and dominate file size.
+#
+# Read by the community ledger tool from the save as:
+#   global_var:occ_count                -- total occupations
+#   global_var:occ_<n>_loc/_by          -- location / occupier, for n = 1..count
+
+on_siege_won = {
+	on_actions = {
+		balance_log_occupation
+	}
+}
+
+on_location_occupied = {
+	on_actions = {
+		balance_log_occupation
+	}
+}
+
+# root = country (new occupier), scope:target = location, scope:character = general
+balance_log_occupation = {
+	effect = {
+		occ_increment_and_log = yes
+	}
+}

@@ -1,4 +1,9 @@
 ﻿l_english:
+ local_bailiff_tt: "Number of [ShowBuildingTypeName('bailiff')] in [SCOPE.sCountry('actor').GetNameWithNoTooltip] is less than [SCOPE.sCountry('actor').GetModifierValue('num_bailiffs')] (Currently [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('bailiff')|V])."
+ local_bailiff_subject_tt: "Number of [ShowBuildingTypeName('bailiff')] in your subject's territory is less than their own Bailiff limit, based on the number of towns and cities they own."
+ local_governor_tt: "The combined total of [ShowBuildingTypeName('local_governor')] and [ShowBuildingTypeName('lieutenancy')] in [SCOPE.sCountry('actor').GetNameWithNoTooltip] is less than [SCOPE.sCountry('actor').GetModifierValue('num_local_governors')] (Governors [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('local_governor')|V], Lieutenancies [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('lieutenancy')|V])"
+ local_governor_subject_tt: "The combined total of [ShowBuildingTypeName('local_governor')] and [ShowBuildingTypeName('lieutenancy')] in your subject's territory is less than their own limit."
+ AUTO_MODIFIER_NAME_balance_seat_of_cardinal_influence: "[ShowBuildingTypeName('seat_of_cardinal')]"
  # ==========================================
  # FLA - FLANDERS
  # ==========================================

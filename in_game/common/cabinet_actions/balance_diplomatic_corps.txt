@@ -1,0 +1,15 @@
+REPLACE:cab_diplomatic_corps = {
+	ability = dip
+
+	potential = {
+		modifier:allow_cabinet_diplomatic_corps = yes
+	}
+
+
+	country_modifier = {
+		diplomatic_capacity_modifier = 0.2
+		monthly_diplomats = 0.2
+		subject_loyalty = 10
+		subject_income_modifier = 0.15
+	}
+}

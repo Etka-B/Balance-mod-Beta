@@ -1,4 +1,4 @@
-REPLACE:bailiff = {
+﻿REPLACE:bailiff = {
 	audio_tier = 2
 	is_foreign = no
 	max_levels = 1
@@ -14,13 +14,18 @@ REPLACE:bailiff = {
 	forbidden_for_estates = yes
 	
 	location_potential = {
-		is_overseas_for_owner = no
+		owner = {
+			OR = {
+				this = scope:actor
+				is_subject_of = scope:actor
+			}
+		}
 	}
 	
 	allow = {
 		trigger_if = {
 			limit = {
-				scope:actor = {
+				owner = {
 					modifier:num_bailiffs <= 0
 				}
 			}
@@ -30,11 +35,42 @@ REPLACE:bailiff = {
 			}
 		}
 		trigger_else = {
-			custom_tooltip = {
-				text = local_bailiff_tt
-				scope:actor = {
-					total_building_levels_including_construction:bailiff < modifier:num_bailiffs
+			trigger_if = {
+				limit = {
+					owner = {
+						this = scope:actor
+					}
 				}
+				custom_tooltip = {
+					text = local_bailiff_tt
+					scope:actor = {
+						total_building_levels_including_construction:bailiff < modifier:num_bailiffs
+					}
+				}
+			}
+			trigger_else = {
+				custom_tooltip = {
+					text = local_bailiff_subject_tt
+					owner = {
+						total_building_levels_including_construction:bailiff < modifier:num_bailiffs
+					}
+				}
+			}
+		}
+	}
+	
+	owner = {
+		OR = {
+			this = scope:actor
+			is_subject_of = scope:actor
+		}
+	}
+
+	can_destroy = {
+		OR = {
+			scope:building.owner = scope:actor
+			scope:building.owner = {
+				is_subject_of = scope:actor
 			}
 		}
 	}
@@ -58,3 +94,120 @@ REPLACE:bailiff = {
 	
 	
 }
+
+
+REPLACE:local_governor = {
+	audio_tier = 2
+	is_foreign = no
+	pop_type = nobles
+	max_levels = 1
+	important_for_UI = yes
+	
+	employment_size = large_noble_employment
+	
+	category = government_category
+	
+	rural_settlement = no
+	town = no
+	city = yes
+	megalopolis = yes
+
+	allow = {
+		trigger_if = {
+			limit = {
+				owner = {
+					this = scope:actor
+				}
+			}
+			custom_tooltip = {
+				text = local_governor_tt
+				scope:actor = {
+					total_building_levels_including_construction:local_governor < {
+						value = {
+							value = modifier:num_local_governors
+							subtract = total_building_levels_including_construction:lieutenancy
+						}
+					}
+				}
+			}
+		}
+		trigger_else = {
+			custom_tooltip = {
+				text = local_governor_subject_tt
+				owner = {
+					total_building_levels_including_construction:local_governor < {
+						value = {
+							value = modifier:num_local_governors
+							subtract = total_building_levels_including_construction:lieutenancy
+						}
+					}
+				}
+			}
+		}
+		owner = {
+			OR = {
+				this = scope:actor
+				is_subject_of = scope:actor
+			}
+		}
+		trigger_if = {
+			limit = { has_building = building_type:seljuk_mint }
+			NOT = { has_building = building_type:seljuk_mint }
+		}
+	}
+
+	can_destroy = {
+		OR = {
+			scope:building.owner = scope:actor
+			scope:building.owner = {
+				is_subject_of = scope:actor
+			}
+		}
+	}
+
+	location_potential = {
+		has_road_to_capital = yes
+		owner.capital != this
+	}
+
+	remove_if = {
+		location = { has_road_to_capital = no }
+		NOT = { owner = { at_war = yes } }
+		NOT = { owner = { in_civil_war = yes } }
+	}
+
+	expensive = yes
+	
+	automation_build_allowed = no
+	ai_forbid_shutdown = yes
+	forbidden_for_estates = yes
+	important_for_AI = yes
+	ai_ignore_maintenance = yes
+
+	build_time = government_build_time
+
+
+	unique_production_methods = {
+		local_governor_maintenance = {
+			tools = 1
+			masonry = 1
+			weaponry = 0.5
+			paper = 3
+			books = 1
+			goods_gold = 1
+			furniture = 2
+			fine_cloth = 1
+
+			category = building_maintenance
+		}
+	}
+
+
+	construction_demand = local_governor_construction
+
+	modifier = {
+		local_proximity_source = 80
+	}
+}
+
+

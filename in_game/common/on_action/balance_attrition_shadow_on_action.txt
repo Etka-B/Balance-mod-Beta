@@ -1,0 +1,41 @@
+﻿# Runs the shadow attrition calculation once a month, per country.
+#
+# monthly_country_pulse is the game's own monthly country hook
+# (game/in_game/common/on_action/country_monthly.txt) and is country-scoped
+# ("From Code: Yes, Expected Scope: country" in the on_actions dump), so this
+# rides along with what the engine already does rather than adding a timer.
+#
+# Nothing here changes the game: the effect reads topography, winter, food and
+# subunit strength, and writes two country variables. It removes no strength
+# and applies no modifier. See balance_attrition_shadow_effects.txt for why
+# attrition has to be recomputed rather than read, and where every constant
+# comes from.
+
+# Every monthly_country_pulse hook in this mod is listed here, in one block.
+# Two files each opening their own `monthly_country_pulse = { ... }` is a
+# coin toss over whether the engine merges them or lets one replace the
+# other, and losing that toss would silently stop the attrition shadow.
+monthly_country_pulse = {
+	on_actions = {
+		balance_attrition_shadow
+		balance_probe_combat
+		balance_cstat_pulse
+	}
+}
+
+balance_attrition_shadow = {
+	effect = {
+		attr_shadow_seed = yes
+	}
+}
+
+
+# Quarterly country state, for countries at war. The effect itself is the gate
+# -- it checks the month and at_war and returns immediately the rest of the
+# time, so this costs a trigger evaluation eleven months in twelve. See
+# scripted_effects/balance_cstat_map_effects.txt.
+balance_cstat_pulse = {
+	effect = {
+		balance_cstat_quarterly = yes
+	}
+}

@@ -4487,6 +4487,7 @@ countries = {
 
 		accepted_cultures = {
 			northumbrian
+			norman 
 		}
 		tolerated_cultures = { cornish welsh }
 
@@ -15208,7 +15209,6 @@ countries = {
 			arpitan
 			gascon
 			burgundian
-			poitevin
 			saintongeais
 			berrichon
 		}
@@ -17252,7 +17252,7 @@ countries = {
 		capital = mortain
 	}
 
-	#Artois
+	# Artois
 	ARS = {
 		own_control_core = {
 			arras bapaume bethune calais hesdin lens saint_omer
@@ -17286,10 +17286,10 @@ countries = {
 		capital = arras
 	}
 
-	#Saint-Pol
+	# Saint-Pol
 	STP = {
 		own_control_core = {
-			saint_pol
+			saint_pol 
 		}
 
 		starting_technology_level = 3
@@ -17322,10 +17322,10 @@ countries = {
 		capital = saint_pol
 	}
 
-	#Boulogne
+	# Boulogne
 	BGN = {
-		own_control_core = {
-			boulogne_sur_mer
+	 own_control_core = {
+	 	 boulogne_sur_mer
 		}
 
 		starting_technology_level = 3

@@ -1,0 +1,74 @@
+# battle -- one row per battle.
+#
+# Replaces balance_battle_slots_effects.txt, which spelled out 26,181 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="battle_w"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (21), each a map of its own:
+#     w        <- scope:actor.owner
+#     l        <- scope:target.owner
+#     loc      <- scope:actor.unit_location
+#     kl       <- scope:killed_land_units
+#     kn       <- scope:killed_navy_units
+#     ll       <- scope:lost_land_units
+#     ln       <- scope:lost_navy_units
+#     d        <- current_date
+#     ws       <- scope:war_score
+#     w0       <- global_var:bcw0
+#     w1       <- global_var:bcw1
+#     w2       <- global_var:bcw2
+#     w3       <- global_var:bcw3
+#     w4       <- global_var:bcw4
+#     w5       <- global_var:bcw5
+#     l0       <- global_var:bcl0
+#     l1       <- global_var:bcl1
+#     l2       <- global_var:bcl2
+#     l3       <- global_var:bcl3
+#     l4       <- global_var:bcl4
+#     l5       <- global_var:bcl5
+#
+# global_var:battle_count is still the row count and still the last key written.
+
+battle_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = battle_count } }
+		set_global_variable = { name = battle_count value = 0 }
+	}
+	change_global_variable = { name = battle_count add = 1 }
+
+	add_to_global_variable_map = { name = battle_w key = global_var:battle_count value = scope:actor.owner }
+	add_to_global_variable_map = { name = battle_l key = global_var:battle_count value = scope:target.owner }
+	add_to_global_variable_map = { name = battle_loc key = global_var:battle_count value = scope:actor.unit_location }
+	add_to_global_variable_map = { name = battle_kl key = global_var:battle_count value = scope:killed_land_units }
+	add_to_global_variable_map = { name = battle_kn key = global_var:battle_count value = scope:killed_navy_units }
+	add_to_global_variable_map = { name = battle_ll key = global_var:battle_count value = scope:lost_land_units }
+	add_to_global_variable_map = { name = battle_ln key = global_var:battle_count value = scope:lost_navy_units }
+	add_to_global_variable_map = { name = battle_d key = global_var:battle_count value = current_date }
+	add_to_global_variable_map = { name = battle_ws key = global_var:battle_count value = scope:war_score }
+	# the fight's number, the one its day rows carry (0 when no unit had one)
+	add_to_global_variable_map = { name = battle_cid key = global_var:battle_count value = local_var:bdbcid }
+	add_to_global_variable_map = { name = battle_w0 key = global_var:battle_count value = global_var:bcw0 }
+	add_to_global_variable_map = { name = battle_w1 key = global_var:battle_count value = global_var:bcw1 }
+	add_to_global_variable_map = { name = battle_w2 key = global_var:battle_count value = global_var:bcw2 }
+	add_to_global_variable_map = { name = battle_w3 key = global_var:battle_count value = global_var:bcw3 }
+	add_to_global_variable_map = { name = battle_w4 key = global_var:battle_count value = global_var:bcw4 }
+	add_to_global_variable_map = { name = battle_w5 key = global_var:battle_count value = global_var:bcw5 }
+	add_to_global_variable_map = { name = battle_l0 key = global_var:battle_count value = global_var:bcl0 }
+	add_to_global_variable_map = { name = battle_l1 key = global_var:battle_count value = global_var:bcl1 }
+	add_to_global_variable_map = { name = battle_l2 key = global_var:battle_count value = global_var:bcl2 }
+	add_to_global_variable_map = { name = battle_l3 key = global_var:battle_count value = global_var:bcl3 }
+	add_to_global_variable_map = { name = battle_l4 key = global_var:battle_count value = global_var:bcl4 }
+	add_to_global_variable_map = { name = battle_l5 key = global_var:battle_count value = global_var:bcl5 }
+}

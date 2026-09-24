@@ -1,0 +1,59 @@
+# WAR SCOPE. One wpar row per belligerent, for every belligerent there is.
+#
+# WHY THIS EXISTS
+#   The war record carries its participants in numbered columns -- pa0..pa63
+#   and pd0..pd63 with a shadow-attrition figure beside each. Numbered columns
+#   have a ceiling by construction, and a coalition war goes past any ceiling
+#   worth writing out: the 1480 save had wars with forty defenders against a
+#   sixteen-slot bank, and 478 of 2,157 belligerents -- 22% -- were never
+#   recorded at all. Raising the bank to 64 a side bought headroom, not a fix.
+#
+#   wpar has no ceiling. It is one row per event, appended to a map keyed by a
+#   running counter, so a war with a hundred belligerents writes a hundred rows
+#   and nothing is dropped. It already logs joins and departures that way --
+#   1,697 rows in the 1480 save. What it did not have was a reading for every
+#   belligerent at the two moments that bracket a war.
+#
+# WHAT IT WRITES
+#   kind = $KIND$, passed by the caller:
+#       0   the roster at the declaration -- everyone's figure on day one
+#       3   the roster at the end         -- everyone's figure at the peace
+#   (1 = joined and 2 = left keep their meanings, written elsewhere per event.)
+#
+#   With both ends present, what a war cost a country is the difference between
+#   its kind 3 row and its kind 0 row -- or its kind 1 row, for a country that
+#   joined after the declaration. No slot index, no ceiling, and it works the
+#   same for the twentieth ally as for the leader.
+#
+# ORDERING
+#   Called from the same two places as balance_war_parties and for the same
+#   reason: at on_war_declared and at on_ending_war, in war scope, before the
+#   war and declaration records copy their globals.
+balance_wpar_roster = {
+	save_scope_as = wpar_war
+	set_global_variable = { name = wpar_date value = current_date }
+
+	every_attacker = {
+		save_scope_as = wpar_c
+		set_global_variable = { name = wpar_kind value = $KIND$ }
+		set_global_variable = { name = wpar_side value = 1 }
+		set_global_variable = { name = wpar_base value = 0 }
+		if = {
+			limit = { has_variable = shadow_attr }
+			set_global_variable = { name = wpar_base value = var:shadow_attr }
+		}
+		wpar_increment_and_log = yes
+	}
+
+	every_defender = {
+		save_scope_as = wpar_c
+		set_global_variable = { name = wpar_kind value = $KIND$ }
+		set_global_variable = { name = wpar_side value = 2 }
+		set_global_variable = { name = wpar_base value = 0 }
+		if = {
+			limit = { has_variable = shadow_attr }
+			set_global_variable = { name = wpar_base value = var:shadow_attr }
+		}
+		wpar_increment_and_log = yes
+	}
+}

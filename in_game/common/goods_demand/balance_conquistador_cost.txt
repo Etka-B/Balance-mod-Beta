@@ -1,0 +1,11 @@
+# Balance mod: dropped the "horses" requirement - fresh colonial frontier markets
+# routinely have zero horse access/production, permanently stalling this construction
+# ("Currently stalled! Lack of access to goods.") even though every other good is fine.
+REPLACE:create_conquistador = {
+	cloth = 1 #tents
+	leather = 1 #tack
+	weaponry = 1 #stabby things
+	liquor = 1 #booze
+
+	category = building_construction
+}

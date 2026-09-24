@@ -1,0 +1,586 @@
+# Balance mod: extends the vanilla Electorship diplomatic actions (bestow / rescind / request)
+# to also cover the new special_status:republic_elector (see
+# common/international_organization_special_statuses/hre.txt) so the Emperor can grant/revoke
+# it mid-game, and republics can request it, exactly like the vanilla elector/archbishop_elector
+# branches. Everything else (AI acceptance weighting, etc.) is untouched vanilla content.
+REPLACE:bestow_elector_status = {
+	type = diplomacy
+	category = CATEGORY_HRE_ACTIONS
+
+	ai_limit_per_check = 1
+
+	potential = {
+		scope:actor = {
+			is_emperor = yes
+		}
+	}
+
+	allow = {
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		target_flag = recipient
+		name = "choose_country"
+		column = {
+			data = name
+		}
+		visible = {
+			is_member_of_international_organization = international_organization:hre
+			modifier:is_excluded_from_electorship = no
+			international_organization:hre = {
+				OR = {
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:elector
+							value < "max_countries_with_special_status(special_status:elector)"
+						}
+						NOT = {
+							country_has_special_status = {
+								type = special_status:elector
+								country = root
+							}
+						}
+					}
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:archbishop_elector
+							value < "max_countries_with_special_status(special_status:archbishop_elector)"
+						}
+						NOT = {
+							country_has_special_status = {
+								type = special_status:archbishop_elector
+								country = root
+							}
+						}
+					}
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:republic_elector
+							value < "max_countries_with_special_status(special_status:republic_elector)"
+						}
+						NOT = {
+							country_has_special_status = {
+								type = special_status:republic_elector
+								country = root
+							}
+						}
+					}
+				}
+			}
+		}
+        enabled = {
+			international_organization:hre = {
+				OR = {
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:elector
+							value < "max_countries_with_special_status(special_status:elector)"
+						}
+						special_status_can_be_bestowed = {
+							type = special_status:elector
+							country = root
+						}
+					}
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:archbishop_elector
+							value < "max_countries_with_special_status(special_status:archbishop_elector)"
+						}
+						special_status_can_be_bestowed = {
+							type = special_status:archbishop_elector
+							country = root
+						}
+					}
+					AND = {
+						num_countries_with_special_status = {
+							type = special_status:republic_elector
+							value < "max_countries_with_special_status(special_status:republic_elector)"
+						}
+						special_status_can_be_bestowed = {
+							type = special_status:republic_elector
+							country = root
+						}
+					}
+				}
+			}
+		}
+	}
+
+	effect = {
+		international_organization:hre = {
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:elector
+						country = scope:recipient
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:elector
+					country = scope:recipient
+				}
+			}
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:archbishop_elector
+						country = scope:recipient
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:archbishop_elector
+					country = scope:recipient
+				}
+			}
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:republic_elector
+						country = scope:recipient
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:republic_elector
+					country = scope:recipient
+				}
+			}
+		}
+		scope:recipient = {
+			add_opinion = { target = scope:actor modifier = opinion_granted_electorship }
+		}
+	}
+	ai_will_do = {
+		add = {
+			desc = "TARGET_ACCEPTANCE"
+			value = "scope:actor.reverse_country_interaction_acceptance(country_interaction:request_elector_status|scope:recipient)"
+		}
+	}
+}
+REPLACE:rescind_elector_status = {
+	type = diplomacy
+	category = CATEGORY_HRE_ACTIONS
+
+	potential = {
+		scope:actor = {
+			is_emperor = yes
+			modifier:can_revoke_electorship = yes
+		}
+	}
+
+	allow = {
+		current_imperial_authority = { value = imperial_authority_extreme_penalty }
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		target_flag = recipient
+		name = "choose_country"
+		column = {
+			data = name
+		}
+		visible = {
+			international_organization:hre = {
+				OR = {
+					country_has_special_status = {
+						type = special_status:elector
+						country = root
+					}
+					country_has_special_status = {
+						type = special_status:archbishop_elector
+						country = root
+					}
+					country_has_special_status = {
+						type = special_status:republic_elector
+						country = root
+					}
+				}
+			}
+		}
+        enabled = {
+		}
+	}
+
+	effect = {
+		change_imperial_authority = { value = imperial_authority_extreme_penalty }
+		international_organization:hre = {
+			every_country_with_special_status_of_type = {
+				type = elector
+				add_opinion = { target = scope:actor modifier = opinion_rescinded_electorship }
+			}
+			every_country_with_special_status_of_type = {
+				type = archbishop_elector
+				add_opinion = { target = scope:actor modifier = opinion_rescinded_electorship }
+			}
+			every_country_with_special_status_of_type = {
+				type = republic_elector
+				add_opinion = { target = scope:actor modifier = opinion_rescinded_electorship }
+			}
+			if = {
+				limit = {
+					country_has_special_status = {
+						type = special_status:elector
+						country = scope:recipient
+					}
+				}
+				international_organization_remove_special_status = {
+					type = special_status:elector
+					country = scope:recipient
+				}
+			}
+			if = {
+				limit = {
+					country_has_special_status = {
+						type = special_status:archbishop_elector
+						country = scope:recipient
+					}
+				}
+				international_organization_remove_special_status = {
+					type = special_status:archbishop_elector
+					country = scope:recipient
+				}
+			}
+			if = {
+				limit = {
+					country_has_special_status = {
+						type = special_status:republic_elector
+						country = scope:recipient
+					}
+				}
+				international_organization_remove_special_status = {
+					type = special_status:republic_elector
+					country = scope:recipient
+				}
+			}
+		}
+	}
+	ai_will_do = {
+	}
+}
+REPLACE:request_elector_status = {
+	type = diplomacy
+	category = CATEGORY_HRE_ACTIONS
+	ai_limit_per_check = 1
+	potential = {
+		scope:actor = {
+			is_member_of_international_organization = international_organization:hre
+			modifier:is_excluded_from_electorship = no
+			OR = {
+				government_type = government_type:monarchy
+				government_type = government_type:theocracy
+				government_type = government_type:republic
+			}
+			international_organization:hre = {
+				OR = {
+					AND = {
+						"num_countries_with_special_status(special_status:elector)" < "max_countries_with_special_status(special_status:elector)"
+						NOT = {
+							country_has_special_status = {
+								type = special_status:elector
+								country = scope:actor
+							}
+						}
+					}
+					AND = {
+						"num_countries_with_special_status(special_status:archbishop_elector)" < "max_countries_with_special_status(special_status:archbishop_elector)"
+						NOT = {
+							country_has_special_status = {
+								type = special_status:archbishop_elector
+								country = scope:actor
+							}
+						}
+					}
+					AND = {
+						"num_countries_with_special_status(special_status:republic_elector)" < "max_countries_with_special_status(special_status:republic_elector)"
+						NOT = {
+							country_has_special_status = {
+								type = special_status:republic_elector
+								country = scope:actor
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	allow = {
+		international_organization:hre = {
+			OR = {
+				AND = {
+					"num_countries_with_special_status(special_status:elector)" < "max_countries_with_special_status(special_status:elector)"
+					special_status_can_be_bestowed = {
+						type = special_status:elector
+						country = scope:actor
+					}
+				}
+				AND = {
+					"num_countries_with_special_status(special_status:archbishop_elector)" < "max_countries_with_special_status(special_status:archbishop_elector)"
+					special_status_can_be_bestowed = {
+						type = special_status:archbishop_elector
+						country = scope:actor
+					}
+				}
+				AND = {
+					"num_countries_with_special_status(special_status:republic_elector)" < "max_countries_with_special_status(special_status:republic_elector)"
+					special_status_can_be_bestowed = {
+						type = special_status:republic_elector
+						country = scope:actor
+					}
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		target_flag = recipient
+		name = "choose_country"
+		column = {
+			data = name
+		}
+		visible = {
+			is_emperor = yes
+		}
+        enabled = {
+		}
+	}
+
+	effect = {
+		international_organization:hre = {
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:elector
+						country = scope:actor
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:elector
+					country = scope:actor
+				}
+			}
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:archbishop_elector
+						country = scope:actor
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:archbishop_elector
+					country = scope:actor
+				}
+			}
+			if = {
+				limit = {
+					special_status_can_be_bestowed = {
+						type = special_status:republic_elector
+						country = scope:actor
+					}
+				}
+				international_organization_add_special_status = {
+					type = special_status:republic_elector
+					country = scope:actor
+				}
+			}
+		}
+		scope:actor = {
+			add_opinion = { target = scope:recipient modifier = opinion_granted_electorship }
+		}
+	}
+	ai_will_do = {
+		add = {
+			desc = "TARGET_ACCEPTANCE"
+			value = "scope:actor.country_interaction_acceptance(country_interaction:request_elector_status|scope:recipient)"
+			subtract = 50	#just so the AI doesn't spam it
+		}
+	}
+
+	accept = {
+		add = {
+			desc = "EMPIRE_NEED_ELECTORS"
+			value = 10
+		}
+		if = {
+			limit = { "scope:recipient.antagonism(scope:actor)" > 0 }
+			subtract = {
+				desc = "DIPLOREASON_ANTAGONISM"
+				value = "scope:actor.antagonism(scope:recipient)"
+			}
+		}
+		if = {
+			limit = { scope:actor = { government_type = government_type:monarchy } }
+			if = {
+				limit = {
+					scope:actor = { total_population_in_international_organization = { international_organization = international_organization:hre value < 100 } }
+				}
+				subtract = {
+					desc = "HRE_TINY_NATION"
+					value = 100
+				}
+			}
+			else_if = {
+				limit = {
+					scope:actor = { total_population_in_international_organization = { international_organization = international_organization:hre value < 250 } }
+				}
+				subtract = {
+					desc = "HRE_SMALL_NATION"
+					value = 50
+				}
+			}
+			if = {
+				limit = { scope:actor = { country_rank = country_rank:rank_county } }
+				subtract = {
+					desc = "rank_duchy"
+					value = 75
+				}
+			}
+			add = {
+				desc = "DIPLOREASON_DYNASTIC_POWER_IN_HRE"
+				value = "scope:actor.dynastic_power(international_organization:hre)"
+				multiply = 1.5
+			}
+		}
+		if = {
+			limit = {
+				scope:actor = {
+					OR = {
+						has_ruler = yes
+						has_heir = yes
+					}
+					ruler_or_heir_if_regent ?= {
+						has_dynasty = yes
+						dynasty ?= scope:recipient.ruler.dynasty
+					}
+				}
+			}
+			add = {
+				desc = "opinion_same_dynasty"
+				value = 50
+			}
+		}
+		if = {
+			limit = {
+				scope:actor.country_economical_base > 0
+				scope:recipient.country_economical_base > 0
+			}
+			if = {
+				limit = { scope:actor.country_economical_base < scope:recipient.country_economical_base }
+				subtract = {
+					desc = "RELATIVE_ECONOMICAL_BASE"
+					value = scope:actor.country_economical_base
+					divide = scope:recipient.country_economical_base
+					multiply = 100
+					if = {
+						limit = {
+							scope:recipient = {
+								any_rival = {
+									this != scope:actor
+									is_neighbor_of = scope:actor
+								}
+							}
+						}
+						divide = 10	#"the enemy of my enemy" type of deal
+					}
+					min = -50
+					max = 50
+				}
+			}
+			else = {
+				add = {
+					desc = "RELATIVE_ECONOMICAL_BASE"
+					value = scope:recipient.country_economical_base
+					divide = scope:actor.country_economical_base
+					multiply = 100
+					min = -50
+					max = 50
+				}
+			}
+		}
+		if = {
+			limit = { scope:actor = { is_allied_with = { target = scope:recipient } } }
+			add = {
+				desc = "game_concept_alliance"
+				value = 20
+			}
+		}
+		if = {
+			limit = {
+				scope:recipient = {
+					is_rival_of = scope:actor
+				}
+			}
+			add = {
+				desc = "game_concept_rival"
+				value = -1000
+			}
+		}
+		if = {
+			limit = {
+				scope:recipient = {
+					NOT = { is_rival_of = scope:actor }
+					NOT = { is_enemy_of = scope:actor }
+					OR = {
+						any_rival = {
+							OR = {
+								is_rival_of = scope:actor
+								is_enemy_of = scope:actor
+							}
+						}
+						any_enemy = {
+							OR = {
+								is_rival_of = scope:actor
+								is_enemy_of = scope:actor
+							}
+						}
+					}
+				}
+			}
+			add = {
+				desc = "DIPLOREASON_THE_ENEMY_OF_MY_ENEMY"
+				value = 100
+			}
+		}
+		if = {
+			limit = {
+				scope:recipient = {
+					is_enemy_of = scope:actor
+				}
+			}
+			add = {
+				desc = "game_concept_rival_enemy"
+				value = -100
+			}
+		}
+		add = {
+			desc = "DIPLOMATIC_REPUTATION"
+			value = {
+				value = scope:actor.modifier:diplomatic_reputation
+				multiply = 3
+			}
+		}
+		add = {
+			desc = "THEIR_OPINION_TOOLTIP"
+			value = "scope:recipient.opinion(scope:actor)"
+			if = {
+				limit = { "scope:recipient.opinion(scope:actor)" > 0 }
+				divide = 4
+			}
+		}
+		if = {
+			limit = { scope:actor.culture.language = scope:recipient.culture.language }
+			add = {
+				desc = "UPKEEP_SAME_LANGUAGE"
+				value = 25
+			}
+		}
+		add = {
+			desc = "game_concept_trust"
+			scope:recipient = {
+				value = "trust(scope:actor)"
+				divide = 5
+			}
+		}
+	}
+}

@@ -1,0 +1,69 @@
+﻿# Goods the Balance mod changes. Everything not listed here stays exactly as the
+# game ships it -- same TRY_REPLACE convention as building_types/balance_fort.txt,
+# so each entry is the full vanilla block with only the marked values moved.
+
+# MARBLE -- more noble demand, and it starts sooner.
+#   demand_add nobles              0.05 -> 0.10   (x2)
+#   wealth_impact_threshold nobles 1.5  -> 1.15   (nobles begin buying it at a
+#                                                  lower wealth, so more of them do)
+#   development_threshold          40   -> 15     (vanilla's 40 is the highest in
+#                                                  the file -- every other good that
+#                                                  carries one sits at 20, one at 30)
+#   Everything else as vanilla: price 5, transport 3.
+TRY_REPLACE:marble = {
+	method = mining
+	category = raw_material
+	color = goods_marble
+	default_market_price = 5
+	
+	transport_cost = 3
+
+	
+	demand_add = {
+		nobles = 0.10
+	}	
+	
+	development_threshold = 15
+	wealth_impact_threshold = {
+		nobles = 1.15
+	}
+}
+
+# OLIVES -- worth more, and the estates want more of it.
+#   default_market_price   1 -> 2
+#
+#   Demand is not split by estate in the vanilla file: every pop wants
+#   all = 0.001, and demand_multiply { upper = 2 } doubles that for the three
+#   pop types marked upper = yes in pop_types/00_default.txt -- nobles, clergy
+#   and burghers, and nobody else. So each estate currently wants 0.002, and
+#   the per-estate multipliers below replace the shared one:
+#     nobles    0.002 -> 0.006   (x3, multiplier 2 -> 6)
+#     burghers  0.002 -> 0.004   (x2, multiplier 2 -> 4)
+#     clergy    0.002 -> 0.004   (x2, multiplier 2 -> 4)
+#   upper is dropped rather than kept alongside them, so nothing is multiplied
+#   twice. Every other pop is untouched: laborers, soldiers, peasants and slaves
+#   still want 0.001, tribesmen still 0.
+TRY_REPLACE:olives = {
+	method = farming
+	category = raw_material
+	color = goods_olives
+
+	food = 4
+	default_market_price = 2
+
+	demand_add = {
+		all = 0.001
+	}
+
+	demand_multiply = {
+		nobles = 6
+		burghers = 4
+		clergy = 4
+		tribesmen = 0
+	}
+
+	origin_in_old_world = yes
+	custom_tags = { old_world_goods }
+
+	no_demand_if_no_market_availability = yes
+}

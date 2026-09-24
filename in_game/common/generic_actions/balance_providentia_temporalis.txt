@@ -1,0 +1,79 @@
+# PROVIDENTIA TEMPORALIS -- moved off the Curia and onto the Catholic religion
+# panel. It used to be a curia resolution (common/resolutions), which meant a
+# papal bull, a vote of the cardinals and the 50 religious influence of
+# price:propose_curia_action. It is now an ordinary religious action, next to
+# the pilgrimage and the rest: any Catholic may call for it and pay for it out
+# of religious influence, with no vote and no Pope in the way.
+#
+# What it does is unchanged -- the same providentia_temporalis modifier on the
+# Catholic faith, 10 years, +2.5% tax income efficiency and +2.5% production
+# efficiency -- so it still blesses EVERY Catholic country, not only the one
+# that paid. Making it the caller's own bonus instead is a one-line change:
+# put add_country_modifier on scope:actor in place of the block below.
+providentia_temporalis_action = {
+	type = religious
+
+	sound = UI_action_religion_generic
+
+	ai_tick = monthly
+	ai_tick_frequency = 60
+	automation_tick = monthly
+	automation_tick_frequency = 12
+	player_automated_category = religiousdoctrines
+
+	potential = {
+		scope:actor.religion = religion:catholic
+	}
+
+	allow = {
+		religion:catholic = {
+			NOT = { has_religion_modifier = providentia_temporalis }
+		}
+	}
+
+	# the modifier runs 10 years, so the cooldown lets it be called again as it
+	# lapses and not before
+	cooldown = {
+		type = providentia_temporalis_action
+		years = 10
+	}
+
+	price = price:providentia_temporalis_action
+
+	select_trigger = {
+		looking_for_a = religion
+		source = actor
+		target_flag = recipient
+		name = "choose_religion"
+		column = {
+			data = name
+		}
+	}
+
+	effect = {
+		religion:catholic = {
+			add_religion_modifier = {
+				modifier = providentia_temporalis
+				years = 10
+				mode = replace
+			}
+		}
+	}
+
+	ai_will_do = {
+		# base, then more the less the clergy is satisfied -- the same reading the
+		# curia resolution used
+		add = {
+			desc = "VOTE_BASE_VALUE"
+			value = 50
+		}
+		scope:actor = {
+			multiply = {
+				value = estate_satisfaction:clergy_estate
+				multiply = -1
+				add = 1
+			}
+			multiply = "estate_power(estate_type:clergy_estate)"
+		}
+	}
+}

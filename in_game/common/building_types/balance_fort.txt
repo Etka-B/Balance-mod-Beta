@@ -40,6 +40,15 @@ TRY_REPLACE:stockade = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0
@@ -109,6 +118,15 @@ TRY_REPLACE:castle = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0
@@ -179,6 +197,15 @@ TRY_REPLACE:bastion = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0
@@ -245,6 +272,15 @@ TRY_REPLACE:star_fort = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0
@@ -313,6 +349,15 @@ TRY_REPLACE:fortress = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0
@@ -379,25 +424,6 @@ TRY_REPLACE:coastal_fort = {
 	
 
 
-	allow = {
-		NOT = {
-			any_neighbor_location = {
-				OR = {
-					AND = {
-						top_owner = scope:actor
-						OR = {
-							modifier:fort_level > 0
-							modifier:minimum_fort_level > 0
-						}
-					}
-					any_buildings_in_location = {
-						building_category = defense_category
-						building_levels_under_construction >= 1
-					}
-				}
-			}
-		}
-	}
 
 	modifier = {
 		hostile_disembark_time_modifier = 1.0
@@ -449,25 +475,6 @@ TRY_REPLACE:naval_battery = {
 	
 
 
-	allow = {
-		NOT = {
-			any_neighbor_location = {
-				OR = {
-					AND = {
-						top_owner = scope:actor
-						OR = {
-							modifier:fort_level > 0
-							modifier:minimum_fort_level > 0
-						}
-					}
-					any_buildings_in_location = {
-						building_category = defense_category
-						building_levels_under_construction >= 1
-					}
-				}
-			}
-		}
-	}
 
 	modifier = {
 		hostile_disembark_time_modifier = 2.0
@@ -511,6 +518,15 @@ TRY_REPLACE:city_walls = {
 			any_neighbor_location = {
 				OR = {
 					AND = {
+						# A neighbour with no owner -- a seazone, a wasteland, anything
+						# uncolonised -- has no top_owner, and reading it there is an
+						# error the engine logs every single time. The fort build check
+						# walks every neighbour of every candidate location, so it fired
+						# constantly: 1,098 of them in one 1 MB slice of error.log, and
+						# error.log had already rotated five times. Each one is two disk
+						# writes (error.log and debug.log, which reached 1.1 GB), which
+						# is what turned a script mistake into a frame-rate problem.
+						exists = owner
 						top_owner = scope:actor
 						OR = {
 							modifier:fort_level > 0

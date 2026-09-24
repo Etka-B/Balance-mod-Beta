@@ -1,0 +1,32 @@
+# Records every ruler succession into a fixed bank of pre-declared numbered
+# slots (balance_ruler_slots_effects.txt) -- same technique as the battle/war
+# logs in balance_battle_log_on_action.txt, and for the same reason: nothing
+# in the base game keeps a running history of past rulers once a new one
+# takes over (confirmed by inspecting a real save: government.ruler_terms
+# only holds pre-1337 scripted dynasty flavor, not real gameplay successions
+# -- it never includes the current living ruler, and countries that formed
+# from a different tag or are republics don't have it at all).
+#
+# Stores scope references (country + both characters), not extracted scalar
+# fields, so the ledger tool can look up the full character record (name,
+# adm/dip/mil, birth/death dates) from character_db at read time.
+#
+# Read by the community ledger tool from the save as:
+#   global_var:ruler_count            -- total successions logged so far
+#   global_var:ruler_<n>_ctry         -- which country
+#   global_var:ruler_<n>_old          -- the character who just left power
+#   global_var:ruler_<n>_new          -- the character who replaced them
+#   global_var:ruler_<n>_end          -- date of the succession
+
+# root = country, scope:old_ruler and scope:new_ruler are both characters
+on_new_ruler = {
+	on_actions = {
+		balance_log_ruler_change
+	}
+}
+
+balance_log_ruler_change = {
+	effect = {
+		ruler_increment_and_log = yes
+	}
+}

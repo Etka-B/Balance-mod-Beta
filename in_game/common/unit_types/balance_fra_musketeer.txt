@@ -1,0 +1,13 @@
+﻿# Balance mod: France-only age 3 light infantry, unlocked by the fra_musketeer_doctrine
+# advance (in_game/common/advances/balance_fra_musketeer_advance.txt). 10% more damage
+# dealt, 10% less damage taken, compared to a normal age 3 light infantry.
+a_fra_musketeer_light_infantry = {
+	copy_from = a_age_3_discovery_light_infantry
+	is_special = yes
+	buildable = yes
+
+	strength_damage_done = 0.1
+	strength_damage_taken = -0.15
+
+	gfx_tags = { musket_tag medium_tag }
+}

@@ -1,0 +1,351 @@
+namespace = conquistador
+
+#conquistador arrives to start kicking ass
+conquistador.1 = {
+	hide_portraits = yes
+	type = country_event
+	#called from code when a conquistador construction is completed
+	orphan = yes
+
+	title = conquistador.1.title
+	desc = conquistador.1.desc
+	outcome = neutral
+
+	image = "gfx/interface/illustrations/institutions/new_world.dds"
+
+	immediate = {
+		#create the conquistador
+		if = {
+			limit = {
+				scope:target_location = {
+					is_owned_or_owned_by_subjects_of = scope:actor
+				}
+			}
+
+			#already got this location, so just join them
+			scope:target_location = {
+				owner = {
+					save_scope_as = new_conquistador
+				}
+			}
+		}
+		else = {
+			random_subject = {
+				limit = {
+					subject_type = subject_type:conquistador
+					capital.area = scope:target_location.area
+				}
+				save_scope_as = new_conquistador
+			}
+		}
+
+		if = {
+			limit = {
+				not = { exists = scope:new_conquistador }
+			}
+			scope:target_location = {
+				create_army_country_in_location = {
+					reforms = {
+						conquistador_country
+					}
+					overlord = scope:actor
+					culture = scope:actor.culture
+					religion = scope:actor.religion
+					subject_type = subject_type:conquistador
+					ruler = scope:target
+					save_scope_as = new_conquistador
+				}
+			}
+		}
+
+		#Balance mod: army size scales with the multiplier chosen on create_conquistador
+		#(1x/2x/3x, stored on scope:target - the recruited character - since it's a
+		#per-expedition value). Falls back to a plain x1 base if the character has no
+		#such variable (e.g. flavor_CAS.txt's Cortes event calls start_conquistador directly).
+		#Base composition (x1): 2 infantry + 2 cavalry + 3 supply units.
+		scope:new_conquistador = {
+			if = {
+				limit = { scope:target = { has_variable = balance_conquistador_multiplier } }
+				set_variable = {
+					name = balance_mult
+					value = scope:target.var:balance_conquistador_multiplier
+				}
+			}
+			else = {
+				set_variable = { name = balance_mult value = 1 }
+			}
+
+			#army them up
+			scope:target_location = {
+				if = {
+					limit = {
+						current_age_or_later = { age = age_3_discovery }
+					}
+					while =  {
+						count = {
+							value = 2 #base 2 infantry
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_discovery_conquistadors
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+					while =  {
+						count = {
+							value = 2 #base 2 cavalry
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_discovery_conquistador_cavalry
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+					#supply units so they don't instantly starve before they can siege a single location
+					while = {
+						count = {
+							value = 3 #base 3 supply units
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_supply_convoy
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+				}
+				else = {
+					while =  {
+						count = {
+							value = 2 #base 2 infantry
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_renaissance_conquistadors
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+					while =  {
+						count = {
+							value = 2 #base 2 cavalry
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_renaissance_conquistador_cavalry
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+					#supply units so they don't instantly starve before they can siege a single location
+					while = {
+						count = {
+							value = 3 #base 3 supply units
+							multiply = scope:new_conquistador.var:balance_mult
+						}
+						create_sub_unit_with_owner = {
+							type = a_supply_carts
+							owner = scope:new_conquistador
+							origin = scope:location
+							experience = 100
+						}
+					}
+				}
+			}
+
+			scope:target = {
+				remove_variable = balance_conquistador_multiplier
+			}
+
+			#after giving them the army we need to recalc the country active status
+			force_recalc_country_active_status = scope:new_conquistador
+			#Balance mod: base gold (scales with the expedition multiplier: 1.5k/3k/4.5k/6k)
+			#plus a strong (-95%) army maintenance discount for 5 years, so the subject
+			#can actually afford its (now bigger) army while it establishes itself.
+			add_gold = {
+				value = 1500
+				multiply = scope:new_conquistador.var:balance_mult
+			}
+			add_country_modifier = {
+				modifier = balance_conquistador_supply_line
+				years = 5
+			}
+
+			remove_variable = balance_mult
+			#Max Morale
+			every_army = {
+				every_sub_unit = {
+					add_subunit_morale = {
+						value = subunit_morale
+						divide = subunit_morale_percentage
+						subtract = subunit_morale
+					}
+				}
+			}
+
+			#move the character into the new country
+			scope:target = {
+				move_country = scope:new_conquistador
+			}
+
+			random_army = {
+				limit = {
+					has_commander = no
+				}
+				set_as_commander = scope:target
+			}
+			#Copy the possible laws form overlord
+			scope:actor = {
+				every_current_policy = {
+					scope:new_conquistador = {
+						add_policy = prev
+					}
+				}
+			}
+
+
+			if = {
+				limit = {
+					scope:target_location = {
+						not = { is_owned_or_owned_by_subjects_of = scope:actor }
+					}
+				}
+				#time to kick some ass
+				add_casus_belli = {
+					target = scope:target_location.owner
+					type = casus_belli:cb_conquer_province
+					province = scope:target_location.province
+				}
+				declare_war_with_cb = {
+					target = scope:target_location.owner
+					type = casus_belli:cb_conquer_province
+				}
+			}
+		}
+	}
+
+	# bueno!
+	option = {
+		name = conquistador.1.a
+	}
+}
+
+conquistador.10 = {
+	hide_portraits = yes
+	type = location_event
+
+	title = conquistador.10.title
+	desc = conquistador.10.desc
+	outcome = neutral
+
+
+	image = "gfx/interface/illustrations/institutions/new_world.dds"
+
+
+	trigger = {
+		owner ?= {
+			has_reform = government_reform:conquistador_country
+			NOT = { has_variable = waiting_for_colonial_overlord_answer}
+		}
+	}
+
+	immediate = {
+		owner = {
+			overlord = {
+				save_scope_as = former_overlord
+			}
+			save_scope_as = conquistador_country
+		}
+	}
+
+
+	# keep conquering
+	option = {
+		name = conquistador.10.a
+
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = -1
+				owner.num_locations > 5
+			}
+			modifier = {
+				factor = 0
+				owner.num_locations > 8
+			}
+		}
+	}
+
+
+	option = {
+		name = conquistador.10.b
+
+		scope:former_overlord = {
+			trigger_event_silently = conquistador.11
+		}
+		show_as_tooltip = {
+			owner = {
+				remove_reform = government_reform:conquistador_country
+				make_subject_of = { target = scope:former_overlord type = subject_type:colonial_nation }
+			}
+		}
+		hidden_effect = {
+			owner = {
+				set_variable = { name = waiting_for_colonial_overlord_answer value = yes days = 150}
+			}
+		}
+
+
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 1
+				owner.num_locations > 4
+			}
+		}
+	}
+}
+
+
+
+conquistador.11 = {
+	type = country_event
+
+	title = conquistador.11.title
+	desc = conquistador.11.desc
+	outcome = neutral
+
+	image = "gfx/interface/illustrations/institutions/new_world.dds"
+	immediate = {
+		hidden_effect = {
+			scope:conquistador_country = {
+				remove_variable = waiting_for_colonial_overlord_answer
+			}
+		}
+	}
+
+
+	option = {
+		name = conquistador.11.a
+		scope:conquistador_country = {
+			remove_reform = government_reform:conquistador_country
+			make_subject_of = { target = root type = subject_type:colonial_nation }
+			change_country_type = location
+		}
+
+		historical_option = yes
+	}
+
+	option = {
+		name = conquistador.11.b
+		add_prestige = prestige_weak_penalty
+	}
+
+}

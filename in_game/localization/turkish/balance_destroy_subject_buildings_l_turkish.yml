@@ -1,0 +1,14 @@
+﻿l_turkish:
+ balance_destroy_subject_bailiff: "Vassalın [ShowBuildingTypeName('bailiff')]'ini Yık"
+ balance_destroy_subject_bailiff_desc: "Seçilen vassalın sahip olduğu, kendi seçeceğimiz bir bölgedeki [ShowBuildingTypeName('bailiff')]'i yıkarız."
+ balance_destroy_subject_bailiff_act: "Seçilen [ShowBuildingTypeName('bailiff')] yıkılacaktır."
+ BALANCE_DESTROY_SUBJECT_BAILIFFTITLE: "Vassalın [ShowBuildingTypeName('bailiff')]'ini Yık"
+ BALANCE_DESTROY_SUBJECT_BAILIFF_SELECT_TITLE: "Bir vassal seç"
+ BALANCE_DESTROY_SUBJECT_BAILIFF_FLAVOR: "[ShowBuildingTypeName('bailiff')], emrimizle yıkılır."
+
+ balance_destroy_subject_local_governor: "Vassalın [ShowBuildingTypeName('local_governor')]'sini Yık"
+ balance_destroy_subject_local_governor_desc: "Seçilen vassalın sahip olduğu, kendi seçeceğimiz bir bölgedeki [ShowBuildingTypeName('local_governor')]'yi yıkarız."
+ balance_destroy_subject_local_governor_act: "Seçilen [ShowBuildingTypeName('local_governor')] yıkılacaktır."
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNORTITLE: "Vassalın [ShowBuildingTypeName('local_governor')]'sini Yık"
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNOR_SELECT_TITLE: "Bir vassal seç"
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNOR_FLAVOR: "[ShowBuildingTypeName('local_governor')]'nin makamı, emrimizle feshedilir."

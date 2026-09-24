@@ -1,0 +1,19 @@
+﻿l_english:
+ providentia_temporalis: "Providentia Temporalis"
+ providentia_temporalis_desc: "The Church extends its blessing over the worldly administration of the faithful, easing the collection of taxes and the labour of the people."
+
+ STATIC_MODIFIER_NAME_providentia_temporalis: "$providentia_temporalis$"
+
+ providentia_temporalis_action: "$providentia_temporalis$"
+ providentia_temporalis_action_desc: "$providentia_temporalis_desc$"
+
+ PERFORM_providentia_temporalis_action_ACTION_SETUP: "When $providentia_temporalis$ is proclaimed over the faithful."
+ PERFORM_providentia_temporalis_action_ACTION_HEADER: "$MESSENGER$"
+ PERFORM_providentia_temporalis_action_ACTION_TITLE: "$providentia_temporalis$"
+ PERFORM_providentia_temporalis_action_ACTION_DESC: "$providentia_temporalis_desc$"
+ PERFORM_providentia_temporalis_action_ACTION_EFFECTS: "$EFFECT$"
+ PERFORM_providentia_temporalis_action_ACTION_LOG: "[SCOPE.sCountry('actor').GetName] proclaimed $providentia_temporalis$."
+ PERFORM_providentia_temporalis_action_ACTION_BTN1: "OK"
+ PERFORM_providentia_temporalis_action_ACTION_BTN2: "OK"
+ PERFORM_providentia_temporalis_action_ACTION_BTN3: "$common_string_go_to$"
+ PERFORM_providentia_temporalis_action_ACTION_MAP: ""

@@ -1,0 +1,558 @@
+# wdcl -- one row per war declared.
+#
+# Replaces balance_wardecl_slots_effects.txt, which spelled out 2,501 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="wdcl_obj"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (264), each a map of its own:
+#     obj      <- scope:war
+#     a        <- scope:actor
+#     d        <- scope:recipient
+#     ba       <- scope:actor.var:shadow_attr
+#     bd       <- scope:recipient.var:shadow_attr
+#     date     <- current_date
+#     pan      <- global_var:wpan
+#     pa0      <- global_var:wpa0
+#     qa0      <- global_var:wqa0
+#     pa1      <- global_var:wpa1
+#     qa1      <- global_var:wqa1
+#     pa2      <- global_var:wpa2
+#     qa2      <- global_var:wqa2
+#     pa3      <- global_var:wpa3
+#     qa3      <- global_var:wqa3
+#     pa4      <- global_var:wpa4
+#     qa4      <- global_var:wqa4
+#     pa5      <- global_var:wpa5
+#     qa5      <- global_var:wqa5
+#     pa6      <- global_var:wpa6
+#     qa6      <- global_var:wqa6
+#     pa7      <- global_var:wpa7
+#     qa7      <- global_var:wqa7
+#     pa8      <- global_var:wpa8
+#     qa8      <- global_var:wqa8
+#     pa9      <- global_var:wpa9
+#     qa9      <- global_var:wqa9
+#     pa10     <- global_var:wpa10
+#     qa10     <- global_var:wqa10
+#     pa11     <- global_var:wpa11
+#     qa11     <- global_var:wqa11
+#     pa12     <- global_var:wpa12
+#     qa12     <- global_var:wqa12
+#     pa13     <- global_var:wpa13
+#     qa13     <- global_var:wqa13
+#     pa14     <- global_var:wpa14
+#     qa14     <- global_var:wqa14
+#     pa15     <- global_var:wpa15
+#     qa15     <- global_var:wqa15
+#     pa16     <- global_var:wpa16
+#     qa16     <- global_var:wqa16
+#     pa17     <- global_var:wpa17
+#     qa17     <- global_var:wqa17
+#     pa18     <- global_var:wpa18
+#     qa18     <- global_var:wqa18
+#     pa19     <- global_var:wpa19
+#     qa19     <- global_var:wqa19
+#     pa20     <- global_var:wpa20
+#     qa20     <- global_var:wqa20
+#     pa21     <- global_var:wpa21
+#     qa21     <- global_var:wqa21
+#     pa22     <- global_var:wpa22
+#     qa22     <- global_var:wqa22
+#     pa23     <- global_var:wpa23
+#     qa23     <- global_var:wqa23
+#     pa24     <- global_var:wpa24
+#     qa24     <- global_var:wqa24
+#     pa25     <- global_var:wpa25
+#     qa25     <- global_var:wqa25
+#     pa26     <- global_var:wpa26
+#     qa26     <- global_var:wqa26
+#     pa27     <- global_var:wpa27
+#     qa27     <- global_var:wqa27
+#     pa28     <- global_var:wpa28
+#     qa28     <- global_var:wqa28
+#     pa29     <- global_var:wpa29
+#     qa29     <- global_var:wqa29
+#     pa30     <- global_var:wpa30
+#     qa30     <- global_var:wqa30
+#     pa31     <- global_var:wpa31
+#     qa31     <- global_var:wqa31
+#     pa32     <- global_var:wpa32
+#     qa32     <- global_var:wqa32
+#     pa33     <- global_var:wpa33
+#     qa33     <- global_var:wqa33
+#     pa34     <- global_var:wpa34
+#     qa34     <- global_var:wqa34
+#     pa35     <- global_var:wpa35
+#     qa35     <- global_var:wqa35
+#     pa36     <- global_var:wpa36
+#     qa36     <- global_var:wqa36
+#     pa37     <- global_var:wpa37
+#     qa37     <- global_var:wqa37
+#     pa38     <- global_var:wpa38
+#     qa38     <- global_var:wqa38
+#     pa39     <- global_var:wpa39
+#     qa39     <- global_var:wqa39
+#     pa40     <- global_var:wpa40
+#     qa40     <- global_var:wqa40
+#     pa41     <- global_var:wpa41
+#     qa41     <- global_var:wqa41
+#     pa42     <- global_var:wpa42
+#     qa42     <- global_var:wqa42
+#     pa43     <- global_var:wpa43
+#     qa43     <- global_var:wqa43
+#     pa44     <- global_var:wpa44
+#     qa44     <- global_var:wqa44
+#     pa45     <- global_var:wpa45
+#     qa45     <- global_var:wqa45
+#     pa46     <- global_var:wpa46
+#     qa46     <- global_var:wqa46
+#     pa47     <- global_var:wpa47
+#     qa47     <- global_var:wqa47
+#     pa48     <- global_var:wpa48
+#     qa48     <- global_var:wqa48
+#     pa49     <- global_var:wpa49
+#     qa49     <- global_var:wqa49
+#     pa50     <- global_var:wpa50
+#     qa50     <- global_var:wqa50
+#     pa51     <- global_var:wpa51
+#     qa51     <- global_var:wqa51
+#     pa52     <- global_var:wpa52
+#     qa52     <- global_var:wqa52
+#     pa53     <- global_var:wpa53
+#     qa53     <- global_var:wqa53
+#     pa54     <- global_var:wpa54
+#     qa54     <- global_var:wqa54
+#     pa55     <- global_var:wpa55
+#     qa55     <- global_var:wqa55
+#     pa56     <- global_var:wpa56
+#     qa56     <- global_var:wqa56
+#     pa57     <- global_var:wpa57
+#     qa57     <- global_var:wqa57
+#     pa58     <- global_var:wpa58
+#     qa58     <- global_var:wqa58
+#     pa59     <- global_var:wpa59
+#     qa59     <- global_var:wqa59
+#     pa60     <- global_var:wpa60
+#     qa60     <- global_var:wqa60
+#     pa61     <- global_var:wpa61
+#     qa61     <- global_var:wqa61
+#     pa62     <- global_var:wpa62
+#     qa62     <- global_var:wqa62
+#     pa63     <- global_var:wpa63
+#     qa63     <- global_var:wqa63
+#     pdn      <- global_var:wpdn
+#     pd0      <- global_var:wpd0
+#     qd0      <- global_var:wqd0
+#     pd1      <- global_var:wpd1
+#     qd1      <- global_var:wqd1
+#     pd2      <- global_var:wpd2
+#     qd2      <- global_var:wqd2
+#     pd3      <- global_var:wpd3
+#     qd3      <- global_var:wqd3
+#     pd4      <- global_var:wpd4
+#     qd4      <- global_var:wqd4
+#     pd5      <- global_var:wpd5
+#     qd5      <- global_var:wqd5
+#     pd6      <- global_var:wpd6
+#     qd6      <- global_var:wqd6
+#     pd7      <- global_var:wpd7
+#     qd7      <- global_var:wqd7
+#     pd8      <- global_var:wpd8
+#     qd8      <- global_var:wqd8
+#     pd9      <- global_var:wpd9
+#     qd9      <- global_var:wqd9
+#     pd10     <- global_var:wpd10
+#     qd10     <- global_var:wqd10
+#     pd11     <- global_var:wpd11
+#     qd11     <- global_var:wqd11
+#     pd12     <- global_var:wpd12
+#     qd12     <- global_var:wqd12
+#     pd13     <- global_var:wpd13
+#     qd13     <- global_var:wqd13
+#     pd14     <- global_var:wpd14
+#     qd14     <- global_var:wqd14
+#     pd15     <- global_var:wpd15
+#     qd15     <- global_var:wqd15
+#     pd16     <- global_var:wpd16
+#     qd16     <- global_var:wqd16
+#     pd17     <- global_var:wpd17
+#     qd17     <- global_var:wqd17
+#     pd18     <- global_var:wpd18
+#     qd18     <- global_var:wqd18
+#     pd19     <- global_var:wpd19
+#     qd19     <- global_var:wqd19
+#     pd20     <- global_var:wpd20
+#     qd20     <- global_var:wqd20
+#     pd21     <- global_var:wpd21
+#     qd21     <- global_var:wqd21
+#     pd22     <- global_var:wpd22
+#     qd22     <- global_var:wqd22
+#     pd23     <- global_var:wpd23
+#     qd23     <- global_var:wqd23
+#     pd24     <- global_var:wpd24
+#     qd24     <- global_var:wqd24
+#     pd25     <- global_var:wpd25
+#     qd25     <- global_var:wqd25
+#     pd26     <- global_var:wpd26
+#     qd26     <- global_var:wqd26
+#     pd27     <- global_var:wpd27
+#     qd27     <- global_var:wqd27
+#     pd28     <- global_var:wpd28
+#     qd28     <- global_var:wqd28
+#     pd29     <- global_var:wpd29
+#     qd29     <- global_var:wqd29
+#     pd30     <- global_var:wpd30
+#     qd30     <- global_var:wqd30
+#     pd31     <- global_var:wpd31
+#     qd31     <- global_var:wqd31
+#     pd32     <- global_var:wpd32
+#     qd32     <- global_var:wqd32
+#     pd33     <- global_var:wpd33
+#     qd33     <- global_var:wqd33
+#     pd34     <- global_var:wpd34
+#     qd34     <- global_var:wqd34
+#     pd35     <- global_var:wpd35
+#     qd35     <- global_var:wqd35
+#     pd36     <- global_var:wpd36
+#     qd36     <- global_var:wqd36
+#     pd37     <- global_var:wpd37
+#     qd37     <- global_var:wqd37
+#     pd38     <- global_var:wpd38
+#     qd38     <- global_var:wqd38
+#     pd39     <- global_var:wpd39
+#     qd39     <- global_var:wqd39
+#     pd40     <- global_var:wpd40
+#     qd40     <- global_var:wqd40
+#     pd41     <- global_var:wpd41
+#     qd41     <- global_var:wqd41
+#     pd42     <- global_var:wpd42
+#     qd42     <- global_var:wqd42
+#     pd43     <- global_var:wpd43
+#     qd43     <- global_var:wqd43
+#     pd44     <- global_var:wpd44
+#     qd44     <- global_var:wqd44
+#     pd45     <- global_var:wpd45
+#     qd45     <- global_var:wqd45
+#     pd46     <- global_var:wpd46
+#     qd46     <- global_var:wqd46
+#     pd47     <- global_var:wpd47
+#     qd47     <- global_var:wqd47
+#     pd48     <- global_var:wpd48
+#     qd48     <- global_var:wqd48
+#     pd49     <- global_var:wpd49
+#     qd49     <- global_var:wqd49
+#     pd50     <- global_var:wpd50
+#     qd50     <- global_var:wqd50
+#     pd51     <- global_var:wpd51
+#     qd51     <- global_var:wqd51
+#     pd52     <- global_var:wpd52
+#     qd52     <- global_var:wqd52
+#     pd53     <- global_var:wpd53
+#     qd53     <- global_var:wqd53
+#     pd54     <- global_var:wpd54
+#     qd54     <- global_var:wqd54
+#     pd55     <- global_var:wpd55
+#     qd55     <- global_var:wqd55
+#     pd56     <- global_var:wpd56
+#     qd56     <- global_var:wqd56
+#     pd57     <- global_var:wpd57
+#     qd57     <- global_var:wqd57
+#     pd58     <- global_var:wpd58
+#     qd58     <- global_var:wqd58
+#     pd59     <- global_var:wpd59
+#     qd59     <- global_var:wqd59
+#     pd60     <- global_var:wpd60
+#     qd60     <- global_var:wqd60
+#     pd61     <- global_var:wpd61
+#     qd61     <- global_var:wqd61
+#     pd62     <- global_var:wpd62
+#     qd62     <- global_var:wqd62
+#     pd63     <- global_var:wpd63
+#     qd63     <- global_var:wqd63
+#
+# global_var:wdcl_count is still the row count and still the last key written.
+
+wdcl_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = wdcl_count } }
+		set_global_variable = { name = wdcl_count value = 0 }
+	}
+	change_global_variable = { name = wdcl_count add = 1 }
+
+	add_to_global_variable_map = { name = wdcl_obj key = global_var:wdcl_count value = scope:war }
+	add_to_global_variable_map = { name = wdcl_a key = global_var:wdcl_count value = scope:actor }
+	add_to_global_variable_map = { name = wdcl_d key = global_var:wdcl_count value = scope:recipient }
+	add_to_global_variable_map = { name = wdcl_ba key = global_var:wdcl_count value = scope:actor.var:shadow_attr }
+	add_to_global_variable_map = { name = wdcl_bd key = global_var:wdcl_count value = scope:recipient.var:shadow_attr }
+	add_to_global_variable_map = { name = wdcl_date key = global_var:wdcl_count value = current_date }
+	add_to_global_variable_map = { name = wdcl_pan key = global_var:wdcl_count value = global_var:wpan }
+	add_to_global_variable_map = { name = wdcl_pa0 key = global_var:wdcl_count value = global_var:wpa0 }
+	add_to_global_variable_map = { name = wdcl_qa0 key = global_var:wdcl_count value = global_var:wqa0 }
+	add_to_global_variable_map = { name = wdcl_pa1 key = global_var:wdcl_count value = global_var:wpa1 }
+	add_to_global_variable_map = { name = wdcl_qa1 key = global_var:wdcl_count value = global_var:wqa1 }
+	add_to_global_variable_map = { name = wdcl_pa2 key = global_var:wdcl_count value = global_var:wpa2 }
+	add_to_global_variable_map = { name = wdcl_qa2 key = global_var:wdcl_count value = global_var:wqa2 }
+	add_to_global_variable_map = { name = wdcl_pa3 key = global_var:wdcl_count value = global_var:wpa3 }
+	add_to_global_variable_map = { name = wdcl_qa3 key = global_var:wdcl_count value = global_var:wqa3 }
+	add_to_global_variable_map = { name = wdcl_pa4 key = global_var:wdcl_count value = global_var:wpa4 }
+	add_to_global_variable_map = { name = wdcl_qa4 key = global_var:wdcl_count value = global_var:wqa4 }
+	add_to_global_variable_map = { name = wdcl_pa5 key = global_var:wdcl_count value = global_var:wpa5 }
+	add_to_global_variable_map = { name = wdcl_qa5 key = global_var:wdcl_count value = global_var:wqa5 }
+	add_to_global_variable_map = { name = wdcl_pa6 key = global_var:wdcl_count value = global_var:wpa6 }
+	add_to_global_variable_map = { name = wdcl_qa6 key = global_var:wdcl_count value = global_var:wqa6 }
+	add_to_global_variable_map = { name = wdcl_pa7 key = global_var:wdcl_count value = global_var:wpa7 }
+	add_to_global_variable_map = { name = wdcl_qa7 key = global_var:wdcl_count value = global_var:wqa7 }
+	add_to_global_variable_map = { name = wdcl_pa8 key = global_var:wdcl_count value = global_var:wpa8 }
+	add_to_global_variable_map = { name = wdcl_qa8 key = global_var:wdcl_count value = global_var:wqa8 }
+	add_to_global_variable_map = { name = wdcl_pa9 key = global_var:wdcl_count value = global_var:wpa9 }
+	add_to_global_variable_map = { name = wdcl_qa9 key = global_var:wdcl_count value = global_var:wqa9 }
+	add_to_global_variable_map = { name = wdcl_pa10 key = global_var:wdcl_count value = global_var:wpa10 }
+	add_to_global_variable_map = { name = wdcl_qa10 key = global_var:wdcl_count value = global_var:wqa10 }
+	add_to_global_variable_map = { name = wdcl_pa11 key = global_var:wdcl_count value = global_var:wpa11 }
+	add_to_global_variable_map = { name = wdcl_qa11 key = global_var:wdcl_count value = global_var:wqa11 }
+	add_to_global_variable_map = { name = wdcl_pa12 key = global_var:wdcl_count value = global_var:wpa12 }
+	add_to_global_variable_map = { name = wdcl_qa12 key = global_var:wdcl_count value = global_var:wqa12 }
+	add_to_global_variable_map = { name = wdcl_pa13 key = global_var:wdcl_count value = global_var:wpa13 }
+	add_to_global_variable_map = { name = wdcl_qa13 key = global_var:wdcl_count value = global_var:wqa13 }
+	add_to_global_variable_map = { name = wdcl_pa14 key = global_var:wdcl_count value = global_var:wpa14 }
+	add_to_global_variable_map = { name = wdcl_qa14 key = global_var:wdcl_count value = global_var:wqa14 }
+	add_to_global_variable_map = { name = wdcl_pa15 key = global_var:wdcl_count value = global_var:wpa15 }
+	add_to_global_variable_map = { name = wdcl_qa15 key = global_var:wdcl_count value = global_var:wqa15 }
+	add_to_global_variable_map = { name = wdcl_pa16 key = global_var:wdcl_count value = global_var:wpa16 }
+	add_to_global_variable_map = { name = wdcl_qa16 key = global_var:wdcl_count value = global_var:wqa16 }
+	add_to_global_variable_map = { name = wdcl_pa17 key = global_var:wdcl_count value = global_var:wpa17 }
+	add_to_global_variable_map = { name = wdcl_qa17 key = global_var:wdcl_count value = global_var:wqa17 }
+	add_to_global_variable_map = { name = wdcl_pa18 key = global_var:wdcl_count value = global_var:wpa18 }
+	add_to_global_variable_map = { name = wdcl_qa18 key = global_var:wdcl_count value = global_var:wqa18 }
+	add_to_global_variable_map = { name = wdcl_pa19 key = global_var:wdcl_count value = global_var:wpa19 }
+	add_to_global_variable_map = { name = wdcl_qa19 key = global_var:wdcl_count value = global_var:wqa19 }
+	add_to_global_variable_map = { name = wdcl_pa20 key = global_var:wdcl_count value = global_var:wpa20 }
+	add_to_global_variable_map = { name = wdcl_qa20 key = global_var:wdcl_count value = global_var:wqa20 }
+	add_to_global_variable_map = { name = wdcl_pa21 key = global_var:wdcl_count value = global_var:wpa21 }
+	add_to_global_variable_map = { name = wdcl_qa21 key = global_var:wdcl_count value = global_var:wqa21 }
+	add_to_global_variable_map = { name = wdcl_pa22 key = global_var:wdcl_count value = global_var:wpa22 }
+	add_to_global_variable_map = { name = wdcl_qa22 key = global_var:wdcl_count value = global_var:wqa22 }
+	add_to_global_variable_map = { name = wdcl_pa23 key = global_var:wdcl_count value = global_var:wpa23 }
+	add_to_global_variable_map = { name = wdcl_qa23 key = global_var:wdcl_count value = global_var:wqa23 }
+	add_to_global_variable_map = { name = wdcl_pa24 key = global_var:wdcl_count value = global_var:wpa24 }
+	add_to_global_variable_map = { name = wdcl_qa24 key = global_var:wdcl_count value = global_var:wqa24 }
+	add_to_global_variable_map = { name = wdcl_pa25 key = global_var:wdcl_count value = global_var:wpa25 }
+	add_to_global_variable_map = { name = wdcl_qa25 key = global_var:wdcl_count value = global_var:wqa25 }
+	add_to_global_variable_map = { name = wdcl_pa26 key = global_var:wdcl_count value = global_var:wpa26 }
+	add_to_global_variable_map = { name = wdcl_qa26 key = global_var:wdcl_count value = global_var:wqa26 }
+	add_to_global_variable_map = { name = wdcl_pa27 key = global_var:wdcl_count value = global_var:wpa27 }
+	add_to_global_variable_map = { name = wdcl_qa27 key = global_var:wdcl_count value = global_var:wqa27 }
+	add_to_global_variable_map = { name = wdcl_pa28 key = global_var:wdcl_count value = global_var:wpa28 }
+	add_to_global_variable_map = { name = wdcl_qa28 key = global_var:wdcl_count value = global_var:wqa28 }
+	add_to_global_variable_map = { name = wdcl_pa29 key = global_var:wdcl_count value = global_var:wpa29 }
+	add_to_global_variable_map = { name = wdcl_qa29 key = global_var:wdcl_count value = global_var:wqa29 }
+	add_to_global_variable_map = { name = wdcl_pa30 key = global_var:wdcl_count value = global_var:wpa30 }
+	add_to_global_variable_map = { name = wdcl_qa30 key = global_var:wdcl_count value = global_var:wqa30 }
+	add_to_global_variable_map = { name = wdcl_pa31 key = global_var:wdcl_count value = global_var:wpa31 }
+	add_to_global_variable_map = { name = wdcl_qa31 key = global_var:wdcl_count value = global_var:wqa31 }
+	add_to_global_variable_map = { name = wdcl_pa32 key = global_var:wdcl_count value = global_var:wpa32 }
+	add_to_global_variable_map = { name = wdcl_qa32 key = global_var:wdcl_count value = global_var:wqa32 }
+	add_to_global_variable_map = { name = wdcl_pa33 key = global_var:wdcl_count value = global_var:wpa33 }
+	add_to_global_variable_map = { name = wdcl_qa33 key = global_var:wdcl_count value = global_var:wqa33 }
+	add_to_global_variable_map = { name = wdcl_pa34 key = global_var:wdcl_count value = global_var:wpa34 }
+	add_to_global_variable_map = { name = wdcl_qa34 key = global_var:wdcl_count value = global_var:wqa34 }
+	add_to_global_variable_map = { name = wdcl_pa35 key = global_var:wdcl_count value = global_var:wpa35 }
+	add_to_global_variable_map = { name = wdcl_qa35 key = global_var:wdcl_count value = global_var:wqa35 }
+	add_to_global_variable_map = { name = wdcl_pa36 key = global_var:wdcl_count value = global_var:wpa36 }
+	add_to_global_variable_map = { name = wdcl_qa36 key = global_var:wdcl_count value = global_var:wqa36 }
+	add_to_global_variable_map = { name = wdcl_pa37 key = global_var:wdcl_count value = global_var:wpa37 }
+	add_to_global_variable_map = { name = wdcl_qa37 key = global_var:wdcl_count value = global_var:wqa37 }
+	add_to_global_variable_map = { name = wdcl_pa38 key = global_var:wdcl_count value = global_var:wpa38 }
+	add_to_global_variable_map = { name = wdcl_qa38 key = global_var:wdcl_count value = global_var:wqa38 }
+	add_to_global_variable_map = { name = wdcl_pa39 key = global_var:wdcl_count value = global_var:wpa39 }
+	add_to_global_variable_map = { name = wdcl_qa39 key = global_var:wdcl_count value = global_var:wqa39 }
+	add_to_global_variable_map = { name = wdcl_pa40 key = global_var:wdcl_count value = global_var:wpa40 }
+	add_to_global_variable_map = { name = wdcl_qa40 key = global_var:wdcl_count value = global_var:wqa40 }
+	add_to_global_variable_map = { name = wdcl_pa41 key = global_var:wdcl_count value = global_var:wpa41 }
+	add_to_global_variable_map = { name = wdcl_qa41 key = global_var:wdcl_count value = global_var:wqa41 }
+	add_to_global_variable_map = { name = wdcl_pa42 key = global_var:wdcl_count value = global_var:wpa42 }
+	add_to_global_variable_map = { name = wdcl_qa42 key = global_var:wdcl_count value = global_var:wqa42 }
+	add_to_global_variable_map = { name = wdcl_pa43 key = global_var:wdcl_count value = global_var:wpa43 }
+	add_to_global_variable_map = { name = wdcl_qa43 key = global_var:wdcl_count value = global_var:wqa43 }
+	add_to_global_variable_map = { name = wdcl_pa44 key = global_var:wdcl_count value = global_var:wpa44 }
+	add_to_global_variable_map = { name = wdcl_qa44 key = global_var:wdcl_count value = global_var:wqa44 }
+	add_to_global_variable_map = { name = wdcl_pa45 key = global_var:wdcl_count value = global_var:wpa45 }
+	add_to_global_variable_map = { name = wdcl_qa45 key = global_var:wdcl_count value = global_var:wqa45 }
+	add_to_global_variable_map = { name = wdcl_pa46 key = global_var:wdcl_count value = global_var:wpa46 }
+	add_to_global_variable_map = { name = wdcl_qa46 key = global_var:wdcl_count value = global_var:wqa46 }
+	add_to_global_variable_map = { name = wdcl_pa47 key = global_var:wdcl_count value = global_var:wpa47 }
+	add_to_global_variable_map = { name = wdcl_qa47 key = global_var:wdcl_count value = global_var:wqa47 }
+	add_to_global_variable_map = { name = wdcl_pa48 key = global_var:wdcl_count value = global_var:wpa48 }
+	add_to_global_variable_map = { name = wdcl_qa48 key = global_var:wdcl_count value = global_var:wqa48 }
+	add_to_global_variable_map = { name = wdcl_pa49 key = global_var:wdcl_count value = global_var:wpa49 }
+	add_to_global_variable_map = { name = wdcl_qa49 key = global_var:wdcl_count value = global_var:wqa49 }
+	add_to_global_variable_map = { name = wdcl_pa50 key = global_var:wdcl_count value = global_var:wpa50 }
+	add_to_global_variable_map = { name = wdcl_qa50 key = global_var:wdcl_count value = global_var:wqa50 }
+	add_to_global_variable_map = { name = wdcl_pa51 key = global_var:wdcl_count value = global_var:wpa51 }
+	add_to_global_variable_map = { name = wdcl_qa51 key = global_var:wdcl_count value = global_var:wqa51 }
+	add_to_global_variable_map = { name = wdcl_pa52 key = global_var:wdcl_count value = global_var:wpa52 }
+	add_to_global_variable_map = { name = wdcl_qa52 key = global_var:wdcl_count value = global_var:wqa52 }
+	add_to_global_variable_map = { name = wdcl_pa53 key = global_var:wdcl_count value = global_var:wpa53 }
+	add_to_global_variable_map = { name = wdcl_qa53 key = global_var:wdcl_count value = global_var:wqa53 }
+	add_to_global_variable_map = { name = wdcl_pa54 key = global_var:wdcl_count value = global_var:wpa54 }
+	add_to_global_variable_map = { name = wdcl_qa54 key = global_var:wdcl_count value = global_var:wqa54 }
+	add_to_global_variable_map = { name = wdcl_pa55 key = global_var:wdcl_count value = global_var:wpa55 }
+	add_to_global_variable_map = { name = wdcl_qa55 key = global_var:wdcl_count value = global_var:wqa55 }
+	add_to_global_variable_map = { name = wdcl_pa56 key = global_var:wdcl_count value = global_var:wpa56 }
+	add_to_global_variable_map = { name = wdcl_qa56 key = global_var:wdcl_count value = global_var:wqa56 }
+	add_to_global_variable_map = { name = wdcl_pa57 key = global_var:wdcl_count value = global_var:wpa57 }
+	add_to_global_variable_map = { name = wdcl_qa57 key = global_var:wdcl_count value = global_var:wqa57 }
+	add_to_global_variable_map = { name = wdcl_pa58 key = global_var:wdcl_count value = global_var:wpa58 }
+	add_to_global_variable_map = { name = wdcl_qa58 key = global_var:wdcl_count value = global_var:wqa58 }
+	add_to_global_variable_map = { name = wdcl_pa59 key = global_var:wdcl_count value = global_var:wpa59 }
+	add_to_global_variable_map = { name = wdcl_qa59 key = global_var:wdcl_count value = global_var:wqa59 }
+	add_to_global_variable_map = { name = wdcl_pa60 key = global_var:wdcl_count value = global_var:wpa60 }
+	add_to_global_variable_map = { name = wdcl_qa60 key = global_var:wdcl_count value = global_var:wqa60 }
+	add_to_global_variable_map = { name = wdcl_pa61 key = global_var:wdcl_count value = global_var:wpa61 }
+	add_to_global_variable_map = { name = wdcl_qa61 key = global_var:wdcl_count value = global_var:wqa61 }
+	add_to_global_variable_map = { name = wdcl_pa62 key = global_var:wdcl_count value = global_var:wpa62 }
+	add_to_global_variable_map = { name = wdcl_qa62 key = global_var:wdcl_count value = global_var:wqa62 }
+	add_to_global_variable_map = { name = wdcl_pa63 key = global_var:wdcl_count value = global_var:wpa63 }
+	add_to_global_variable_map = { name = wdcl_qa63 key = global_var:wdcl_count value = global_var:wqa63 }
+	add_to_global_variable_map = { name = wdcl_pdn key = global_var:wdcl_count value = global_var:wpdn }
+	add_to_global_variable_map = { name = wdcl_pd0 key = global_var:wdcl_count value = global_var:wpd0 }
+	add_to_global_variable_map = { name = wdcl_qd0 key = global_var:wdcl_count value = global_var:wqd0 }
+	add_to_global_variable_map = { name = wdcl_pd1 key = global_var:wdcl_count value = global_var:wpd1 }
+	add_to_global_variable_map = { name = wdcl_qd1 key = global_var:wdcl_count value = global_var:wqd1 }
+	add_to_global_variable_map = { name = wdcl_pd2 key = global_var:wdcl_count value = global_var:wpd2 }
+	add_to_global_variable_map = { name = wdcl_qd2 key = global_var:wdcl_count value = global_var:wqd2 }
+	add_to_global_variable_map = { name = wdcl_pd3 key = global_var:wdcl_count value = global_var:wpd3 }
+	add_to_global_variable_map = { name = wdcl_qd3 key = global_var:wdcl_count value = global_var:wqd3 }
+	add_to_global_variable_map = { name = wdcl_pd4 key = global_var:wdcl_count value = global_var:wpd4 }
+	add_to_global_variable_map = { name = wdcl_qd4 key = global_var:wdcl_count value = global_var:wqd4 }
+	add_to_global_variable_map = { name = wdcl_pd5 key = global_var:wdcl_count value = global_var:wpd5 }
+	add_to_global_variable_map = { name = wdcl_qd5 key = global_var:wdcl_count value = global_var:wqd5 }
+	add_to_global_variable_map = { name = wdcl_pd6 key = global_var:wdcl_count value = global_var:wpd6 }
+	add_to_global_variable_map = { name = wdcl_qd6 key = global_var:wdcl_count value = global_var:wqd6 }
+	add_to_global_variable_map = { name = wdcl_pd7 key = global_var:wdcl_count value = global_var:wpd7 }
+	add_to_global_variable_map = { name = wdcl_qd7 key = global_var:wdcl_count value = global_var:wqd7 }
+	add_to_global_variable_map = { name = wdcl_pd8 key = global_var:wdcl_count value = global_var:wpd8 }
+	add_to_global_variable_map = { name = wdcl_qd8 key = global_var:wdcl_count value = global_var:wqd8 }
+	add_to_global_variable_map = { name = wdcl_pd9 key = global_var:wdcl_count value = global_var:wpd9 }
+	add_to_global_variable_map = { name = wdcl_qd9 key = global_var:wdcl_count value = global_var:wqd9 }
+	add_to_global_variable_map = { name = wdcl_pd10 key = global_var:wdcl_count value = global_var:wpd10 }
+	add_to_global_variable_map = { name = wdcl_qd10 key = global_var:wdcl_count value = global_var:wqd10 }
+	add_to_global_variable_map = { name = wdcl_pd11 key = global_var:wdcl_count value = global_var:wpd11 }
+	add_to_global_variable_map = { name = wdcl_qd11 key = global_var:wdcl_count value = global_var:wqd11 }
+	add_to_global_variable_map = { name = wdcl_pd12 key = global_var:wdcl_count value = global_var:wpd12 }
+	add_to_global_variable_map = { name = wdcl_qd12 key = global_var:wdcl_count value = global_var:wqd12 }
+	add_to_global_variable_map = { name = wdcl_pd13 key = global_var:wdcl_count value = global_var:wpd13 }
+	add_to_global_variable_map = { name = wdcl_qd13 key = global_var:wdcl_count value = global_var:wqd13 }
+	add_to_global_variable_map = { name = wdcl_pd14 key = global_var:wdcl_count value = global_var:wpd14 }
+	add_to_global_variable_map = { name = wdcl_qd14 key = global_var:wdcl_count value = global_var:wqd14 }
+	add_to_global_variable_map = { name = wdcl_pd15 key = global_var:wdcl_count value = global_var:wpd15 }
+	add_to_global_variable_map = { name = wdcl_qd15 key = global_var:wdcl_count value = global_var:wqd15 }
+	add_to_global_variable_map = { name = wdcl_pd16 key = global_var:wdcl_count value = global_var:wpd16 }
+	add_to_global_variable_map = { name = wdcl_qd16 key = global_var:wdcl_count value = global_var:wqd16 }
+	add_to_global_variable_map = { name = wdcl_pd17 key = global_var:wdcl_count value = global_var:wpd17 }
+	add_to_global_variable_map = { name = wdcl_qd17 key = global_var:wdcl_count value = global_var:wqd17 }
+	add_to_global_variable_map = { name = wdcl_pd18 key = global_var:wdcl_count value = global_var:wpd18 }
+	add_to_global_variable_map = { name = wdcl_qd18 key = global_var:wdcl_count value = global_var:wqd18 }
+	add_to_global_variable_map = { name = wdcl_pd19 key = global_var:wdcl_count value = global_var:wpd19 }
+	add_to_global_variable_map = { name = wdcl_qd19 key = global_var:wdcl_count value = global_var:wqd19 }
+	add_to_global_variable_map = { name = wdcl_pd20 key = global_var:wdcl_count value = global_var:wpd20 }
+	add_to_global_variable_map = { name = wdcl_qd20 key = global_var:wdcl_count value = global_var:wqd20 }
+	add_to_global_variable_map = { name = wdcl_pd21 key = global_var:wdcl_count value = global_var:wpd21 }
+	add_to_global_variable_map = { name = wdcl_qd21 key = global_var:wdcl_count value = global_var:wqd21 }
+	add_to_global_variable_map = { name = wdcl_pd22 key = global_var:wdcl_count value = global_var:wpd22 }
+	add_to_global_variable_map = { name = wdcl_qd22 key = global_var:wdcl_count value = global_var:wqd22 }
+	add_to_global_variable_map = { name = wdcl_pd23 key = global_var:wdcl_count value = global_var:wpd23 }
+	add_to_global_variable_map = { name = wdcl_qd23 key = global_var:wdcl_count value = global_var:wqd23 }
+	add_to_global_variable_map = { name = wdcl_pd24 key = global_var:wdcl_count value = global_var:wpd24 }
+	add_to_global_variable_map = { name = wdcl_qd24 key = global_var:wdcl_count value = global_var:wqd24 }
+	add_to_global_variable_map = { name = wdcl_pd25 key = global_var:wdcl_count value = global_var:wpd25 }
+	add_to_global_variable_map = { name = wdcl_qd25 key = global_var:wdcl_count value = global_var:wqd25 }
+	add_to_global_variable_map = { name = wdcl_pd26 key = global_var:wdcl_count value = global_var:wpd26 }
+	add_to_global_variable_map = { name = wdcl_qd26 key = global_var:wdcl_count value = global_var:wqd26 }
+	add_to_global_variable_map = { name = wdcl_pd27 key = global_var:wdcl_count value = global_var:wpd27 }
+	add_to_global_variable_map = { name = wdcl_qd27 key = global_var:wdcl_count value = global_var:wqd27 }
+	add_to_global_variable_map = { name = wdcl_pd28 key = global_var:wdcl_count value = global_var:wpd28 }
+	add_to_global_variable_map = { name = wdcl_qd28 key = global_var:wdcl_count value = global_var:wqd28 }
+	add_to_global_variable_map = { name = wdcl_pd29 key = global_var:wdcl_count value = global_var:wpd29 }
+	add_to_global_variable_map = { name = wdcl_qd29 key = global_var:wdcl_count value = global_var:wqd29 }
+	add_to_global_variable_map = { name = wdcl_pd30 key = global_var:wdcl_count value = global_var:wpd30 }
+	add_to_global_variable_map = { name = wdcl_qd30 key = global_var:wdcl_count value = global_var:wqd30 }
+	add_to_global_variable_map = { name = wdcl_pd31 key = global_var:wdcl_count value = global_var:wpd31 }
+	add_to_global_variable_map = { name = wdcl_qd31 key = global_var:wdcl_count value = global_var:wqd31 }
+	add_to_global_variable_map = { name = wdcl_pd32 key = global_var:wdcl_count value = global_var:wpd32 }
+	add_to_global_variable_map = { name = wdcl_qd32 key = global_var:wdcl_count value = global_var:wqd32 }
+	add_to_global_variable_map = { name = wdcl_pd33 key = global_var:wdcl_count value = global_var:wpd33 }
+	add_to_global_variable_map = { name = wdcl_qd33 key = global_var:wdcl_count value = global_var:wqd33 }
+	add_to_global_variable_map = { name = wdcl_pd34 key = global_var:wdcl_count value = global_var:wpd34 }
+	add_to_global_variable_map = { name = wdcl_qd34 key = global_var:wdcl_count value = global_var:wqd34 }
+	add_to_global_variable_map = { name = wdcl_pd35 key = global_var:wdcl_count value = global_var:wpd35 }
+	add_to_global_variable_map = { name = wdcl_qd35 key = global_var:wdcl_count value = global_var:wqd35 }
+	add_to_global_variable_map = { name = wdcl_pd36 key = global_var:wdcl_count value = global_var:wpd36 }
+	add_to_global_variable_map = { name = wdcl_qd36 key = global_var:wdcl_count value = global_var:wqd36 }
+	add_to_global_variable_map = { name = wdcl_pd37 key = global_var:wdcl_count value = global_var:wpd37 }
+	add_to_global_variable_map = { name = wdcl_qd37 key = global_var:wdcl_count value = global_var:wqd37 }
+	add_to_global_variable_map = { name = wdcl_pd38 key = global_var:wdcl_count value = global_var:wpd38 }
+	add_to_global_variable_map = { name = wdcl_qd38 key = global_var:wdcl_count value = global_var:wqd38 }
+	add_to_global_variable_map = { name = wdcl_pd39 key = global_var:wdcl_count value = global_var:wpd39 }
+	add_to_global_variable_map = { name = wdcl_qd39 key = global_var:wdcl_count value = global_var:wqd39 }
+	add_to_global_variable_map = { name = wdcl_pd40 key = global_var:wdcl_count value = global_var:wpd40 }
+	add_to_global_variable_map = { name = wdcl_qd40 key = global_var:wdcl_count value = global_var:wqd40 }
+	add_to_global_variable_map = { name = wdcl_pd41 key = global_var:wdcl_count value = global_var:wpd41 }
+	add_to_global_variable_map = { name = wdcl_qd41 key = global_var:wdcl_count value = global_var:wqd41 }
+	add_to_global_variable_map = { name = wdcl_pd42 key = global_var:wdcl_count value = global_var:wpd42 }
+	add_to_global_variable_map = { name = wdcl_qd42 key = global_var:wdcl_count value = global_var:wqd42 }
+	add_to_global_variable_map = { name = wdcl_pd43 key = global_var:wdcl_count value = global_var:wpd43 }
+	add_to_global_variable_map = { name = wdcl_qd43 key = global_var:wdcl_count value = global_var:wqd43 }
+	add_to_global_variable_map = { name = wdcl_pd44 key = global_var:wdcl_count value = global_var:wpd44 }
+	add_to_global_variable_map = { name = wdcl_qd44 key = global_var:wdcl_count value = global_var:wqd44 }
+	add_to_global_variable_map = { name = wdcl_pd45 key = global_var:wdcl_count value = global_var:wpd45 }
+	add_to_global_variable_map = { name = wdcl_qd45 key = global_var:wdcl_count value = global_var:wqd45 }
+	add_to_global_variable_map = { name = wdcl_pd46 key = global_var:wdcl_count value = global_var:wpd46 }
+	add_to_global_variable_map = { name = wdcl_qd46 key = global_var:wdcl_count value = global_var:wqd46 }
+	add_to_global_variable_map = { name = wdcl_pd47 key = global_var:wdcl_count value = global_var:wpd47 }
+	add_to_global_variable_map = { name = wdcl_qd47 key = global_var:wdcl_count value = global_var:wqd47 }
+	add_to_global_variable_map = { name = wdcl_pd48 key = global_var:wdcl_count value = global_var:wpd48 }
+	add_to_global_variable_map = { name = wdcl_qd48 key = global_var:wdcl_count value = global_var:wqd48 }
+	add_to_global_variable_map = { name = wdcl_pd49 key = global_var:wdcl_count value = global_var:wpd49 }
+	add_to_global_variable_map = { name = wdcl_qd49 key = global_var:wdcl_count value = global_var:wqd49 }
+	add_to_global_variable_map = { name = wdcl_pd50 key = global_var:wdcl_count value = global_var:wpd50 }
+	add_to_global_variable_map = { name = wdcl_qd50 key = global_var:wdcl_count value = global_var:wqd50 }
+	add_to_global_variable_map = { name = wdcl_pd51 key = global_var:wdcl_count value = global_var:wpd51 }
+	add_to_global_variable_map = { name = wdcl_qd51 key = global_var:wdcl_count value = global_var:wqd51 }
+	add_to_global_variable_map = { name = wdcl_pd52 key = global_var:wdcl_count value = global_var:wpd52 }
+	add_to_global_variable_map = { name = wdcl_qd52 key = global_var:wdcl_count value = global_var:wqd52 }
+	add_to_global_variable_map = { name = wdcl_pd53 key = global_var:wdcl_count value = global_var:wpd53 }
+	add_to_global_variable_map = { name = wdcl_qd53 key = global_var:wdcl_count value = global_var:wqd53 }
+	add_to_global_variable_map = { name = wdcl_pd54 key = global_var:wdcl_count value = global_var:wpd54 }
+	add_to_global_variable_map = { name = wdcl_qd54 key = global_var:wdcl_count value = global_var:wqd54 }
+	add_to_global_variable_map = { name = wdcl_pd55 key = global_var:wdcl_count value = global_var:wpd55 }
+	add_to_global_variable_map = { name = wdcl_qd55 key = global_var:wdcl_count value = global_var:wqd55 }
+	add_to_global_variable_map = { name = wdcl_pd56 key = global_var:wdcl_count value = global_var:wpd56 }
+	add_to_global_variable_map = { name = wdcl_qd56 key = global_var:wdcl_count value = global_var:wqd56 }
+	add_to_global_variable_map = { name = wdcl_pd57 key = global_var:wdcl_count value = global_var:wpd57 }
+	add_to_global_variable_map = { name = wdcl_qd57 key = global_var:wdcl_count value = global_var:wqd57 }
+	add_to_global_variable_map = { name = wdcl_pd58 key = global_var:wdcl_count value = global_var:wpd58 }
+	add_to_global_variable_map = { name = wdcl_qd58 key = global_var:wdcl_count value = global_var:wqd58 }
+	add_to_global_variable_map = { name = wdcl_pd59 key = global_var:wdcl_count value = global_var:wpd59 }
+	add_to_global_variable_map = { name = wdcl_qd59 key = global_var:wdcl_count value = global_var:wqd59 }
+	add_to_global_variable_map = { name = wdcl_pd60 key = global_var:wdcl_count value = global_var:wpd60 }
+	add_to_global_variable_map = { name = wdcl_qd60 key = global_var:wdcl_count value = global_var:wqd60 }
+	add_to_global_variable_map = { name = wdcl_pd61 key = global_var:wdcl_count value = global_var:wpd61 }
+	add_to_global_variable_map = { name = wdcl_qd61 key = global_var:wdcl_count value = global_var:wqd61 }
+	add_to_global_variable_map = { name = wdcl_pd62 key = global_var:wdcl_count value = global_var:wpd62 }
+	add_to_global_variable_map = { name = wdcl_qd62 key = global_var:wdcl_count value = global_var:wqd62 }
+	add_to_global_variable_map = { name = wdcl_pd63 key = global_var:wdcl_count value = global_var:wpd63 }
+	add_to_global_variable_map = { name = wdcl_qd63 key = global_var:wdcl_count value = global_var:wqd63 }
+}

@@ -1,0 +1,14 @@
+﻿l_english:
+ balance_destroy_subject_bailiff: "Destroy Subject's [ShowBuildingTypeName('bailiff')]"
+ balance_destroy_subject_bailiff_desc: "Destroy a [ShowBuildingTypeName('bailiff')] owned by the selected subject, in a location of our choosing."
+ balance_destroy_subject_bailiff_act: "The selected [ShowBuildingTypeName('bailiff')] will be destroyed."
+ BALANCE_DESTROY_SUBJECT_BAILIFFTITLE: "Destroy Subject's [ShowBuildingTypeName('bailiff')]"
+ BALANCE_DESTROY_SUBJECT_BAILIFF_SELECT_TITLE: "Select a subject"
+ BALANCE_DESTROY_SUBJECT_BAILIFF_FLAVOR: "The [ShowBuildingTypeName('bailiff')] is torn down on our order."
+
+ balance_destroy_subject_local_governor: "Destroy Subject's [ShowBuildingTypeName('local_governor')]"
+ balance_destroy_subject_local_governor_desc: "Destroy a [ShowBuildingTypeName('local_governor')] owned by the selected subject, in a location of our choosing."
+ balance_destroy_subject_local_governor_act: "The selected [ShowBuildingTypeName('local_governor')] will be destroyed."
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNORTITLE: "Destroy Subject's [ShowBuildingTypeName('local_governor')]"
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNOR_SELECT_TITLE: "Select a subject"
+ BALANCE_DESTROY_SUBJECT_LOCAL_GOVERNOR_FLAVOR: "The [ShowBuildingTypeName('local_governor')]'s office is dissolved on our order."

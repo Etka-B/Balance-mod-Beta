@@ -1,0 +1,10 @@
+﻿# Balance mod: unlocks a_fra_musketeer_light_infantry (see unit_types/balance_fra_musketeer.txt) -
+# a French light infantry that deals 10% more damage and takes 10% less damage.
+fra_musketeer_doctrine = {
+	age = age_3_discovery
+	content_priority = 400
+	potential = {
+		has_or_had_tag = FRA
+	}
+	unlock_unit = a_fra_musketeer_light_infantry
+}

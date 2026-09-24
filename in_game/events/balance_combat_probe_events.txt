@@ -1,0 +1,107 @@
+namespace = balance_combat_probe
+
+# PROBE -- does a daily chain run, and can it see an army mid-battle?
+#
+# Before any of the day-one snapshot machinery gets built, two things have to
+# be true, and neither is written down anywhere in the game files:
+#
+#   1. A self-chaining event with days = 1 actually re-fires daily. The base
+#      game only ever uses days = 6, 10, 20, 30 (checked across every file in
+#      in_game/events), never 1, and never a chain that re-triggers itself.
+#   2. in_combat = yes is true for an army while its battle is running. It is
+#      a unit trigger (trigger_localization/unit_triggers.txt:122) and the
+#      base game uses it only as `in_combat = no` on a galley ability, never
+#      to catch a fight in progress.
+#
+# So this writes down what it sees and nothing else. Nothing is snapshotted,
+# no battle record is touched, and if the chain dies the rest of the mod is
+# unaffected.
+#
+# Read from the save as:
+#   global_var:cprobe_ticks    -- how many times the daily chain has fired.
+#                                 Days elapsed since the mod loaded, if the
+#                                 chain works. Stuck at a small number means
+#                                 days = 1 does not re-arm.
+#   global_var:cprobe_seen     -- how many times an army was found in combat
+#                                 (counted once per country per day, not per
+#                                 army). Zero after a battle means in_combat
+#                                 cannot be used to catch one.
+#   global_var:cprobe_max      -- the largest single in-combat army strength
+#                                 seen, in men. A sane number here means the
+#                                 sub-units are readable at that moment --
+#                                 which is the whole point of the exercise.
+#   global_var:cprobe_last     -- the date of the most recent sighting.
+#   global_var:cprobe_retreat  -- how many times an army was seen retreating.
+#
+# WHY THE RETREAT COUNT IS HERE
+#   The battle-end reading walks the units standing on the battle's location,
+#   so an army that pulls out mid-fight is simply not there any more: its
+#   survivors go missing from our count while its dead still sit in the
+#   engine's killed/lost total, and `engaged = left + dead` comes out short by
+#   exactly those survivors. An army wiped out entirely costs nothing -- its
+#   survivors really are zero -- so retreat is the case that matters, and
+#   nothing in the two battles measured so far exercised it. This counts how
+#   often it actually happens before anything is built to handle it.
+
+balance_combat_probe.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = { NOT = { has_global_variable = cprobe_ticks } }
+			set_global_variable = { name = cprobe_ticks value = 0 }
+		}
+		change_global_variable = { name = cprobe_ticks add = 1 }
+
+		# The real work, and it runs whether this country is fighting today or
+		# not: every army writes down its own strength, so the day a battle
+		# starts the number already on it is yesterday's -- from before the
+		# fighting. Gating this on combat is what made the opening day of
+		# every battle invisible.
+		balance_bd_daily = yes
+
+		# The diagnostic block that used to live here has been removed. It walked
+		# every sub-unit of every army in combat, every day, in every country
+		# the chain covered -- a third full pass over the same units that
+		# balance_bd_daily had already walked -- and all
+		# it produced was cprobe_seen/cprobe_max/cprobe_retreat, three counters
+		# nothing reads. It existed to answer three questions and it answered
+		# them: a days = 1 chain does re-fire daily (81,619 ticks), in_combat is
+		# true for an army while its battle runs (12 sightings, matching the ~11
+		# battles the world saw in the 66 days the chain was at full width), and
+		# armies do retreat mid-fight (69 times). Keeping it after that was
+		# paying a per-unit cost every day for a number already known.
+		#
+		# cprobe_ticks stays because it is a single global increment and it is
+		# the only way to tell from a save whether the chain is alive at all.
+
+
+		# Re-arm for tomorrow, but only while this country is still fighting a
+		# war a player is in, so the chain dies with the war instead of running
+		# for ever. The player condition has to be repeated here and not only
+		# where the chain is seeded: a chain that is already running re-arms
+		# itself, so without this the countries seeded before the condition
+		# existed would keep costing a daily sweep each until their wars ended.
+		# The flag has to be dropped on the way out, or the monthly pulse will
+		# never seed this country again once its next war starts.
+		if = {
+			limit = {
+				is_at_war = yes
+				any_current_war = {
+					any_war_participant = { is_ai = no }
+				}
+			}
+			trigger_event_silently = {
+				id = balance_combat_probe.1
+				days = 1
+			}
+		}
+		else = {
+			remove_variable = cprobe_running
+		}
+	}
+}

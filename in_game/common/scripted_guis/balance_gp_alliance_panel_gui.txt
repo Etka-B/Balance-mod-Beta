@@ -1,0 +1,68 @@
+# Toggles the "My Alliance" side panel (balance_gp_alliance_panel.gui). On open, rebuilds
+# balance_gp_my_alliance_list fresh (the clicking player's own current real-player allies)
+# plus a couple of variables for the header numbers - all scoped to root, which
+# GuiScope.SetRoot(GetPlayer.MakeScope) binds to the clicking player's own country (see
+# onclick in balance_great_powers.gui). Same pattern as Ars-Belli's own
+# mp_limits_toggle_tier_panel (in_game/common/scripted_guis/ars_belli_tier_panel_gui.txt).
+#
+# Balance mod fix: this used to use set_global_variable / *_global_variable_list, which are
+# WORLD-shared state, not per-country - in multiplayer that meant one player opening the panel
+# flipped a flag every other client's GUI was also watching, so it popped open for everyone.
+# Switched everything to the plain (non-global) country-scoped variable/list effects, which
+# attach to whatever "root" is at the time - the clicking player's own country - so each
+# player's open/closed state and list contents stay private to their own client.
+balance_gp_toggle_alliance_panel = {
+	effect = {
+		if = {
+			limit = { has_variable = balance_gp_alliance_panel_open }
+			remove_variable = balance_gp_alliance_panel_open
+		}
+		else = {
+			set_variable = { name = balance_gp_alliance_panel_open value = 1 }
+
+			# Refresh root's own cached numbers in case something changed since the last
+			# monthly recalculation (e.g. an alliance was just formed or broken).
+			set_variable = { name = balance_gp_bloc_weight_cached value = balance_gp_bloc_weight }
+
+			set_variable = { name = balance_gp_my_alliance_bloc_weight value = balance_gp_bloc_weight }
+
+			# Yourself always goes in first, as row 0 (the GUI tags it "(You)" and colors it
+			# differently - both keyed off index 0, so self has to stay pinned there rather
+			# than being sorted in with the rest).
+			clear_variable_list = balance_gp_my_alliance_list
+			add_to_variable_list = { name = balance_gp_my_alliance_list target = this }
+
+			# Allies, sorted by weight (points contributed) descending instead of raw
+			# every_country iteration order - two-pass, same pattern as
+			# balance_gp_calculate_scores. Real players only, matching the alliance point
+			# limit itself.
+			clear_variable_list = balance_gp_my_alliance_sort_buffer
+			every_country = {
+				limit = {
+					is_ai = no
+					has_mutual_scripted_relation = {
+						type = relation_type:alliance
+						target = PREV
+					}
+				}
+				# Re-scope back to root explicitly - every_country's own scope here is each
+				# candidate ally, and add_to_variable_list attaches the list to whatever
+				# scope it's called in, so without this the list would end up stored on the
+				# ally instead of on root.
+				root = {
+					add_to_variable_list = { name = balance_gp_my_alliance_sort_buffer target = PREV }
+				}
+			}
+			ordered_in_list = {
+				variable = balance_gp_my_alliance_sort_buffer
+				order_by = var:balance_gp_weight
+				max = 1000
+				check_range_bounds = no
+				root = {
+					add_to_variable_list = { name = balance_gp_my_alliance_list target = PREV }
+				}
+			}
+			clear_variable_list = balance_gp_my_alliance_sort_buffer
+		}
+	}
+}

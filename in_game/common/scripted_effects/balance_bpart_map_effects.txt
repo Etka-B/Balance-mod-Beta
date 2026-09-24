@@ -1,0 +1,48 @@
+# bpart -- one row per country per battle (LAND).
+#
+# Replaces balance_bpart_slots_effects.txt, which spelled out 75,404 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="bpart_b"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (9), each a map of its own:
+#     b        <- var:pend_b
+#     c        <- this
+#     s        <- var:pend_s
+#     d0       <- var:cbd0
+#     d1       <- var:cbd1
+#     d2       <- var:cbd2
+#     d3       <- var:cbd3
+#     d4       <- var:cbd4
+#     d5       <- var:cbd5
+#
+# global_var:bpart_count is still the row count and still the last key written.
+
+bpart_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = bpart_count } }
+		set_global_variable = { name = bpart_count value = 0 }
+	}
+	change_global_variable = { name = bpart_count add = 1 }
+
+	add_to_global_variable_map = { name = bpart_b key = global_var:bpart_count value = var:pend_b }
+	add_to_global_variable_map = { name = bpart_c key = global_var:bpart_count value = this }
+	add_to_global_variable_map = { name = bpart_s key = global_var:bpart_count value = var:pend_s }
+	add_to_global_variable_map = { name = bpart_d0 key = global_var:bpart_count value = var:cbd0 }
+	add_to_global_variable_map = { name = bpart_d1 key = global_var:bpart_count value = var:cbd1 }
+	add_to_global_variable_map = { name = bpart_d2 key = global_var:bpart_count value = var:cbd2 }
+	add_to_global_variable_map = { name = bpart_d3 key = global_var:bpart_count value = var:cbd3 }
+	add_to_global_variable_map = { name = bpart_d4 key = global_var:bpart_count value = var:cbd4 }
+	add_to_global_variable_map = { name = bpart_d5 key = global_var:bpart_count value = var:cbd5 }
+}

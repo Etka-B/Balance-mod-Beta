@@ -1,0 +1,18 @@
+﻿l_english:
+ # Custom country modifiers defined in main_menu/common/static_modifiers/modifier country.txt
+ # granted by flavor_MINOR.txt, flavor_MOSKOV.txt and flavor_SWEDEN.txt
+ minor_massive_bonus: "Regional Power"
+ minor_massive_bonus_desc: "Growing stability and administration have swelled our treasury, quickened our armies' sieges, and eased our neighbors' alarm at our nation's rise."
+ STATIC_MODIFIER_NAME_minor_massive_bonus: "$minor_massive_bonus$"
+
+ minor_massive_bonus.2: "Mercantile Ascendancy"
+ minor_massive_bonus.2_desc: "Flourishing trade and banking fill our commune's coffers and speed our conquests, while careful diplomacy keeps rival powers from taking alarm at our growing wealth."
+ STATIC_MODIFIER_NAME_minor_massive_bonus.2: "$minor_massive_bonus.2$"
+
+ muscovy_massive_bonus: "Power of the North"
+ muscovy_massive_bonus_desc: "A strengthened treasury and swifter administration hasten the unification of the Russian principalities under Moscow's growing authority."
+ STATIC_MODIFIER_NAME_muscovy_massive_bonus: "$muscovy_massive_bonus$"
+
+ flavor_sweden_valhalla_bonus: "Call of Valhalla"
+ flavor_sweden_valhalla_bonus_desc: "The old Norse faith is welcomed back into the realm, easing tensions with heretics and heathens even as the court strains to accommodate the old ways' return."
+ STATIC_MODIFIER_NAME_flavor_sweden_valhalla_bonus: "$flavor_sweden_valhalla_bonus$"

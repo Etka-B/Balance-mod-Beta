@@ -1,0 +1,44 @@
+# bpsea -- one row per country per battle (SEA).
+#
+# Replaces balance_bpsea_slots_effects.txt, which spelled out 4,001 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="bpsea_b"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (7), each a map of its own:
+#     b        <- var:pend_b
+#     c        <- this
+#     s        <- var:pend_s
+#     n0       <- var:cbd6
+#     n1       <- var:cbd7
+#     n2       <- var:cbd8
+#     n3       <- var:cbd9
+#
+# global_var:bpsea_count is still the row count and still the last key written.
+
+bpsea_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = bpsea_count } }
+		set_global_variable = { name = bpsea_count value = 0 }
+	}
+	change_global_variable = { name = bpsea_count add = 1 }
+
+	add_to_global_variable_map = { name = bpsea_b key = global_var:bpsea_count value = var:pend_b }
+	add_to_global_variable_map = { name = bpsea_c key = global_var:bpsea_count value = this }
+	add_to_global_variable_map = { name = bpsea_s key = global_var:bpsea_count value = var:pend_s }
+	add_to_global_variable_map = { name = bpsea_n0 key = global_var:bpsea_count value = var:cbd6 }
+	add_to_global_variable_map = { name = bpsea_n1 key = global_var:bpsea_count value = var:cbd7 }
+	add_to_global_variable_map = { name = bpsea_n2 key = global_var:bpsea_count value = var:cbd8 }
+	add_to_global_variable_map = { name = bpsea_n3 key = global_var:bpsea_count value = var:cbd9 }
+}

@@ -1,0 +1,55 @@
+# Records the diplomacy the save file itself does not keep:
+#
+#   * gifts of gold -- on_gift_sent is the only place the amount exists
+#     (scope:target); nothing about a gift survives into the save.
+#   * truces -- a war ending starts one, but no truce timer is ever written
+#     to the save, so the war's end date is what the ledger counts from.
+#
+# Economic Support ("Ekonomik Destek Gonder") is deliberately NOT logged here:
+# it is entirely hardcoded (only gui/economic_support.gui references it -- no
+# scripted_relation, no on_action, no trigger), so script cannot see it start,
+# stop or run. `economic_support` is a save token, so the ledger reads whatever
+# is active straight out of the save instead; support that has already been
+# cancelled is gone for good, and no mod can recover it.
+#
+# Uses the same pre-declared numbered-slot trick as the battle/war/occupation
+# logs (see balance_battle_log_on_action.txt), since
+# add_to_global_variable_list de-duplicates by value and would break
+# index-alignment as soon as the same country appears twice.
+#
+# Read by the community ledger tool from the save as:
+#   global_var:gift_count                  -- total gifts sent
+#   global_var:gift_<n>_from/_to/_amt/_date -- sender / receiver / gold / date
+#   global_var:truce_count                 -- total wars ended (= truces begun)
+#   global_var:truce_<n>_a/_b/_start       -- winner / loser / date the war ended
+
+# root, scope:actor = sender, scope:recipient = receiver, scope:target = gold sent
+on_gift_sent = {
+	on_actions = {
+		balance_log_gift
+	}
+}
+
+balance_log_gift = {
+	effect = {
+		gift_increment_and_log = yes
+	}
+}
+
+# root = country (fires for winner and loser both, after the war has ended),
+# scope:winner, scope:loser, scope:war. Guarded so only the winner's firing
+# logs the slot -- otherwise every truce would be recorded twice.
+on_ending_war = {
+	on_actions = {
+		balance_log_truce
+	}
+}
+
+balance_log_truce = {
+	trigger = {
+		this = scope:winner
+	}
+	effect = {
+		truce_increment_and_log = yes
+	}
+}

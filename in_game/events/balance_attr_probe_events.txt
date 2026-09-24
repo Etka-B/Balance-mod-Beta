@@ -1,0 +1,51 @@
+namespace = balance_attr_probe
+
+# THE MONTHLY CALCULATION. It runs here, on the LAST day of the month, and not
+# on monthly_country_pulse, because this is the only moment when both numbers
+# it needs are right.
+#
+#   FOOD. The engine charges attrition on the 1st and refills the stores in the
+#   same moment. The pulse runs after both, so an army the engine just starved
+#   reads 0.1-0.5 there -- out of 350 land armies on province supply in one
+#   save, exactly ONE still read 0. Here they read 0, and `food_percentage <= 0`
+#   is true again.
+#
+#   STRENGTH. The engine takes its cut from the strength an army has BEFORE the
+#   tick. The strength the pulse can see is what is left after, so banking there
+#   applied the rate to an already-reduced number and came out short by exactly
+#   (1 - rate): 17,030 written against 17,881 taken, 0.952. Here the strength is
+#   the pre-tick one, the same base the engine uses.
+#
+# Measured over three clean tick pairs (saves on the last day AND the 1st of
+# May, June and July 1466), food deaths only:
+#
+#     read at the pulse       8,264 of 17,882    46%
+#     read on the last day   17,877 of 17,882   100%
+#
+# Seeded by attr_shadow_seed from the monthly pulse, with the offset picked off
+# current_month so it always lands on the last day. If this event does not run
+# for some month, the next pulse notices (ash_banked) and banks that month late
+# rather than dropping it.
+#
+# What this costs, and it is accepted: the month's losses are now written one
+# day before the engine takes them, so a loss the engine charges on 1 July is
+# banked on 30 June. Cumulative totals are unaffected; only a month-by-month
+# slice shifts. And an army that appears or dies in that one day is counted
+# wrongly -- a handful of small units a month, against the 54% of the real
+# figure that reading on the right day recovers.
+
+balance_attr_probe.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	immediate = {
+		# DIAGNOSTIC, remove with the rest: which day this actually landed on.
+		set_variable = { name = ash_probe_day value = current_day }
+		set_variable = { name = ash_probe_month value = current_month }
+
+		attr_shadow_tick = yes
+	}
+}

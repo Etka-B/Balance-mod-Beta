@@ -1,0 +1,89 @@
+﻿# Catches a war's casus belli one step before the war log writes its slot.
+#
+# WHY THIS EXISTS
+#   The slot write hangs off on_ending_war, and by that point the war's CB is
+#   already gone: every one of the first fourteen wars recorded came back with
+#   casus_belli id 0, while wars still running in the same save carried real
+#   names (cb_conquer_province, cb_timurs_conquests, cb_sengoku, cb_none...).
+#
+#   on_pre_ending_war fires with the same scopes but before peace terms are
+#   executed, so the CB is still attached. It stashes it in a global that the
+#   slot write picks up a moment later.
+#
+#   Fires once for the winner and once for the loser, both writing the same
+#   value, which is harmless.
+#
+# root = country, scope:winner = country, scope:loser = country, scope:war = war
+
+on_pre_ending_war = {
+	on_actions = {
+		balance_stash_war_cb
+	}
+}
+
+balance_stash_war_cb = {
+	effect = {
+		set_global_variable = { name = war_pending_cb value = scope:war.casus_belli }
+	}
+}
+
+# ---------------------------------------------------------------------------
+# PER-WAR ATTRITION BASELINE
+#
+# The shadow-attrition counter is one running number per country, so on its own
+# it cannot say how many died *in this particular war*. Differencing a
+# country's consecutive war records does not work either: between two wars it
+# also collects peacetime losses and the losses of any other war it was in.
+#
+# So each war remembers where its participants' counters stood when it began,
+# in a variable map on the war object keyed by the country. At war end the slot
+# writes the difference, which is that war's own figure.
+#
+#   variable_map(name|key)  reads a map entry back  (event_targets.log)
+#   the map lives on the war, so it dies with the war -- which is fine, it only
+#   has to survive until on_ending_war reads it
+#
+# Two known gaps, both honest:
+#   - on_join_war exposes only root, no scope:war, so a country that joins
+#     later gets no baseline and its difference falls back to its whole
+#     counter. The slot also keeps the absolute values (aw/al) so this is
+#     visible rather than silent.
+#   - a country fighting two wars at once has the same dead counted in both.
+#     The game does this too: Pinsk's 1,170 appears identically under both of
+#     its wars in war_manager.
+#
+# root = country, scope:actor = declarer, scope:recipient = target, scope:war = war
+
+on_war_declared = {
+	on_actions = {
+		balance_war_attr_baseline
+		balance_probe_combat
+	}
+}
+
+balance_war_attr_baseline = {
+	effect = {
+		# A slot of its own, the same technique the battle and concluded-war
+		# logs use. Storing the baseline on the war itself was tried twice and
+		# failed both ways: a variable map refused a number outright ("Tried to
+		# insert an empty scope value into a map"), and a plain variable wrote
+		# at declaration but was gone by the war's end ("Failed to fetch
+		# variable for 'ash_base_a' due to not being set"). A war keeps no
+		# script variables, so the record goes somewhere that does.
+		#
+		# Nothing needs to be searched for in script: each record carries the
+		# war object, and the ledger pairs a declaration with its conclusion
+		# offline by that id.
+		# Must run first, for the same reason as at the war's end: the slot bank
+		# copies the wpa0..wqd9 globals, so they have to be filled before it runs.
+		# Here they capture every belligerent's attrition figure on day one, which
+		# is what makes a per-country "what this war cost you" possible instead of
+		# only a per-leader one.
+		scope:war = { balance_war_parties = yes }
+		# same roster at the other end of the war, so the difference between
+		# the two is what the war cost each belligerent
+		scope:war = { balance_wpar_roster = { KIND = 0 } }
+
+		wdcl_increment_and_log = yes
+	}
+}

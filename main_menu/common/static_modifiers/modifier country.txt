@@ -20,6 +20,18 @@ minor_massive_bonus.2 = {
     
 }	
 
+# Balance mod: compensating bonus for flavor_sweden.1's "Valhalla calls to us" option
+# (in_game/events/DHE/flavor_SWEDEN.txt) - the old faith being tolerated again, themed as
+# extra court capacity plus heretic/heathen tolerance.
+flavor_sweden_valhalla_bonus = {
+	game_data = {
+		category = country
+	}
+	government_size = 1
+	tolerance_heretic = 2.5
+	tolerance_heathen = 5
+}
+
 muscovy_massive_bonus = {
 	game_data = {
 		category = country
@@ -34,9 +46,31 @@ REPLACE:new_colonial_nation_founded = {
 		category = country
 		decaying = yes
 	}
-	
+
 	monthly_rebel_growth = -0.01
 	global_pop_promotion_speed_modifier = 1.0
 	global_population_growth = 0.01
+}
+
+# Balance mod: hegemon status penalty softened - antagonism 20% -> 5%, court spending efficiency debuff removed
+REPLACE:num_hegemonies = {
+	game_data = {
+		category = country
+	}
+	monthly_prestige = 0.02
+	antagonism_received_modifier = 0.05
+}
+
+# Balance mod: given to a freshly-formed conquistador subject alongside its starting gold
+# (events/colonization/conquistador.txt) - lets it actually afford its (now bigger) army
+# for a few years while it establishes itself.
+balance_conquistador_supply_line = {
+	game_data = {
+		category = country
+	}
+	# army_maintenance_efficiency reduces cost as 1/(1+X), NOT a flat percent - X=19
+	# means paying 1/(1+19)=5% of maintenance (i.e. an actual ~95% reduction), robust to
+	# whatever small baseline efficiency the country already has from other sources.
+	army_maintenance_efficiency = 19
 }
 

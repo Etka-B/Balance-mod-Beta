@@ -1,0 +1,5 @@
+﻿l_turkish:
+ a_fra_musketeer_light_infantry: "Silahşör Hafif Piyade"
+ a_fra_musketeer_light_infantry_desc: "Silahşör doktrinine göre eğitilmiş Fransız hafif piyadesi: daha fazla hasar verir, daha az hasar alır."
+ fra_musketeer_doctrine: "Silahşör Doktrini"
+ fra_musketeer_doctrine_desc: "Silahşör Hafif Piyade'yi açar - %10 daha fazla hasar veren, %10 daha az hasar alan bir Fransız hafif piyadesi."

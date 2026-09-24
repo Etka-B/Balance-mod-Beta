@@ -1,0 +1,94 @@
+﻿# Vanilla call_emergency_parliament, with:
+#  - the "at_war = yes" requirement removed - can be called outside of war too.
+#  - a flat 10 legitimacy cost (replacing the vague legitimacy_mild_penalty). No legitimacy
+#    requirement to use it - it can push legitimacy negative like other legitimacy costs do.
+#  - a 1 diplomat requirement/cost, but ONLY while at peace - calling it during a war stays
+#    free of the diplomat cost (that's the "2-part condition": war -> no diplomat cost,
+#    peace -> costs 1 diplomat, same as a normal diplomatic action).
+REPLACE:call_emergency_parliament = {
+	type = owncountry
+
+	ai_tick = never
+	automation_tick = never
+
+	potential = {
+		scope:actor = {
+			has_parliament = yes
+		}
+	}
+
+	allow = {
+		scope:actor = {
+			is_active_parliament = no
+			months_since_last_parliament_called <= "define:NCountry|PARLIAMENT_COOLDOWN_MONTHS"
+			NOT = {
+				modifier:parliament_abolished = yes
+				modifier:has_a_parliamentary_system = no
+			}
+			trigger_if = {
+				limit = { NOT = { at_war = yes } }
+				num_of_diplomats >= 1
+			}
+		}
+	}
+
+	cooldown = {
+		type = call_emergency_parliament_cooldown
+		years = 5
+	}
+
+	select_trigger = {
+		looking_for_a = parliament_issue
+		interaction_source_list = {
+			scope:actor = {
+				every_possible_parliament_issue = {
+					add_to_list = source
+				}
+			}
+		}
+		cache_interaction_source_list = yes
+		cache_targets = yes
+		target_flag = parliament_issue
+		name = "select_parliament_debate"
+		none_available_msg_key = "select_parliament_debate_none_available"
+		column = {
+			data = parliament_issue_widget
+		}
+		visible = {
+			is_available_for = scope:actor
+		}
+	}
+
+	effect = {
+		scope:actor = {
+			set_parliament_location = scope:actor.capital
+			set_parliament_active = yes
+			if = {
+				limit = { exists = scope:parliament_issue }
+				set_parliament_issue = scope:parliament_issue
+				set_parliament_issue_support = {
+					add = {
+						desc = parliament_base_support
+						value = modifier:parliament_base_support
+					}
+					if = {
+						limit = {
+							scope:parliament_issue.estate_type = {
+								always_loyal = no
+							}
+						}
+						add = {
+							desc = estate_power
+							value = "estate_power(scope:parliament_issue.estate_type)"
+						}
+					}
+				}
+			}
+			add_legitimacy = -10
+			if = {
+				limit = { NOT = { at_war = yes } }
+				add_diplomats = -1
+			}
+		}
+	}
+}

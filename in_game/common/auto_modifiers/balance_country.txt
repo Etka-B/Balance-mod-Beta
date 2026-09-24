@@ -148,3 +148,32 @@ very_low_devotion = {
 	global_crown_estate_power = -0.20
 
 }
+
+# Grants monthly religious influence per level of Cardinal Seat owned, regardless of location
+# (a building's own modifier block only affects its location, not the country, so this is
+# handled here instead of inside REPLACE:seat_of_cardinal).
+balance_seat_of_cardinal_influence = {
+	scales_with = total_building_levels_including_construction:seat_of_cardinal
+
+	monthly_religious_influence = 0.02
+}
+
+# Flat base Imperial Authority gain for whoever is HRE Emperor, on top of everything
+# else. Read by hre.txt's "FROM_MODIFIERS" line (leader_country.modifier:monthly_imperial_authority),
+# so it shows up folded into the existing "From Modifiers" row in the IA tooltip.
+balance_hre_emperor_base_authority = {
+	potential_trigger = {
+		is_leader_of_international_organization = international_organization:hre
+	}
+
+	monthly_imperial_authority = 0.10
+}
+
+# Combined arms bonus is already "per unit type present" (vanilla's own
+# combined_bonus_per_type in auto_modifiers/country.txt), just at 0.025 (2.5%) by
+# default. Auto_modifier fields with the same name across different blocks add together,
+# so this delta (+0.025) on top of vanilla's 0.025 brings the total to 0.05 (5%) per
+# type, without needing to REPLACE: and copy vanilla's whole (250+ line) base-values block.
+balance_combined_arms_bonus_increase = {
+	combined_bonus_per_type = 0.025
+}

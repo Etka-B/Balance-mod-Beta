@@ -1,0 +1,2 @@
+﻿gui/balance_great_powers.gui = balance_gp_window
+gui/balance_gp_alliance_panel.gui = balance_gp_alliance_window

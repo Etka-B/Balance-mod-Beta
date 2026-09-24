@@ -1,0 +1,38 @@
+# ptr -- one row per location taken in a peace treaty.
+#
+# Replaces balance_ptr_slots_effects.txt, which spelled out 20,001 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="ptr_loc"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (4), each a map of its own:
+#     loc      <- scope:ptr_loc
+#     to       <- scope:ptr_to
+#     from     <- scope:ptr_from
+#     d        <- current_date
+#
+# global_var:ptr_count is still the row count and still the last key written.
+
+ptr_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = ptr_count } }
+		set_global_variable = { name = ptr_count value = 0 }
+	}
+	change_global_variable = { name = ptr_count add = 1 }
+
+	add_to_global_variable_map = { name = ptr_loc key = global_var:ptr_count value = scope:ptr_loc }
+	add_to_global_variable_map = { name = ptr_to key = global_var:ptr_count value = scope:ptr_to }
+	add_to_global_variable_map = { name = ptr_from key = global_var:ptr_count value = scope:ptr_from }
+	add_to_global_variable_map = { name = ptr_d key = global_var:ptr_count value = current_date }
+}

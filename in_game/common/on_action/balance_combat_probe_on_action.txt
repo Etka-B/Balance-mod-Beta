@@ -1,0 +1,53 @@
+# Seeds the daily probe chain. Once a month every country that is at war
+# starts (or re-starts) it; the event itself re-arms daily and stops when the
+# country is no longer fighting, so a broken or ended chain is picked up again
+# within a month rather than staying dead for the rest of the campaign.
+#
+# Deliberately only countries at war: armies only fight in wars, and a daily
+# event for all 2,444 countries is not a cost worth paying to learn nothing.
+#
+# Seeded from two places: the monthly pulse, which catches wars already
+# running, and on_war_declared, which catches a new one the day it starts.
+# Waiting for the pulse alone leaves a gap of up to a month, and a battle
+# fought inside that gap is never sampled -- measured: a save at 1448.6.1
+# nine days after loading had a complete battle record and every per-category
+# death counter at zero, because the chain had not started yet. The
+# cprobe_running guard means the second seed is free when one already runs.
+#
+# See events/balance_combat_probe_events.txt for what it measures and why.
+# The monthly_country_pulse entry that calls this lives in
+# balance_attrition_shadow_on_action.txt, with the mod's other monthly hook --
+# see the note there on why they share one block.
+# cprobe_running is what stops the chains from multiplying. Without it the
+# monthly pulse seeds a FRESH chain every month while last month's is still
+# re-arming itself, so a country ends up running one chain per month it has
+# been at war -- measured before the guard existed: 121,010 ticks over 62
+# days, about 1,950 a day, roughly 650 countries times the three monthly
+# pulses that had gone by. It compounds for as long as the war lasts.
+balance_probe_combat = {
+	trigger = {
+		is_at_war = yes
+		NOT = { has_variable = cprobe_running }
+		# Only wars a player is in. The daily sweep is by far the most
+		# expensive thing the mod does -- it walks every unit of every country
+		# it covers, every day -- and the world is full of tribal wars and
+		# revolts nobody will ever read about. Measured in a live save: 1,236
+		# countries were at war, 45 of them in a war with a player, and the
+		# game visibly stopped flowing until this was narrowed.
+		#
+		# What the excluded wars lose is only the per-category breakdown of
+		# their casualties. The battle itself, its war score, both sides'
+		# totals and the surviving composition are all written at
+		# on_battle_won, which costs nothing until a battle actually ends.
+		any_current_war = {
+			any_war_participant = { is_ai = no }
+		}
+	}
+	effect = {
+		set_variable = { name = cprobe_running value = 1 }
+		trigger_event_silently = {
+			id = balance_combat_probe.1
+			days = 1
+		}
+	}
+}

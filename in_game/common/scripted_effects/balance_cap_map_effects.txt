@@ -1,0 +1,199 @@
+# cap -- one row per unit taken prisoner.
+#
+# WHY THIS EXISTS
+#   The day-by-day log (bday) measures men who left the army, and the engine
+#   splits that into two columns the mod could only ever see as one: losses
+#   (killed) and imprisoned (captured). Held against killed alone the day log
+#   looked wrong on 25 of the Tuscan war's 58 land battles; held against
+#   killed + captured it is right on 46 of them. The 13 that moved were never
+#   errors -- there was simply no way to tell captured from dead.
+#
+#   Measured on SP_TUS_1484_09_15, battle at Casale 1482.9.5: the engine
+#   records 2,048 killed and 3,072 captured; the day log recorded 5,120, which
+#   is exactly their sum. With this log the two can finally be separated.
+#
+# on_overrun_imprisoned hands us root = the unit of prisoners and
+# scope:winner = the country that took them -- see _hardcoded.txt. That is
+# everything needed: the unit still exists at this moment, so its strength can
+# be walked the same way balance_bd_unit_step walks a fighting one.
+#
+# Read from the save under `variables.map_data`, one container per column.
+# Keys are the row number, x100000 scale, paired across columns by key --
+# the same shape as every other map log here.
+#
+# Columns (14), each a map of its own:
+#     c        <- the country that LOST the men (root.owner)
+#     w        <- scope:winner, the country that took them
+#     loc      <- where it happened (root.unit_location)
+#     d        <- current_date
+#     0..5     <- captured strength by land category, in men
+#     6..9     <- captured hulls by naval category
+#
+# global_var:cap_count is the row count and the last key written.
+#
+# COST
+#   One row per capture event, not per day: 156 wipe rows across an 18-year
+#   campaign is the order of magnitude, so a handful of map writes a month.
+#   Nothing here runs on a pulse.
+
+# UNIT scope (root = the prisoners). Sum this unit's strength by category into
+# locals, exactly as balance_bd_unit_step does -- locals written inside
+# every_sub_unit are readable again in unit scope afterwards, which is what
+# makes the walk possible at all. subunit_strength is only legible in sub_unit
+# scope, so it has to be read there and carried out.
+balance_cap_measure = {
+	set_local_variable = { name = cap0 value = 0 }
+	set_local_variable = { name = cap1 value = 0 }
+	set_local_variable = { name = cap2 value = 0 }
+	set_local_variable = { name = cap3 value = 0 }
+	set_local_variable = { name = cap4 value = 0 }
+	set_local_variable = { name = cap5 value = 0 }
+	set_local_variable = { name = cap6 value = 0 }
+	set_local_variable = { name = cap7 value = 0 }
+	set_local_variable = { name = cap8 value = 0 }
+	set_local_variable = { name = cap9 value = 0 }
+	set_local_variable = { name = captot value = 0 }
+
+	every_sub_unit = {
+		if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_light_infantry } }
+			change_local_variable = { name = cap0 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_heavy_infantry } }
+			change_local_variable = { name = cap1 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_light_cavalry } }
+			change_local_variable = { name = cap2 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_heavy_cavalry } }
+			change_local_variable = { name = cap3 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_artillery } }
+			change_local_variable = { name = cap4 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:army_auxiliary } }
+			change_local_variable = { name = cap5 add = { value = subunit_strength multiply = 1000 } }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_galley } }
+			change_local_variable = { name = cap6 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_light_ship } }
+			change_local_variable = { name = cap7 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_heavy_ship } }
+			change_local_variable = { name = cap8 add = 1 }
+		}
+		else_if = {
+			limit = { sub_unit_category = { this = sub_unit_category:navy_transport } }
+			change_local_variable = { name = cap9 add = 1 }
+		}
+	}
+
+	change_local_variable = { name = captot add = local_var:cap0 }
+	change_local_variable = { name = captot add = local_var:cap1 }
+	change_local_variable = { name = captot add = local_var:cap2 }
+	change_local_variable = { name = captot add = local_var:cap3 }
+	change_local_variable = { name = captot add = local_var:cap4 }
+	change_local_variable = { name = captot add = local_var:cap5 }
+	change_local_variable = { name = captot add = local_var:cap6 }
+	change_local_variable = { name = captot add = local_var:cap7 }
+	change_local_variable = { name = captot add = local_var:cap8 }
+	change_local_variable = { name = captot add = local_var:cap9 }
+
+	# A unit with nothing left in it is not worth a row, and writing one would
+	# put an empty key into every column for the ledger to pair up and discard.
+	if = {
+		limit = { local_var:captot > 0 }
+		owner = { save_scope_as = cap_owner }
+		unit_location = { save_scope_as = cap_loc }
+		# Whose men these were. The prisoners' army belongs to the captor, so
+		# its owner is not the answer; the regiments inside it are asked.
+		random_sub_unit = {
+			owner = { save_scope_as = cap_victim }
+		}
+		# and which fight took them, off anyone fighting here
+		set_local_variable = { name = capcid value = 0 }
+		scope:cap_loc = {
+			random_unit_in_location = {
+				limit = {
+					has_variable = bdcid
+					has_variable = bdlast
+					var:bdlast = { this = scope:cap_loc }
+				}
+				set_local_variable = { name = capcid value = var:bdcid }
+			}
+		}
+		# Nobody here carries a fight number: the battle began today, before any
+		# sweep. It gets one now -- or the one an earlier capture here today
+		# already gave it -- left on the location for its on_battle_won to take.
+		if = {
+			limit = { local_var:capcid = 0 }
+			scope:cap_loc = {
+				if = {
+					limit = { has_variable = bdcapcid }
+					set_local_variable = { name = capcid value = var:bdcapcid }
+				}
+			}
+		}
+		if = {
+			limit = { local_var:capcid = 0 }
+			if = {
+				limit = { NOT = { has_global_variable = bdcid_count } }
+				set_global_variable = { name = bdcid_count value = 0 }
+			}
+			change_global_variable = { name = bdcid_count add = 1 }
+			set_local_variable = { name = capcid value = global_var:bdcid_count }
+			scope:cap_loc = {
+				set_variable = { name = bdcapcid value = local_var:capcid days = 2 }
+			}
+		}
+		# on the prisoners themselves: the fight they were taken in, so the sweep
+		# does not count them into what that same fight began with
+		set_variable = { name = bdpcid value = local_var:capcid }
+		cap_increment_and_log = yes
+	}
+}
+
+
+# The write. Kept apart from the measuring so the two can be read, and failed,
+# separately -- the same split every other log here uses.
+cap_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = cap_count } }
+		set_global_variable = { name = cap_count value = 0 }
+	}
+	change_global_variable = { name = cap_count add = 1 }
+
+	add_to_global_variable_map = { name = cap_c   key = global_var:cap_count value = scope:cap_owner }
+	add_to_global_variable_map = { name = cap_w   key = global_var:cap_count value = scope:winner }
+	add_to_global_variable_map = { name = cap_loc key = global_var:cap_count value = scope:cap_loc }
+	add_to_global_variable_map = { name = cap_d   key = global_var:cap_count value = current_date }
+	add_to_global_variable_map = { name = cap_b   key = global_var:cap_count value = local_var:capcid }
+	if = {
+		limit = { exists = scope:cap_victim }
+		add_to_global_variable_map = { name = cap_v   key = global_var:cap_count value = scope:cap_victim }
+	}
+	# 1 on a row of prisoners set free (balance_bd_freed), absent on a capture
+	if = {
+		limit = { has_local_variable = capf }
+		add_to_global_variable_map = { name = cap_f   key = global_var:cap_count value = local_var:capf }
+	}
+	add_to_global_variable_map = { name = cap_0   key = global_var:cap_count value = local_var:cap0 }
+	add_to_global_variable_map = { name = cap_1   key = global_var:cap_count value = local_var:cap1 }
+	add_to_global_variable_map = { name = cap_2   key = global_var:cap_count value = local_var:cap2 }
+	add_to_global_variable_map = { name = cap_3   key = global_var:cap_count value = local_var:cap3 }
+	add_to_global_variable_map = { name = cap_4   key = global_var:cap_count value = local_var:cap4 }
+	add_to_global_variable_map = { name = cap_5   key = global_var:cap_count value = local_var:cap5 }
+	add_to_global_variable_map = { name = cap_6   key = global_var:cap_count value = local_var:cap6 }
+	add_to_global_variable_map = { name = cap_7   key = global_var:cap_count value = local_var:cap7 }
+	add_to_global_variable_map = { name = cap_8   key = global_var:cap_count value = local_var:cap8 }
+	add_to_global_variable_map = { name = cap_9   key = global_var:cap_count value = local_var:cap9 }
+}

@@ -1,0 +1,38 @@
+﻿monthly_country_pulse = {
+	on_actions = {
+		balance_gp_monthly_pulse
+	}
+}
+
+on_game_start = {
+	on_actions = {
+		balance_gp_game_start
+	}
+}
+
+# Compute once immediately, so the list isn't empty for the whole first game month.
+balance_gp_game_start = {
+	effect = {
+		balance_gp_calculate_scores = yes
+	}
+}
+
+# monthly_country_pulse fires once per country per month, so we gate the actual
+# (every_country-looping) calculation to run only once globally each month.
+balance_gp_monthly_pulse = {
+	effect = {
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable = balance_gp_last_month }
+					NOT = { global_var:balance_gp_last_month = current_month }
+				}
+			}
+			set_global_variable = {
+				name = balance_gp_last_month
+				value = current_month
+			}
+			balance_gp_calculate_scores = yes
+		}
+	}
+}

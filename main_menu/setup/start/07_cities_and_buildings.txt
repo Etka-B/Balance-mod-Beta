@@ -1434,7 +1434,8 @@ building_manager = {
 	castle 		= { tag = ENG level = 1 location = windsor } 
 	castle 		= { tag = ENG level = 1 location = leeds } 
 	castle 		= { tag = ENG level = 1 location = pontefract } # conisbrough castle
-
+	castle 		= { tag = ENG level = 1 location = domfront }
+	castle 		= { tag = ENG level = 1 location = avranches }
 	stockade 		= { tag = ENG level = 1 location = launceston } # tintagel
 	stockade 		= { tag = ENG level = 1 location = rochester } # Rochester Castle
 	stockade 		= { tag = ENG level = 1 location = truro } # St Michael's Mount

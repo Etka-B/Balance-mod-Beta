@@ -1,0 +1,183 @@
+types BalanceGpAlliancePanelTypes
+{
+	type balance_gp_alliance_window = window {
+		name = "balance_gp_alliance_window"
+		parentanchor = top|right
+		widgetanchor = top|right
+		# Opens directly to the left of the main balance_gp_window (which sits at
+		# -470 90, size 470x700), so the two panels sit side by side.
+		position = { -790 90 }
+		size = { 300 500 }
+		allow_outside = yes
+		movable = yes
+
+		visible = "[GetPlayer.MakeScope.GetVariable('balance_gp_alliance_panel_open').IsSet]"
+
+		using = bg_paper_card
+		using = bg_cabinet_card_frame
+
+		background = {
+			texture = "gfx/interface/balance/gp_alliance_background.png"
+			fittype = centercrop
+			alpha = 0.65
+		}
+		background = {
+			using = color_black_texture
+			alpha = 0.35
+		}
+
+		vbox = {
+			margin = { 18 14 }
+			spacing = 8
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				spacing = 8
+
+				icon = {
+					size = { 24 24 }
+					texture = "[GetConceptTexture('score')]"
+				}
+
+				text_single = {
+					text = "BALANCE_GP_ALLIANCE_PANEL_TITLE"
+					using = Font_Type_Headers
+					align = left|vcenter
+					layoutpolicy_horizontal = expanding
+				}
+
+				widget = {
+					size = { 40 40 }
+					ui_direction_button_holder_right = {}
+
+					button_close_alt = {
+						onclick = "[GetScriptedGui('balance_gp_toggle_alliance_panel').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+					}
+				}
+			}
+
+			widget = {
+				size = { -1 2 }
+				layoutpolicy_horizontal = expanding
+				using = bg_divider_flavor_01
+			}
+
+			# Total bloc points, out of the shared limit of 10.
+			widget = {
+				layoutpolicy_horizontal = expanding
+				size = { -1 30 }
+
+				background = {
+					using = color_black_texture
+					alpha = 0.7
+				}
+
+				text_single = {
+					parentanchor = left|vcenter
+					margin = { 6 0 }
+					datacontext = "[GetPlayer]"
+					text = "BALANCE_GP_ALLIANCE_PANEL_TOTAL"
+					default_format = "#important_number"
+					autoresize = yes
+					max_width = 260
+				}
+			}
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				margin = { 6 2 }
+				autoresize = yes
+				max_width = 260
+				text = "BALANCE_GP_ALLIANCE_PANEL_LIST_HEADER"
+				default_format = "#color_white"
+				fontsize = 13
+			}
+
+			# Row 0 is always yourself (added first, before the allies loop, in
+			# balance_gp_toggle_alliance_panel), everything after that is an actual ally.
+			scrollarea = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				scrollbarpolicy_horizontal = always_off
+
+				scrollbar_vertical = {
+					using = Scrollbar_Vertical
+				}
+
+				scrollwidget = {
+					fixedgridbox = {
+						addcolumn = 100%
+						addrow = 36
+						setitemsizefromcell = yes
+
+						datamodel = "[GetPlayer.MakeScope.GetList('balance_gp_my_alliance_list')]"
+
+						item = {
+							widget = {
+								layoutpolicy_horizontal = expanding
+								datacontext = "[Scope.GetCountry]"
+
+								background = {
+									using = color_black_texture
+									alpha = 0.6
+								}
+								background = {
+									visible = "[IsOdd_int32(PdxGuiWidget.GetIndexInDataModel)]"
+									using = color_black_texture
+									alpha = 0.35
+								}
+
+								hbox = {
+									layoutpolicy_horizontal = expanding
+									margin = { 6 0 }
+									spacing = 10
+
+									country_flag_small = {
+										datacontext = "[Scope.GetCountry]"
+									}
+
+									# "(You)" tag before your own name - index-only, no Country data needed,
+									# so it's safe to toggle via visible= (unlike the name text below, which
+									# stopped resolving the moment it was one of two visible=-toggled copies).
+									text_single = {
+										visible = "[EqualTo_int32(PdxGuiWidget.GetIndexInDataModel, '(int32)0')]"
+										autoresize = yes
+										align = left|nobaseline
+										text = "BALANCE_GP_ALLIANCE_PANEL_YOU_TAG"
+										default_format = "#color_highlight"
+									}
+
+									text_single = {
+										layoutpolicy_horizontal = expanding
+										layoutstretchfactor_horizontal = 1
+										autoresize = no
+										align = left|nobaseline
+										text = "[Country.GetLongNameWithNoTooltip]"
+										default_format = "#yellow_titles"
+										tooltipwidget = {
+											using = CountryTooltip
+										}
+									}
+
+									text_single = {
+										size = { 60 -1 }
+										margin_right = 6
+										autoresize = no
+										align = right|nobaseline
+										text = "[Country.MakeScope.GetVariable('balance_gp_weight').GetValue|0]"
+										default_format = "#important_number"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+balance_gp_alliance_window = {
+}

@@ -1,0 +1,36 @@
+# occ -- one row per occupation.
+#
+# Replaces balance_occupation_slots_effects.txt, which spelled out 32,730 numbered
+# slots so that a row could be addressed without an array index. A global
+# variable map is keyed by a runtime number, so the index the language was
+# missing is available after all: the row counter is the key and each column is
+# its own map. The bucket walk, the slot ceiling and the generated file all go.
+#
+# Read from the save under `variables.map_data`, one container per column:
+#
+#     map_data={ { name="occ_loc"
+#                  list={ { key={ type=value identity=<row * 100000> }
+#                           value={ ... } } ... } } }
+#
+# Keys are the row number and come back in no particular order -- sort by key.
+# Numbers carry the usual x100000 scale. Rows are paired across columns by key,
+# so column A's key 7 and column B's key 7 are the same row.
+#
+# Columns (3), each a map of its own:
+#     loc      <- scope:target
+#     by       <- root
+#     d        <- current_date
+#
+# global_var:occ_count is still the row count and still the last key written.
+
+occ_increment_and_log = {
+	if = {
+		limit = { NOT = { has_global_variable = occ_count } }
+		set_global_variable = { name = occ_count value = 0 }
+	}
+	change_global_variable = { name = occ_count add = 1 }
+
+	add_to_global_variable_map = { name = occ_loc key = global_var:occ_count value = scope:target }
+	add_to_global_variable_map = { name = occ_by key = global_var:occ_count value = root }
+	add_to_global_variable_map = { name = occ_d key = global_var:occ_count value = current_date }
+}

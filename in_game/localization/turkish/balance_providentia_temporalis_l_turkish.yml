@@ -1,0 +1,19 @@
+﻿l_turkish:
+ providentia_temporalis: "Providentia Temporalis"
+ providentia_temporalis_desc: "Kilise, inananların dünyevi idaresi üzerine bereketini yayar; vergilerin toplanmasını ve halkın emeğini kolaylaştırır."
+
+ STATIC_MODIFIER_NAME_providentia_temporalis: "$providentia_temporalis$"
+
+ providentia_temporalis_action: "$providentia_temporalis$"
+ providentia_temporalis_action_desc: "$providentia_temporalis_desc$"
+
+ PERFORM_providentia_temporalis_action_ACTION_SETUP: "İnananların üzerine $providentia_temporalis$ ilan edildiğinde."
+ PERFORM_providentia_temporalis_action_ACTION_HEADER: "$MESSENGER$"
+ PERFORM_providentia_temporalis_action_ACTION_TITLE: "$providentia_temporalis$"
+ PERFORM_providentia_temporalis_action_ACTION_DESC: "$providentia_temporalis_desc$"
+ PERFORM_providentia_temporalis_action_ACTION_EFFECTS: "$EFFECT$"
+ PERFORM_providentia_temporalis_action_ACTION_LOG: "[SCOPE.sCountry('actor').GetName] $providentia_temporalis$'ı ilan etti."
+ PERFORM_providentia_temporalis_action_ACTION_BTN1: "Tamam"
+ PERFORM_providentia_temporalis_action_ACTION_BTN2: "Tamam"
+ PERFORM_providentia_temporalis_action_ACTION_BTN3: "$common_string_go_to$"
+ PERFORM_providentia_temporalis_action_ACTION_MAP: ""

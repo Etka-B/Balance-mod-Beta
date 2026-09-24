@@ -1,0 +1,422 @@
+﻿# Records every battle's winner/loser/location and every war's winner/loser
+# into permanent per-country counters, "which countries/locations have ever
+# been involved" sets, AND (the real per-event log) a fixed bank of
+# pre-declared numbered slots -- since EU5's own combat_manager clears the
+# instant a battle resolves and war_manager's database eventually prunes old
+# wars, and add_to_global_variable_list turned out to de-duplicate by value
+# (confirmed by testing), which breaks index-alignment between separate
+# winner/loser/location lists once the same country appears twice. The
+# numbered slots (balance_battle_slots_effects.txt / balance_war_slots_effects.txt)
+# don't have that problem since each slot is its own independent variable.
+#
+# Slot variable names are kept short (battle_<n>_w, not balance_battle_<n>_winner)
+# since they're repeated tens of thousands of times and dominate file size.
+#
+# Read by the community ledger tool from the save as:
+#   global_var:battle_count                     -- total battles
+#   global_var:battle_<n>_w/_l/_loc             -- winner / loser / location, for n = 1..count
+#   global_var:battle_<n>_kl/_kn                -- losing side's dead (land/navy)
+#   global_var:battle_<n>_ll/_ln                -- winning side's dead (land/navy)
+#   global_var:battle_<n>_ws                    -- war score the winner gained from this battle
+#   global_var:battle_<n>_w0.._w5               -- winning side's troops by unit category
+#   global_var:battle_<n>_l0.._l5               -- losing side's troops by unit category
+#   global_var:bpart_count / bpart_<n>_b/_c/_d0.._d5
+#     -- one row per COUNTRY per battle: which battle, who, and that country's
+#        cumulative per-category battle dead at the time. Allies included; a
+#        battle's cost to one country is the difference against its previous
+#        row. See balance_battle_deaths_effects.txt for how the dead are
+#        counted at all, since the engine never reports them by unit type.
+#     0 light inf  1 heavy inf  2 light cav  3 heavy cav  4 artillery  5 auxiliary
+#     See balance_battle_composition_effects.txt -- in particular for what these
+#     count, which is decided by whether the engine applies losses before the
+#     hook fires and has to be measured against war_manager, not assumed.
+#   global_var:war_count                        -- total wars
+#   global_var:war_<n>_w/_l/_end                -- winner / loser / end date, for n = 1..count
+#   global_var:war_<n>_len                      -- months the war ran; start date = _end minus this
+#   global_var:war_<n>_cb                       -- casus belli, stored as an object id
+#   global_var:war_<n>_atk/_def                 -- who declared / who was declared on (original war
+#     leaders), which is not the same pair as winner / loser
+#   global_var:war_<n>_aw/_al                   -- each side's CUMULATIVE attrition dead at that
+#     moment, off the shadow-attrition counter. Difference a country's consecutive war records to
+#     get "died while this war ran"; a country in two wars at once shows the same dead under both.
+#   global_var:balance_battle_winners / balance_battle_losers / balance_battle_locations
+#     -- de-duplicated sets: which countries/locations were EVER involved
+#   global_var:balance_war_winners / balance_war_losers -- same, for wars
+#   country:X.var:balance_battles_won / balance_battles_lost
+#   country:X.var:balance_wars_won / balance_wars_lost
+#     -- lifetime totals per country, never reset
+
+on_battle_won = {
+	on_actions = {
+		balance_log_battle
+	}
+}
+
+# Large/decisive battles fire this INSTEAD OF on_battle_won, not in addition
+# to it (confirmed by undercounting in testing: wars with big battles were
+# missing several entries until this was added). Same scopes as on_battle_won.
+on_great_battle_won = {
+	on_actions = {
+		balance_log_battle
+	}
+}
+
+on_ending_war = {
+	on_actions = {
+		balance_log_war_end
+	}
+}
+
+# balance_increment_counter_effect is defined in
+# scripted_effects/balance_battle_log_effects.txt (parameterized effects
+# with $VAR$-style substitution have to live in common/scripted_effects to
+# be recognized -- confirmed by testing: it silently did nothing when it
+# was defined here in the on_action file instead).
+
+# root = actor (winning unit), scope:actor = winning unit, scope:target = losing unit
+balance_log_battle = {
+	effect = {
+		# Must run first: the slot bank copies bcw0..bcl5 into this battle's
+		# permanent slot, so they have to hold THIS battle's numbers by then.
+		balance_battle_comp_all = yes
+
+		# The fight's number, read before any close runs -- close takes it off
+		# the units. From the LOSING side: the losing unit, or any unit of the
+		# losing country still fighting here. Never from the winner alone -- a
+		# stack overrun where a bigger battle goes on is beaten by a unit of that
+		# bigger battle, and its number would close the bigger battle's units
+		# under the small one. No number: the battle began and ended between two
+		# sweeps, and is read the older way.
+		set_local_variable = { name = bdbcid value = 0 }
+		if = {
+			limit = { exists = scope:target }
+			scope:target = {
+				# Only while it is fighting HERE. A stack that broke off a fight
+				# keeps that fight's number, and if its country had nothing left
+				# there the close never took it off: Toulouse's stack carried
+				# Acqui's 34 from 1481.2.19 into Cuneo 1482.1.21, and three
+				# battles ended up sharing one number.
+				if = {
+					limit = {
+						has_variable = bdcid
+						has_variable = bdlast
+						var:bdlast = { this = scope:bc_loc }
+					}
+					set_local_variable = { name = bdbcid value = var:bdcid }
+				}
+			}
+			if = {
+				limit = { local_var:bdbcid = 0 }
+				scope:target.owner = { save_scope_as = bd_loser }
+				scope:bc_loc = {
+					random_unit_in_location = {
+						limit = {
+							exists = owner
+							owner = scope:bd_loser
+							has_variable = bdcid
+							has_variable = bdlast
+							var:bdlast = { this = scope:bc_loc }
+						}
+						set_local_variable = { name = bdbcid value = var:bdcid }
+					}
+				}
+			}
+		}
+		# A battle nobody was read in -- begun and decided between two sweeps --
+		# takes the number a capture in it left on the location, or a new one.
+		# The location's is taken off either way, so it cannot label a later
+		# battle there.
+		set_local_variable = { name = bdlocc value = 0 }
+		scope:bc_loc = {
+			if = {
+				limit = { has_variable = bdcapcid }
+				set_local_variable = { name = bdlocc value = var:bdcapcid }
+				remove_variable = bdcapcid
+			}
+		}
+		if = {
+			limit = { local_var:bdbcid = 0 }
+			set_local_variable = { name = bdbcid value = local_var:bdlocc }
+		}
+		if = {
+			limit = { local_var:bdbcid = 0 }
+			if = {
+				limit = { NOT = { has_global_variable = bdcid_count } }
+				set_global_variable = { name = bdcid_count value = 0 }
+			}
+			change_global_variable = { name = bdcid_count add = 1 }
+			set_local_variable = { name = bdbcid value = global_var:bdcid_count }
+		}
+
+		# Every country with a unit still standing where the battle was, not
+		# just the two leaders. Measured at Genova, 1448.7: Austria fought
+		# alongside Tuscany and lost 4,303 men, and closing only the leaders
+		# left that on Austria's counter with nothing tying it to the battle.
+		# comp_all has to run first -- this needs the scope:bc_loc it saves.
+		#
+		# bpart_mark is what keeps a country with three armies there from
+		# being closed three times. It is set here and cleared in the second
+		# pass below, so the same set of countries is walked twice without
+		# having to work out who they were again.
+		#
+		# THE TWO SIDES FIRST, whether or not anything of theirs is still
+		# standing. A country whose army was destroyed has nothing left at the
+		# battle for every_unit_in_location to find, so the walk below never
+		# reaches it, close never runs for it and no row is ever written -- the
+		# one case the whole three-tier reading exists to cover was the one
+		# case that could not reach the code. Measured on four Tuscan armies
+		# destroyed between 1448.7.6 and 1448.8.7, totalling 3,614 men against
+		# the engine's own figures: recorded as 0, 0, 546 and 79.
+		scope:actor.owner = {
+			if = {
+				limit = { NOT = { has_variable = bpart_mark } }
+				set_variable = { name = bpart_mark value = 1 }
+				balance_bd_close = yes
+			}
+		}
+		scope:target.owner = {
+			if = {
+				limit = { NOT = { has_variable = bpart_mark } }
+				set_variable = { name = bpart_mark value = 1 }
+				balance_bd_close = yes
+			}
+		}
+		scope:bc_loc = {
+			every_unit_in_location = {
+				limit = { exists = owner }
+				owner = {
+					if = {
+						limit = { NOT = { has_variable = bpart_mark } }
+						set_variable = { name = bpart_mark value = 1 }
+						balance_bd_close = yes
+					}
+				}
+			}
+		}
+
+		battle_increment_and_log = yes
+
+		# A sea battle's hull columns go to their own bank. battle_count has
+		# just been bumped, so btsea's row carries this battle's number and the
+		# two halves join on it with nothing inferred.
+		#
+		# WHY THE SPLIT. A battle slot carried thirty category columns --
+		# winner, loser and location, ten each -- and four of every ten were
+		# naval. Measured on the 1469.3 save: 183 of 1,910 battles were at sea,
+		# 9.6%, costing 510 hulls between them against 6.8 million men on land.
+		# Twelve dead columns in every land battle, to carry one battle in ten.
+		#
+		# is_land on the location is the test, not the hull counts: the
+		# composition globals hold SURVIVORS, so a sea fight that annihilated
+		# both fleets would read as empty and be filed as a land battle. The
+		# seazone cannot lie about what it is. `is_land = no` is the base game's
+		# own idiom -- generic_trade_mission_pack.txt and 02_life_expectancy.txt
+		# both use it.
+		if = {
+			limit = { scope:bc_loc = { is_land = no } }
+			btsea_increment_and_log = yes
+		}
+
+		# battle_count now names THIS battle, so each of those countries gets
+		# told which battle to write itself against -- and told to do it
+		# TOMORROW, not now.
+		#
+		# The row cannot be written here because the engine has not finished
+		# removing the units the battle destroyed. A country asked for its
+		# strength at this point still answers with its pre-battle number, so
+		# the drop comes out as nothing, surfaces on the next daily sweep, and
+		# gets charged to whichever battle closes after that. Measured to the
+		# man: Tuscany lost 277 on 1448.7.16 and 277 is what its 1448.7.31 row
+		# received. See events/balance_bpart_flush_events.txt.
+		#
+		# The two sides first again, for the same reason as above: a destroyed
+		# army leaves its country unreachable through the location.
+		#
+		# The mark is what pairs the two passes -- whoever was closed gets a
+		# pend_b and an appointment, and nobody gets two.
+		scope:actor.owner = {
+			if = {
+				limit = { has_variable = bpart_mark }
+				# Only if no appointment is already standing. pend_b is a single
+				# value on the country, and a battle closing before the last one
+				# had flushed used to overwrite it -- so the earlier battle's
+				# flush woke up, read the later battle's number, and wrote its
+				# figures into that row. Both battles came out wrong: the first
+				# got no row at all, and the second was handed casualties that
+				# were not its own.
+				#
+				# Measured on 1448.7.25 and 1448.7.26, one day apart. The battle
+				# of the 25th, where Tuscany was wiped for 1,696, has no row in
+				# the log at all. The battle of the 26th has Tuscany at 2,018
+				# light infantry where the engine says 1,109 -- the 909 extra
+				# being the previous day's wipe, arriving in the category it had
+				# been lost in.
+				#
+				# The earlier battle keeps its appointment and is recorded
+				# correctly; the later one gets no row rather than a wrong one.
+				# It pairs with wpend, which protects the banked readings the
+				# same way and for the same reason.
+				if = {
+					limit = { NOT = { has_variable = pend_b } }
+					set_variable = { name = pend_b value = global_var:battle_count }
+					# Which side of the battle this country was on: 1 the winner's,
+					# 2 the loser's. bpart already writes a row per country per
+					# battle -- the biggest one measured has 35 of them -- but
+					# nothing said who was fighting whom. With two countries the
+					# ledger could assume; with thirty-five it could not.
+					set_variable = { name = pend_s value = 1 }
+					trigger_event_silently = { id = balance_bpart_flush.1 days = 1 }
+				}
+				# Cleared either way. Leaving it set would make balance_bd_close
+				# skip this country at its next battle, since the first pass
+				# closes only countries that are not already marked.
+				remove_variable = bpart_mark
+			}
+		}
+		scope:target.owner = {
+			if = {
+				limit = { has_variable = bpart_mark }
+				# Only if no appointment is already standing. pend_b is a single
+				# value on the country, and a battle closing before the last one
+				# had flushed used to overwrite it -- so the earlier battle's
+				# flush woke up, read the later battle's number, and wrote its
+				# figures into that row. Both battles came out wrong: the first
+				# got no row at all, and the second was handed casualties that
+				# were not its own.
+				#
+				# Measured on 1448.7.25 and 1448.7.26, one day apart. The battle
+				# of the 25th, where Tuscany was wiped for 1,696, has no row in
+				# the log at all. The battle of the 26th has Tuscany at 2,018
+				# light infantry where the engine says 1,109 -- the 909 extra
+				# being the previous day's wipe, arriving in the category it had
+				# been lost in.
+				#
+				# The earlier battle keeps its appointment and is recorded
+				# correctly; the later one gets no row rather than a wrong one.
+				# It pairs with wpend, which protects the banked readings the
+				# same way and for the same reason.
+				if = {
+					limit = { NOT = { has_variable = pend_b } }
+					set_variable = { name = pend_b value = global_var:battle_count }
+					set_variable = { name = pend_s value = 2 }
+					trigger_event_silently = { id = balance_bpart_flush.1 days = 1 }
+				}
+				# Cleared either way. Leaving it set would make balance_bd_close
+				# skip this country at its next battle, since the first pass
+				# closes only countries that are not already marked.
+				remove_variable = bpart_mark
+			}
+		}
+		scope:bc_loc = {
+			every_unit_in_location = {
+				limit = { exists = owner }
+				owner = {
+					if = {
+						limit = { has_variable = bpart_mark }
+						# Same guard as the two sides above: one appointment at a
+						# time, or an earlier battle's flush reads a later
+						# battle's number and writes into the wrong row.
+						if = {
+							limit = { NOT = { has_variable = pend_b } }
+							set_variable = { name = pend_b value = global_var:battle_count }
+						# An ally: on the winner's side unless it is hostile to the
+						# winner. The same test balance_battle_comp_side already
+						# uses to decide whose composition a unit belongs to.
+						set_variable = { name = pend_s value = 1 }
+						if = {
+							limit = { is_hostile_with = scope:actor.owner }
+							set_variable = { name = pend_s value = 2 }
+						}
+							trigger_event_silently = { id = balance_bpart_flush.1 days = 1 }
+						}
+						remove_variable = bpart_mark
+					}
+				}
+			}
+		}
+
+		add_to_global_variable_list = { name = balance_battle_winners target = scope:actor.owner }
+		add_to_global_variable_list = { name = balance_battle_losers target = scope:target.owner }
+		add_to_global_variable_list = { name = balance_battle_locations target = scope:actor.unit_location }
+
+		scope:actor.owner = {
+			balance_increment_counter_effect = { VAR = balance_battles_won }
+		}
+		scope:target.owner = {
+			balance_increment_counter_effect = { VAR = balance_battles_lost }
+		}
+	}
+}
+
+# root = country, scope:winner = country, scope:loser = country, scope:war = war
+#
+# ONE ROW PER PEACE, NOT ONE PER WAR.
+#   This hook does not fire twice, once for each side -- it fires once for
+#   every (winner, loser) PAIR, and a war can conclude more than once. A
+#   separate peace ends the war for one country while everyone else keeps
+#   fighting, and it fires the hook exactly the way the final peace does.
+#
+#   The guard used to be a plain flag on the war, set the first time and never
+#   cleared, on the assumption that a war ends once. Measured on the Tuscan war
+#   against France, 1466.4.1 - 1467.9.13:
+#
+#     1467.8.2   Great Britain signs a separate peace. The hook fires 14 times
+#                (France and its thirteen allies each as winner against Great
+#                Britain), the flag goes on, and the log records the war as
+#                "France beat Great Britain".
+#     1467.9.13  The war actually ends -- France cedes six locations to Tuscany
+#                -- and the hook fires 12 more times, Tuscany and its allies
+#                each as winner against France. The flag is already set, so the
+#                real result was never written at all.
+#
+#   That the hook fired on the 13th is not inferred: balance_log_truce hangs off
+#   this same on_action and wrote 12 rows that day (Tuscany/France,
+#   Hungary/France, Switzerland/France and nine more). Only the war row was
+#   missing, and the flag is the only thing that could have stopped it.
+#
+#   So the flag now holds the DAY it was last written instead of `yes`. Two
+#   firings of the same peace still collapse into one row -- which is what the
+#   guard was for -- and a later, separate peace gets its own row. The pairing
+#   is then one row per peace, each with its own winner, loser and date, and a
+#   war that ended piecemeal reads as the several settlements it actually was.
+#
+#   Which pair lands in the row is the first firing of that day. In the case
+#   above that is Tuscany/France, the two war leaders -- the engine appears to
+#   walk participants leader-first (the truce rows come out in the same order)
+#   -- but the row carries atk/def, the war's ORIGINAL leaders, independently of
+#   this, so a minor ally winning the race does not lose the war's own pair.
+balance_log_war_end = {
+	effect = {
+		if = {
+			limit = {
+				OR = {
+					NOT = { scope:war = { has_variable = balance_war_logged } }
+					NOT = { scope:war = { var:balance_war_logged = current_date } }
+				}
+			}
+			scope:war = {
+				set_variable = { name = balance_war_logged value = current_date }
+			}
+
+			# Must run first: the slot bank copies wpa0..wqd9 into this war's
+			# permanent slot, so they have to hold THIS war's participants by then.
+			# Same ordering rule as balance_battle_comp_all and bcw0..bcl9.
+			scope:war = { balance_war_parties = yes }
+			# and the ceiling-free roster: one wpar row per belligerent, so a
+			# coalition war past the numbered columns still records everyone
+			scope:war = { balance_wpar_roster = { KIND = 3 } }
+
+			war_increment_and_log = yes
+
+			add_to_global_variable_list = { name = balance_war_winners target = scope:winner }
+			add_to_global_variable_list = { name = balance_war_losers target = scope:loser }
+
+			scope:winner = {
+				balance_increment_counter_effect = { VAR = balance_wars_won }
+			}
+			scope:loser = {
+				balance_increment_counter_effect = { VAR = balance_wars_lost }
+			}
+		}
+	}
+}

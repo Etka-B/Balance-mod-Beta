@@ -1,0 +1,109 @@
+﻿# Stores each real (non-AI) player's Great Power sub-scores and composite score into
+# persistent country variables, then builds a global list of those countries sorted by
+# score (descending) for the GUI panel (in_game/gui/balance_great_powers.gui) to read via
+# `datamodel = "[GetGlobalList('balance_gp_list')]"`.
+# Triggered monthly, once per month, from on_action/balance_great_power_on_action.txt.
+balance_gp_calculate_scores = {
+	clear_global_variable_list = balance_gp_list
+	clear_global_variable_list = balance_gp_sort_buffer
+
+	every_country = {
+		limit = {
+			is_ai = no
+		}
+
+		set_variable = { name = balance_gp_tax_score value = balance_gp_tax_score }
+		set_variable = { name = balance_gp_manpower_score value = balance_gp_manpower_score }
+		set_variable = { name = balance_gp_income_score value = balance_gp_income_score }
+		set_variable = { name = balance_gp_population_score value = balance_gp_population_score }
+		set_variable = { name = balance_gp_score value = balance_gp_score }
+
+		add_to_global_variable_list = { name = balance_gp_sort_buffer target = this }
+	}
+
+	set_global_variable = { name = balance_gp_rank_counter value = 0 }
+
+	ordered_in_global_list = {
+		variable = balance_gp_sort_buffer
+		order_by = var:balance_gp_score
+		max = 1000
+		check_range_bounds = no
+
+		add_to_global_variable_list = { name = balance_gp_list target = this }
+
+		# Rank (0-indexed) and the alliance-limit "weight" for that rank:
+		# 1st = 5, 2nd = 4, 3rd = 3, 4th-7th (Regional) = 2, 8th+ (Minor) = 1.
+		set_variable = { name = balance_gp_rank value = global_var:balance_gp_rank_counter }
+		if = {
+			limit = { global_var:balance_gp_rank_counter = 0 }
+			set_variable = { name = balance_gp_weight value = 5 }
+		}
+		else_if = {
+			limit = { global_var:balance_gp_rank_counter = 1 }
+			set_variable = { name = balance_gp_weight value = 4 }
+		}
+		else_if = {
+			limit = { global_var:balance_gp_rank_counter = 2 }
+			set_variable = { name = balance_gp_weight value = 3 }
+		}
+		else_if = {
+			limit = { global_var:balance_gp_rank_counter < 7 }
+			set_variable = { name = balance_gp_weight value = 2 }
+		}
+		else = {
+			set_variable = { name = balance_gp_weight value = 1 }
+		}
+
+		change_global_variable = { name = balance_gp_rank_counter add = 1 }
+	}
+
+	clear_global_variable_list = balance_gp_sort_buffer
+
+	# Precompute each real player's bloc weight into a variable (read by
+	# balance_gp_combined_bloc_fits_limit and shown in the GreatPower panel's score
+	# tooltip), instead of recomputing it live via every_ally at alliance-offer time.
+	# Run as its own pass, after every country's own weight above is finalized, so
+	# every_ally sums in balance_gp_bloc_weight see final numbers regardless of order.
+	every_country = {
+		limit = {
+			is_ai = no
+		}
+		set_variable = { name = balance_gp_bloc_weight_cached value = balance_gp_bloc_weight }
+	}
+
+	# Enforcement: for any country still over the alliance-bloc point limit after the
+	# refresh above (rank shifted, or the offer_effect same-instant check in alliance.txt
+	# didn't catch it), break one of its alliances directly here instead of depending on
+	# the relation framework's own will_expire_trigger (couldn't verify that reliably
+	# reactivates for a plain custom scripted_trigger check). Breaks one ally per country
+	# per month - if still over the limit after that, the next monthly pass breaks another.
+	every_country = {
+		limit = {
+			is_ai = no
+			var:balance_gp_bloc_weight_cached > 10
+		}
+
+		every_country = {
+			limit = {
+				has_mutual_scripted_relation = {
+					type = relation_type:alliance
+					target = PREV
+				}
+			}
+			save_temporary_scope_as = balance_gp_ally_to_break
+		}
+
+		if = {
+			limit = { exists = scope:balance_gp_ally_to_break }
+			remove_relation = {
+				first = this
+				second = scope:balance_gp_ally_to_break
+				type = relation_type:alliance
+			}
+			set_variable = { name = balance_gp_bloc_weight_cached value = balance_gp_bloc_weight }
+			scope:balance_gp_ally_to_break = {
+				set_variable = { name = balance_gp_bloc_weight_cached value = balance_gp_bloc_weight }
+			}
+		}
+	}
+}

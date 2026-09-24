@@ -1,0 +1,80 @@
+﻿# Vanilla add_accepted_culture (generic_actions/culture.txt), with the size gate
+# removed from select_trigger.enabled.
+#
+# The gate was an OR of three ways to qualify: at least 2.5% of the country's
+# population, OR at least 1000 population, OR being some estate's dominant
+# culture. Taking out only the 2.5% line would have left the other two -- a
+# NARROWER gate, the opposite of the point -- so the whole OR goes.
+#
+# What stays, because it is not the size rule:
+#   allow     the culture must have some population in the country (value > 0),
+#             so a culture you hold none of still cannot be accepted
+#   enabled   is_tolerated_in -- it has to be tolerated first
+#             and it cannot be your own primary culture
+REPLACE:add_accepted_culture = {
+	type = owncountry
+
+	potential = {
+	}
+
+	allow = {
+		trigger_if = {
+			limit = {
+				exists = scope:target
+				exists = scope:actor
+			}
+			scope:actor = {
+				culture_population_in_country = {
+					culture = scope:target
+					value > 0
+				}
+			}
+		}
+	}
+
+	ai_tick = never
+	ai_tick_frequency = 12
+
+	automation_tick = monthly
+	automation_tick_frequency = 1
+	player_automated_category = cultureacceptance
+	
+	price = price:add_accepted_culture
+
+	select_trigger = {
+		looking_for_a = culture
+		target_flag = target
+		source = actor
+		source_flags = only_tolerated
+
+		name = "add_accepted_culture_select_culture"
+		none_available_msg_key = "add_accepted_culture_no_cultures"
+		column = {
+			data = name
+		}
+		visible = {
+			not = { is_accepted_in = scope:actor }
+		}
+		enabled = {
+			is_tolerated_in = scope:actor
+			NOT = {
+				scope:actor.culture = this
+			}
+		}
+	}
+
+	effect = {
+		scope:actor = {
+			if = {
+				limit = {
+					exists = scope:target
+				}
+				add_accepted_culture = scope:target
+			}
+		}
+	}
+
+	ai_will_do = {
+		# handled in code
+	}
+}

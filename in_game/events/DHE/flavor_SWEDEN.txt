@@ -1,17 +1,17 @@
 namespace = flavor_sweden
 flavor_sweden.1 = {
 	type = country_event
-	title = The_Legacy_of_Ragnar
-	desc = Though_generations_have_passed_since_Christianity_took_root_in_Swedish_lands_whispers_of_the_old_gods_still_linger_A_skilled_leader_claiming_descent_from_the_legendary_Ragnar_Lodbrok_has_emerged_While_the_Catholic_Church_views_him_as_a_threat_many_long_for_a_return_to_the_ancient_ways.
+	title = flavor_sweden.1.title
+	desc = flavor_sweden.1.desc
 	outcome = neutral
-	historical_info = Following_Sweden's_Christianization_pagan_traditions_and_the_legacy_of_legendary_figures_like_Ragnar_Lodbrok_left_a_profound_mark_on_Nordic_heritage
+	historical_info = flavor_sweden.1.historical_info
 
 	fire_only_once = yes
 	dynamic_historical_event = {
 		tag = SWE
 		from = 1337.1.1
 		to = 1470.1.1
-		monthly_chance = 3
+		monthly_chance = 10
 	}
 
 	trigger = {
@@ -51,7 +51,7 @@ flavor_sweden.1 = {
 
 	option = {
         historical_option = yes
-        name = There_is_no_place_for_heretics_in_our_court!_We_remain_faithful_to_Christ.
+        name = flavor_sweden.1.a
         add_stability = stability_severe_bonus
         add_legitimacy = legitimacy_mild_bonus
 	    add_country_modifier = { 
@@ -62,7 +62,7 @@ flavor_sweden.1 = {
     }
 	option = {
 
-        name = Valhalla_calls_to_us!_Hail_Ragnar,_return_to_the_old_gods!
+        name = flavor_sweden.1.b
 		set_new_ruler = scope:ragnar_lodbrok
 		add_stability = -60
         add_legitimacy = -30
@@ -77,5 +77,13 @@ flavor_sweden.1 = {
 			ruler = { remove_character_modifier = enacted_placitum_regium }
 		}
 		change_religion_for_ruler_and_family = { country = ROOT religion = religion:norse }
+		# Balance mod: this option previously had no compensating upside for the harsh
+		# stability/legitimacy hit - give it a 50-year bonus mirroring option A's
+		# minor_massive_bonus, themed around the old faith being tolerated again.
+		add_country_modifier = {
+			modifier = flavor_sweden_valhalla_bonus
+			years = 50
+			mode = add_and_extend
+		}
 	}
 }

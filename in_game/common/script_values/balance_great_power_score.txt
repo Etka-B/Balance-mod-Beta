@@ -1,0 +1,286 @@
+﻿# Great Power score, 0-10.
+#
+# NOT relative to the current lobby's strongest player — relative to a slowly-rising
+# "era-normal" reference value for each stat, interpolated linearly between the game's
+# start date (1337) and end date (1836). This means:
+#   - Reaching a high score requires being genuinely strong for the current era, not just
+#     "the biggest fish in this particular lobby" — so whatever thresholds/rules you attach
+#     to the score later stay meaningful in both a 2-player and an 8-player game.
+#   - As the whole game's power level naturally rises over the centuries, the reference
+#     rises with it, so scores don't just inflate from raw historical growth alone.
+#   - The gap between two countries' scores still reflects their real proportional
+#     difference (a country at 2x the reference scores twice as high as one at 1x),
+#     it's a continuous ratio, not stepped brackets.
+#
+# Weighted so tax base matters most, then manpower, then total income, then population:
+#   tax base      40%
+#   manpower      30%
+#   total income  20%
+#   population    10%
+#
+# TUNING: every reference curve below is built from real anchor points (year -> max stat
+# value for the single strongest player at that point), all easy to re-tune later:
+#   tax_base:   1337->300, 1380->1000, 1437->4000, 1500->12000, 1600->22500, then +5000/50yr
+#   manpower:   1337->40k, 1387->120k, then +50k/50yr
+#   income:     always 80% of the tax_base reference (i.e. 20% below it)
+#   population: 1337->15,000,000, then +5,000,000/50yr
+
+
+# --- Tax base reference: piecewise-linear through your anchor points -------------------
+# (year, max tax_base a single strongest player could realistically have at that point)
+#   1337 -> 300      1380 -> 1000      1437 -> 4000
+#   1500 -> 12000    1600 -> 22500 (midpoint of your 20-25k)
+#   from 1600 on: +5000 every 50 years (= +100/year), open-ended.
+
+@balance_gp_tax_y0 = 1337
+@balance_gp_tax_v0 = 300
+@balance_gp_tax_y1 = 1380
+@balance_gp_tax_v1 = 1000
+@balance_gp_tax_y2 = 1437
+@balance_gp_tax_v2 = 4000
+@balance_gp_tax_y3 = 1500
+@balance_gp_tax_v3 = 12000
+@balance_gp_tax_y4 = 1600
+@balance_gp_tax_v4 = 22500
+
+# Precomputed slopes (change per year) between consecutive anchors above.
+@balance_gp_tax_slope_0_1 = 16.2791   # (1000-300)/(1380-1337)
+@balance_gp_tax_slope_1_2 = 52.6316   # (4000-1000)/(1437-1380)
+@balance_gp_tax_slope_2_3 = 126.9841  # (12000-4000)/(1500-1437)
+@balance_gp_tax_slope_3_4 = 105       # (22500-12000)/(1600-1500)
+@balance_gp_tax_slope_post_1600 = 100 # 5000/50
+
+balance_gp_tax_base_reference = {
+	value = @balance_gp_tax_v0
+	if = {
+		limit = { current_year >= @balance_gp_tax_y4 }
+		value = @balance_gp_tax_v4
+		add = {
+			value = current_year
+			subtract = @balance_gp_tax_y4
+			multiply = @balance_gp_tax_slope_post_1600
+		}
+	}
+	else_if = {
+		limit = { current_year >= @balance_gp_tax_y3 }
+		value = @balance_gp_tax_v3
+		add = {
+			value = current_year
+			subtract = @balance_gp_tax_y3
+			multiply = @balance_gp_tax_slope_3_4
+		}
+	}
+	else_if = {
+		limit = { current_year >= @balance_gp_tax_y2 }
+		value = @balance_gp_tax_v2
+		add = {
+			value = current_year
+			subtract = @balance_gp_tax_y2
+			multiply = @balance_gp_tax_slope_2_3
+		}
+	}
+	else_if = {
+		limit = { current_year >= @balance_gp_tax_y1 }
+		value = @balance_gp_tax_v1
+		add = {
+			value = current_year
+			subtract = @balance_gp_tax_y1
+			multiply = @balance_gp_tax_slope_1_2
+		}
+	}
+	else = {
+		value = @balance_gp_tax_v0
+		add = {
+			value = current_year
+			subtract = @balance_gp_tax_y0
+			multiply = @balance_gp_tax_slope_0_1
+		}
+	}
+	min = @balance_gp_tax_v0
+}
+
+# --- Manpower reference: piecewise-linear -----------------------------------------------
+# 1337 -> 40,000     1387 -> 120,000 (first 50 years, big jump)
+# from 1387 on: +50,000 every 50 years (= +1,000/year), open-ended.
+
+@balance_gp_mp_y0 = 1337
+@balance_gp_mp_v0 = 40000
+@balance_gp_mp_y1 = 1387
+@balance_gp_mp_v1 = 120000
+
+@balance_gp_mp_slope_0_1 = 1600     # (120000-40000)/(1387-1337)
+@balance_gp_mp_slope_post_1387 = 1000 # 50000/50
+
+balance_gp_manpower_reference = {
+	value = @balance_gp_mp_v0
+	if = {
+		limit = { current_year >= @balance_gp_mp_y1 }
+		value = @balance_gp_mp_v1
+		add = {
+			value = current_year
+			subtract = @balance_gp_mp_y1
+			multiply = @balance_gp_mp_slope_post_1387
+		}
+	}
+	else = {
+		value = @balance_gp_mp_v0
+		add = {
+			value = current_year
+			subtract = @balance_gp_mp_y0
+			multiply = @balance_gp_mp_slope_0_1
+		}
+	}
+	min = @balance_gp_mp_v0
+}
+
+# --- Total income reference: always 20% below the tax base reference above --------------
+balance_gp_income_reference = {
+	value = balance_gp_tax_base_reference
+	multiply = 0.8
+}
+
+# --- Population reference: straight line, smallest-weighted factor ----------------------
+# 1337 -> 15,000,000, then +5,000,000 every 50 years (= +100,000/year), open-ended.
+
+@balance_gp_pop_y0 = 1337
+@balance_gp_pop_v0 = 15000000
+@balance_gp_pop_slope = 100000 # 5,000,000 / 50
+
+balance_gp_population_reference = {
+	value = @balance_gp_pop_v0
+	add = {
+		value = current_year
+		subtract = @balance_gp_pop_y0
+		multiply = @balance_gp_pop_slope
+	}
+	min = @balance_gp_pop_v0
+}
+
+balance_gp_tax_score = {
+	value = 0
+	if = {
+		limit = { balance_gp_tax_base_reference > 0 }
+		value = country_tax_base
+		divide = balance_gp_tax_base_reference
+		multiply = 10
+	}
+	min = 0
+	max = 10
+}
+
+balance_gp_manpower_score = {
+	value = 0
+	if = {
+		limit = { balance_gp_manpower_reference > 0 }
+		value = max_manpower
+		divide = balance_gp_manpower_reference
+		multiply = 10
+	}
+	min = 0
+	max = 10
+}
+
+balance_gp_income_score = {
+	value = 0
+	if = {
+		limit = { balance_gp_income_reference > 0 }
+		value = monthly_income_total
+		divide = balance_gp_income_reference
+		multiply = 10
+	}
+	min = 0
+	max = 10
+}
+
+balance_gp_population_score = {
+	value = 0
+	if = {
+		limit = { balance_gp_population_reference > 0 }
+		value = total_population
+		divide = balance_gp_population_reference
+		multiply = 10
+	}
+	min = 0
+	max = 10
+}
+
+# Final composite Great Power score, 0-10.
+balance_gp_score = {
+	value = 0
+	add = {
+		value = balance_gp_tax_score
+		multiply = 0.4
+	}
+	add = {
+		value = balance_gp_manpower_score
+		multiply = 0.3
+	}
+	add = {
+		value = balance_gp_income_score
+		multiply = 0.2
+	}
+	add = {
+		value = balance_gp_population_score
+		multiply = 0.1
+	}
+	min = 0
+	max = 10
+}
+
+# --- Alliance point limit (see scripted_triggers/balance_alliance_limit_triggers.txt) ---
+# Every mutually-allied group of real players ("bloc") has a shared weight budget: each
+# member contributes points based on their Great Power rank (1st=5, 2nd=4, 3rd=3,
+# 4th-7th "Regional Power"=2, 8th+ "Minor Power"=1), and the bloc's total can't exceed
+# that cap (see @balance_gp_alliance_point_limit in the trigger file above). AI countries
+# are always weight 0, so they never count against the limit.
+
+balance_gp_own_weight = {
+	value = 0
+	if = {
+		limit = {
+			is_ai = no
+			has_variable = balance_gp_weight
+		}
+		value = var:balance_gp_weight
+	}
+}
+
+# This country's own weight plus the weight of every country it's currently allied with.
+# NOTE: "every_ally" turned out not to be a real EU5 list (found zero real usages of it
+# anywhere in the base game - only a stray comment). Iterating allies has to go through
+# every_country + has_mutual_scripted_relation instead (the pattern break_others_alliance.txt
+# actually uses to find a country's allies).
+balance_gp_bloc_weight = {
+	value = balance_gp_own_weight
+	add = {
+		value = 0
+		every_country = {
+			limit = {
+				has_mutual_scripted_relation = {
+					type = relation_type:alliance
+					target = PREV
+				}
+			}
+			add = balance_gp_own_weight
+		}
+	}
+
+	# Defensive League co-members count towards the same shared bloc total as alliance
+	# partners (not a separate limit) - pattern lifted from Ars-Belli's own
+	# mp_limits_calculate_diplo_weights. NOTE: no dedup against the alliance sum above if
+	# the same two countries happen to be both allied AND in the same defensive league -
+	# accepted as a rare edge case for now.
+	add = {
+		value = 0
+		save_temporary_scope_as = balance_gp_dp_self
+		every_international_organizations_member_of = {
+			limit = {
+				international_organization_type = international_organization_type:defensive_league
+			}
+			every_international_organization_member = {
+				limit = { NOT = { this = scope:balance_gp_dp_self } }
+				add = balance_gp_own_weight
+			}
+		}
+	}
+}

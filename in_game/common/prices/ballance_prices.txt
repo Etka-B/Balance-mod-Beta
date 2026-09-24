@@ -1,3 +1,12 @@
 ﻿REPLACE:hire_mercenary_premium = {
 	gold = 0.8
 }
+
+# What the Catholic religion panel charges for Providentia Temporalis. The
+# curia route cost exactly this -- price:propose_curia_action is 50 religious
+# influence -- so the move off the Curia takes the vote of the cardinals away
+# and leaves the price where it was. For company: periphora 10, change_curia_vote
+# 20, canonize and orthodox_synod 75, invite_foreign_cleric 100.
+providentia_temporalis_action = {
+	religious_influence = 50
+}

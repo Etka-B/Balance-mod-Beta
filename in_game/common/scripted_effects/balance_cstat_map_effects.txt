@@ -1,0 +1,260 @@
+###############################################################################
+# COUNTRY STATE -- what a country had, while it was at war.
+#
+# One row per country PER WAR per reading. Taken three times:
+#   * the moment it enters a war (on_join_war), so every war has a baseline
+#     from before anything was spent;
+#   * every three months for as long as it is still in (Jan/Apr/Jul/Oct, on
+#     monthly_country_pulse), once for each war it is in;
+#   * the moment it leaves, which with separate peace is its own event and not
+#     the end of the war -- an ally can walk away while the war goes on, and
+#     another can be called in later and start its own series from that date.
+#
+# Without the war column 45% of the rows in a 1481 save could not be attributed
+# to anything: the country was in two wars at once and the date alone does not
+# say which reading belongs to which.
+#
+# WHY THE READING IS BUILT IN LOCALS AND WRITTEN ONCE
+#   A global variable write costs ~124 us, a local ~0.2 us -- measured, about
+#   500x. The walk below touches every sub-unit the country owns, so
+#   accumulating into globals inside it would be the same mistake that cost
+#   the battle-deaths sweep 13.07s a tick. Everything is summed into locals
+#   and the 19 global writes happen once, at the end of the row.
+#
+# WHAT IT COSTS
+#   19 map writes + the counter = ~2.5 ms per country-reading. With ~100
+#   countries at war that is a quarter of a second, four times a game year.
+#
+# UNITS
+#   Land categories are in MEN: subunit_strength counts regiments and
+#   REGIMENT_SIZE = 1000, so it is multiplied out -- the same convention the
+#   battle log uses, so the two can be read against each other.
+#   Naval categories are in HULLS, one per sub-unit. A ship's strength is its
+#   health (0..1), not a count, so summing it would call a damaged ship a
+#   fraction of a ship. This is the same reasoning as in
+#   balance_battle_composition_effects.txt, measured there against
+#   war_manager's own totals.
+#   Manpower, sailors and debt are left exactly as the engine reports them.
+#
+# Read from the save under `variables.map_data`, one container per column,
+# keyed by the row number (x100000 like every other number):
+#
+#     map_data={ { name="cst_ctry" list={ { key={...} value={...} } ... } } }
+#
+# Columns (20):
+#     ctry   <- root                    which country
+#     date   <- current_date            when
+#     war    <- scope:cst_w             which war -- set by every caller
+#     li hi lc hc ar ax                 land, by category, in men
+#     gal ls hs tr                      naval, by category, in hulls
+#     men                               land total, in men
+#     mp mpmax                          manpower now / capacity
+#     sail sailmax                      sailors now / capacity
+#     debt loans                        total debt, number of loans
+#
+# global_var:cst_count is the row count and the last key written.
+###############################################################################
+
+
+# Walk every sub-unit the country owns and leave the totals in locals.
+# Called in COUNTRY scope.
+balance_cstat_gather = {
+	# Read first, before either walk. Two things had to be right here and only
+	# the second was obvious:
+	#
+	#   * the value goes in a VALUE BLOCK, not as a bare token. `value = manpower`
+	#     raised no error and wrote nothing at all -- six columns simply never
+	#     appeared in the save. The mod's own balance_gp_manpower_score does
+	#     `value = max_manpower` inside a script value block, which is the form
+	#     that works, and the attrition shadow wraps subunit_strength the same way.
+	#   * they read before either walk. They used to sit after the army walk, and
+	#     when that walk errored the effect stopped there and took them with it.
+	set_local_variable = { name = cs_mp      value = { value = manpower } }
+	set_local_variable = { name = cs_mpmax   value = { value = max_manpower } }
+	set_local_variable = { name = cs_sail    value = { value = sailors } }
+	set_local_variable = { name = cs_sailmax value = { value = max_sailors } }
+	set_local_variable = { name = cs_debt    value = { value = total_debt } }
+	set_local_variable = { name = cs_loans   value = { value = num_loans } }
+
+	# COUNTRY variables, not locals, and written back through `root =` from
+	# inside the walk. A local declared here would be two iterator levels above
+	# where it is written (country -> every_army -> every_sub_unit), and this
+	# mod has no case of a local crossing two levels: balance_bd_unit_step
+	# declares its locals in UNIT scope, one level above its every_sub_unit,
+	# and the attrition shadow -- which walks exactly this chain -- goes back
+	# to the country with `root = { change_variable }` instead. This follows
+	# the attrition shadow. set_variable measured 0.2 us, same order as a
+	# local, so nothing is lost; only global writes are expensive.
+	set_variable = { name = cs_li value = 0 }
+	set_variable = { name = cs_hi value = 0 }
+	set_variable = { name = cs_lc value = 0 }
+	set_variable = { name = cs_hc value = 0 }
+	set_variable = { name = cs_ar value = 0 }
+	set_variable = { name = cs_ax value = 0 }
+	set_variable = { name = cs_gal value = 0 }
+	set_variable = { name = cs_ls value = 0 }
+	set_variable = { name = cs_hs value = 0 }
+	set_variable = { name = cs_tr value = 0 }
+
+	every_army = {
+		every_sub_unit = {
+			# subunit_strength has to be read here, in sub_unit scope; reading
+			# it from the country block is rejected outright.
+			if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_light_infantry } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_li add = local_var:cs_add } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_heavy_infantry } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_hi add = local_var:cs_add } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_light_cavalry } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_lc add = local_var:cs_add } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_heavy_cavalry } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_hc add = local_var:cs_add } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_artillery } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_ar add = local_var:cs_add } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:army_auxiliary } }
+				set_local_variable = { name = cs_add value = { value = subunit_strength multiply = 1000 } }
+				root = { change_variable = { name = cs_ax add = local_var:cs_add } }
+			}
+		}
+	}
+
+	every_navy = {
+		every_sub_unit = {
+			if = {
+				limit = { sub_unit_category = { this = sub_unit_category:navy_galley } }
+				root = { change_variable = { name = cs_gal add = 1 } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:navy_light_ship } }
+				root = { change_variable = { name = cs_ls add = 1 } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:navy_heavy_ship } }
+				root = { change_variable = { name = cs_hs add = 1 } }
+			}
+			else_if = {
+				limit = { sub_unit_category = { this = sub_unit_category:navy_transport } }
+				root = { change_variable = { name = cs_tr add = 1 } }
+			}
+		}
+	}
+}
+
+
+# One row. Called in COUNTRY scope, after balance_cstat_gather.
+balance_cstat_write = {
+	if = {
+		limit = { NOT = { has_global_variable = cst_count } }
+		set_global_variable = { name = cst_count value = 0 }
+	}
+	change_global_variable = { name = cst_count add = 1 }
+
+	add_to_global_variable_map = { name = cst_ctry key = global_var:cst_count value = root }
+	add_to_global_variable_map = { name = cst_date key = global_var:cst_count value = current_date }
+	# Which war this reading belongs to. Every caller names it first, and there
+	# is always one: a reading is only ever taken because of a war.
+	add_to_global_variable_map = { name = cst_war  key = global_var:cst_count value = scope:cst_w }
+
+	add_to_global_variable_map = { name = cst_li  key = global_var:cst_count value = var:cs_li }
+	add_to_global_variable_map = { name = cst_hi  key = global_var:cst_count value = var:cs_hi }
+	add_to_global_variable_map = { name = cst_lc  key = global_var:cst_count value = var:cs_lc }
+	add_to_global_variable_map = { name = cst_hc  key = global_var:cst_count value = var:cs_hc }
+	add_to_global_variable_map = { name = cst_ar  key = global_var:cst_count value = var:cs_ar }
+	add_to_global_variable_map = { name = cst_ax  key = global_var:cst_count value = var:cs_ax }
+
+	add_to_global_variable_map = { name = cst_gal key = global_var:cst_count value = var:cs_gal }
+	add_to_global_variable_map = { name = cst_ls  key = global_var:cst_count value = var:cs_ls }
+	add_to_global_variable_map = { name = cst_hs  key = global_var:cst_count value = var:cs_hs }
+	add_to_global_variable_map = { name = cst_tr  key = global_var:cst_count value = var:cs_tr }
+
+	# Land total, so a single line can be drawn without adding six columns up.
+	#
+	# Built a step at a time. Six `add =` lines inside one value block look like
+	# a sum and are not one: the block keeps a key once, so every add after the
+	# first was dropped and cst_men came out equal to cst_li exactly -- measured
+	# in the 1481.9.2 save, Tuscany 16,476 men against 74,071 actually standing.
+	# The base game has no repeated-add block anywhere either.
+	set_variable = { name = cs_men value = var:cs_li }
+	change_variable = { name = cs_men add = var:cs_hi }
+	change_variable = { name = cs_men add = var:cs_lc }
+	change_variable = { name = cs_men add = var:cs_hc }
+	change_variable = { name = cs_men add = var:cs_ar }
+	change_variable = { name = cs_men add = var:cs_ax }
+	add_to_global_variable_map = { name = cst_men key = global_var:cst_count value = var:cs_men }
+
+	add_to_global_variable_map = { name = cst_mp      key = global_var:cst_count value = local_var:cs_mp }
+	add_to_global_variable_map = { name = cst_mpmax   key = global_var:cst_count value = local_var:cs_mpmax }
+	add_to_global_variable_map = { name = cst_sail    key = global_var:cst_count value = local_var:cs_sail }
+	add_to_global_variable_map = { name = cst_sailmax key = global_var:cst_count value = local_var:cs_sailmax }
+	add_to_global_variable_map = { name = cst_debt    key = global_var:cst_count value = local_var:cs_debt }
+	add_to_global_variable_map = { name = cst_loans   key = global_var:cst_count value = local_var:cs_loans }
+}
+
+
+# The ten accumulators exist only to carry the walk's result up to the write.
+# Left behind they would sit on every country that has ever been at war, in
+# every save from here on, for no reader.
+balance_cstat_clear = {
+	remove_variable = cs_li
+	remove_variable = cs_hi
+	remove_variable = cs_lc
+	remove_variable = cs_hc
+	remove_variable = cs_ar
+	remove_variable = cs_ax
+	remove_variable = cs_gal
+	remove_variable = cs_ls
+	remove_variable = cs_hs
+	remove_variable = cs_tr
+	remove_variable = cs_men
+}
+
+
+# The whole reading, gather + write. Country scope.
+balance_cstat_snapshot = {
+	balance_cstat_gather = yes
+	balance_cstat_write = yes
+	balance_cstat_clear = yes
+}
+
+
+# The quarterly one. Rides the monthly country pulse and does nothing eleven
+# months in twelve, and nothing at all for a country not at war -- a peacetime
+# row would be every country on the map, four times a year, for a graph nobody
+# asked for.
+balance_cstat_quarterly = {
+	if = {
+		limit = {
+			at_war = yes
+			OR = {
+				current_month = 1
+				current_month = 4
+				current_month = 7
+				current_month = 10
+			}
+		}
+		# Gathered once, written once per war. A country in two wars gets a row
+		# in each: the reading is the same army either way, and which war it is
+		# spending it on is the question the row is there to answer.
+		balance_cstat_gather = yes
+		every_current_war = {
+			save_scope_as = cst_w
+			root = { balance_cstat_write = yes }
+		}
+		balance_cstat_clear = yes
+	}
+}

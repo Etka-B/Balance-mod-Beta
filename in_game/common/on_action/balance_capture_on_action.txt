@@ -1,0 +1,33 @@
+# Prisoners taken.
+#
+# The one column the recorder was missing. Every other loss the mod measures by
+# differencing yesterday's strength against today's, which cannot tell a man
+# who died from a man who was marched off -- both simply stop being there. The
+# engine keeps them apart (losses= against imprisoned= in its own battle
+# record) and this is the only place script is told about it.
+#
+# _hardcoded.txt, line 2939:
+#     #root = unit of prisoners, scope:winner = country that was victorious
+#
+# So root is the captured unit itself, still intact at this moment, and its
+# strength can be walked by category exactly as a fighting unit's is.
+#
+# Read by the ledger from the save as:
+#   global_var:cap_count            -- rows written
+#   map cap_c / cap_w / cap_loc / cap_d
+#   map cap_0..cap_5                -- men taken, by land category
+#   map cap_6..cap_9                -- hulls taken, by naval category
+#
+# See balance_cap_map_effects.txt for the measuring and the write.
+
+on_overrun_imprisoned = {
+	on_actions = {
+		balance_log_capture
+	}
+}
+
+balance_log_capture = {
+	effect = {
+		balance_cap_measure = yes
+	}
+}

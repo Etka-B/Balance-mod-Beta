@@ -1,0 +1,18 @@
+﻿l_turkish:
+ # main_menu/common/static_modifiers/modifier country.txt dosyasında tanımlanan özel ülke modifierları
+ # flavor_MINOR.txt, flavor_MOSKOV.txt ve flavor_SWEDEN.txt tarafından verilir
+ minor_massive_bonus: "Bölgesel Güç"
+ minor_massive_bonus_desc: "Artan istikrar ve gelişen idaremiz hazinemizi güçlendirdi, ordularımızın kuşatmalarını hızlandırdı ve yükselişimiz karşısında komşularımızın endişesini hafifletti."
+ STATIC_MODIFIER_NAME_minor_massive_bonus: "$minor_massive_bonus$"
+
+ minor_massive_bonus.2: "Ticari Yükseliş"
+ minor_massive_bonus.2_desc: "Gelişen ticaret ve bankacılık komünümüzün hazinesini doldurup fetihlerimizi hızlandırırken, dikkatli bir diplomasi rakip güçlerin artan zenginliğimizden tedirgin olmasını engelliyor."
+ STATIC_MODIFIER_NAME_minor_massive_bonus.2: "$minor_massive_bonus.2$"
+
+ muscovy_massive_bonus: "Kuzeyin Gücü"
+ muscovy_massive_bonus_desc: "Güçlenen hazinemiz ve hızlanan idaremiz, Rus knezliklerinin Moskova'nın büyüyen otoritesi altında birleşmesini hızlandırıyor."
+ STATIC_MODIFIER_NAME_muscovy_massive_bonus: "$muscovy_massive_bonus$"
+
+ flavor_sweden_valhalla_bonus: "Valhalla'nın Çağrısı"
+ flavor_sweden_valhalla_bonus_desc: "Kadim İskandinav inancı krallığa yeniden hoş karşılanıyor; saray eski yollara dönüşü kabullenmekte zorlansa da kâfir ve zındık inançlara karşı hoşgörü artıyor."
+ STATIC_MODIFIER_NAME_flavor_sweden_valhalla_bonus: "$flavor_sweden_valhalla_bonus$"

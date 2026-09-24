@@ -1,0 +1,6 @@
+﻿l_turkish:
+ local_bailiff_tt: "[SCOPE.sCountry('actor').GetNameWithNoTooltip] ülkesinde azami [SCOPE.sCountry('actor').GetModifierValue('num_bailiffs')] [ShowBuildingTypeName('bailiff')] varsa (Şu anda [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('bailiff')|V])."
+ local_bailiff_subject_tt: "Vassalınızın topraklarındaki [ShowBuildingTypeName('bailiff')] sayısı, vassalınızın sahip olduğu şehir ve kasaba sayısına göre belirlenen kendi limitinden az olmalı."
+ local_governor_tt: "[SCOPE.sCountry('actor').GetNameWithNoTooltip] ülkesindeki [ShowBuildingTypeName('local_governor')] ve [ShowBuildingTypeName('lieutenancy')] toplamı, [SCOPE.sCountry('actor').GetModifierValue('num_local_governors')] değerinden azsa (Valiler: [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('local_governor')|V], Vekillikler: [SCOPE.sCountry('actor').GetTotalBuildingLevelsIncudingUnderConstruction('lieutenancy')|V])"
+ local_governor_subject_tt: "Vassalınızın topraklarındaki [ShowBuildingTypeName('local_governor')] ve [ShowBuildingTypeName('lieutenancy')] toplamı, vassalınızın kendi limitinden az olmalı."
+ AUTO_MODIFIER_NAME_balance_seat_of_cardinal_influence: "[ShowBuildingTypeName('seat_of_cardinal')]"

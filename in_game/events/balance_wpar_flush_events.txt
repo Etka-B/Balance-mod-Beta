@@ -1,0 +1,70 @@
+namespace = balance_wpar_flush
+
+# THE DAY AFTER A PEACE -- where a departure row is actually written, and where
+# it is thrown away if the country did not in fact depart.
+#
+# WHY IT IS NOT WRITTEN AT on_pre_losing_war / on_pre_winning_war
+#   Those hooks fire for every country on both sides of the peace being signed,
+#   not for the ones leaving. Measured on the Tuscan war against France: Great
+#   Britain signed a separate peace on 1467.8.2 and seventeen countries got a
+#   departure row that day, France and its thirteen allies among them. Those
+#   fourteen fought on for another six weeks and got a second departure row on
+#   1467.9.13, when the war really ended. Three of the seventeen had actually
+#   left: Great Britain, Pale and AAA58.
+#
+#   Nothing in scope at the hook tells them apart. scope:loser is the country
+#   the peace was signed against, and it is the same value for the ones staying
+#   as for the ones going.
+#
+# THE TEST
+#   Tomorrow, is this country still in that war? If it is, the peace was
+#   somebody else's and there is nothing to record. If it is not, it left.
+#
+#   any_current_war walks the wars the country is in right now, so a war it has
+#   left is simply not there -- and neither is a war that ended for everybody,
+#   which is the same answer and the right one.
+#
+#   The war object itself still exists tomorrow: the engine keeps an ended war
+#   in war_manager for DURATION_BEFORE_PURGING_WARS_IN_DAYS, which is 365 even
+#   unmodified, so scoping into the parked reference is safe.
+#
+# WHAT IS CARRIED RATHER THAN RE-READ
+#   The date, the side and the attrition total are all taken at the peace and
+#   parked with it. A day later the date would be wrong by one, the side of a
+#   war you have left reads as neither, and the attrition counter has moved on.
+#   Only the "did it leave" question is asked here, because it is the only one
+#   that could not be answered yesterday.
+
+balance_wpar_flush.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = { has_variable = wpar_pw }
+			save_scope_as = wpar_c
+			var:wpar_pw = { save_scope_as = wpar_war }
+
+			if = {
+				limit = {
+					NOT = { any_current_war = { this = scope:wpar_war } }
+				}
+				set_global_variable = { name = wpar_kind value = 2 }
+				set_global_variable = { name = wpar_date value = var:wpar_pd }
+				set_global_variable = { name = wpar_side value = var:wpar_ps }
+				set_global_variable = { name = wpar_base value = var:wpar_pa }
+				wpar_increment_and_log = yes
+			}
+
+			# Cleared either way, and that is what frees the single parking
+			# space for the next peace this country signs.
+			remove_variable = wpar_pw
+			remove_variable = wpar_pd
+			remove_variable = wpar_ps
+			remove_variable = wpar_pa
+		}
+	}
+}

@@ -1,0 +1,9 @@
+# Adds 1 to var:$VAR$ on the current scope, treating a never-set variable as 0.
+# Usage: some_scope = { balance_increment_counter_effect = { VAR = my_counter_name } }
+balance_increment_counter_effect = {
+	if = {
+		limit = { NOT = { has_variable = $VAR$ } }
+		set_variable = { name = $VAR$ value = 0 }
+	}
+	change_variable = { name = $VAR$ add = 1 }
+}

@@ -1,0 +1,9 @@
+﻿# Balance mod: moved from age_6_revolutions to age_4_reformation (unchanged otherwise).
+REPLACE:french_ambition = {
+	age = age_4_reformation
+	content_priority = 450
+	potential = {
+		has_or_had_tag = FRA
+	}
+	discipline = 0.05
+}

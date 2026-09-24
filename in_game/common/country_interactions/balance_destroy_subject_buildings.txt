@@ -1,0 +1,152 @@
+balance_destroy_subject_bailiff = {
+	type = subject
+	category = CATEGORY_SUBJECT_ACTIONS
+
+	potential = {
+	}
+
+	allow = {
+		scope:actor = {
+			every_subject = {
+				any_owned_location = {
+					has_building = building_type:bailiff
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		interaction_source_list = {
+			scope:actor = {
+				every_subject = {
+					limit = {
+						any_owned_location = {
+							has_building = building_type:bailiff
+						}
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = recipient
+		name = "choose_country"
+		none_available_msg_key = "no_countries_available"
+		column = {
+			data = name
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = location
+		interaction_source_list = {
+			scope:recipient = {
+				every_owned_location = {
+					limit = {
+						has_building = building_type:bailiff
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = target_location
+		name = "choose_location"
+		none_available_msg_key = "no_locations_available"
+		column = {
+			data = name
+		}
+		visible = {
+			has_owner = yes
+			owner ?= scope:recipient
+			has_building = building_type:bailiff
+		}
+	}
+
+	effect = {
+		scope:target_location = {
+			destroy_building_forcefully = "building(building_type:bailiff|owner)"
+		}
+	}
+
+	ai_tick = never
+	ai_will_do = {
+		add = -1000
+	}
+}
+
+
+balance_destroy_subject_local_governor = {
+	type = subject
+	category = CATEGORY_SUBJECT_ACTIONS
+
+	potential = {
+	}
+
+	allow = {
+		scope:actor = {
+			every_subject = {
+				any_owned_location = {
+					has_building = building_type:local_governor
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		interaction_source_list = {
+			scope:actor = {
+				every_subject = {
+					limit = {
+						any_owned_location = {
+							has_building = building_type:local_governor
+						}
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = recipient
+		name = "choose_country"
+		none_available_msg_key = "no_countries_available"
+		column = {
+			data = name
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = location
+		interaction_source_list = {
+			scope:recipient = {
+				every_owned_location = {
+					limit = {
+						has_building = building_type:local_governor
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = target_location
+		name = "choose_location"
+		none_available_msg_key = "no_locations_available"
+		column = {
+			data = name
+		}
+		visible = {
+			has_owner = yes
+			owner ?= scope:recipient
+			has_building = building_type:local_governor
+		}
+	}
+
+	effect = {
+		scope:target_location = {
+			destroy_building_forcefully = "building(building_type:local_governor|owner)"
+		}
+	}
+
+	ai_tick = never
+	ai_will_do = {
+		add = -1000
+	}
+}
