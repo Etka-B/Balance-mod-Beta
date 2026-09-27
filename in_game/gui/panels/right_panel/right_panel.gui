@@ -369,6 +369,49 @@ types RightPanelTypes
 						}
 					}
 
+					button_panel_tab_alt = { ### COLONIES (Balance mod addition)
+						using = layoutpolicy_expanding
+						name = "button_balance_colonies"
+
+						visible = "[IsPlayerValid]"
+						action_tooltip = {
+							title = "BALANCE_COLONY_BUTTON"
+							on_action = "[GetScriptedGui('balance_colony_open').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							on_action = "[GetVariableSystem.Toggle('balance_colony_open')]"
+						}
+						down = "[GetVariableSystem.Exists('balance_colony_open')]"
+
+						tooltipwidget = {
+							SimpleConceptTooltipType = {
+								textcontext = "BALANCE_COLONY_BUTTON_TT"
+
+								blockoverride "title_icon" {
+									icon = {
+										using = tooltip_title_icon_size
+										texture = "[GetConceptTexture('colonization')]"
+									}
+								}
+							}
+						}
+
+						background = {
+							block "bg_panel_group_tabs_color" {
+								visible = "[GetVariableSystem.Exists('balance_colony_open')]"
+							}
+							using = color_default_brown_texture
+						}
+
+						icon = {
+							texture = "[GetConceptTexture('colonization')]"
+							texture_density = 2
+							size = { 24 24 }
+							parentanchor = center
+
+							using = button_panel_tab_icon_effect
+							blockoverride "icon_effect_visible" { visible = no }
+						}
+					}
+
 					button_panel_tab_alt = { ### AUTOMATION
 						using = layoutpolicy_expanding
 						name = "button_automation"

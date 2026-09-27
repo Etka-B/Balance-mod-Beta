@@ -1,0 +1,26 @@
+﻿# THE COLONY WINDOW'S LOCATION FILTERS (gui/balance_colony_window.gui).
+# Location scope, root = the player's country; scope:balance_colony_fg is the
+# raw material picked, if any (scripted_effects/balance_colony_effects.txt).
+# Only one rank filter is ever set, so plain trigger_ifs (a second
+# trigger_else_if in a row failed the game's validation).
+balance_colony_location_shown = {
+	trigger_if = {
+		limit = { root = { has_variable = balance_colony_f_rural } }
+		location_rank = location_rank:rural_settlement
+	}
+	trigger_if = {
+		limit = { root = { has_variable = balance_colony_f_town } }
+		location_rank = location_rank:town
+	}
+	trigger_if = {
+		limit = { root = { has_variable = balance_colony_f_city } }
+		OR = {
+			location_rank = location_rank:city
+			location_rank = location_rank:megalopolis
+		}
+	}
+	trigger_if = {
+		limit = { exists = scope:balance_colony_fg }
+		raw_material ?= scope:balance_colony_fg
+	}
+}

@@ -1,0 +1,15 @@
+# Balance mod: after a pick in the game's location search, wait for the
+# location window to show it, then let its colony button open it in the colony
+# window (gui/location_window.gui, balance_colony_pull). Always alive,
+# invisible; registered in gui/scripted_widgets/balance_scripted_windows.txt.
+widget = {
+	name = "balance_colony_helper"
+	size = { 1 1 }
+	alwaystransparent = yes
+
+	state = {
+		name = balance_colony_from_find
+		duration = 0.35
+		on_finish = "[PdxGuiTriggerAllAnimations('balance_colony_pull')]"
+	}
+}

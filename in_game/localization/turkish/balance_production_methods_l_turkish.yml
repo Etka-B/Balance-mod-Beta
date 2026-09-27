@@ -1,0 +1,12 @@
+﻿l_turkish:
+ # the mod's REPLACEd buildings use their own production method names
+ # (the game's names clashed: "duplicated production method name"); shown as the game's
+ balance_bailiff_input: "$bailiff_input$"
+ balance_local_governor_maintenance: "$local_governor_maintenance$"
+ balance_stockade_maintenance: "$stockade_maintenance$"
+ balance_castle_maintenance: "$castle_maintenance$"
+ balance_bastion_maintenance: "$bastion_maintenance$"
+ balance_star_fort_maintenance: "$star_fort_maintenance$"
+ balance_fortress_maintenance: "$fortress_maintenance$"
+ balance_coastal_fort_maintenance: "$coastal_fort_maintenance$"
+ balance_naval_battery_maintenance: "$naval_battery_maintenance$"

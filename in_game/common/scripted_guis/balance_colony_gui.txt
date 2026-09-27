@@ -1,0 +1,638 @@
+﻿# THE COLONY WINDOW'S BUTTONS (gui/balance_colony_window.gui). Lists are
+# filled by scripted_effects/balance_colony_effects.txt; what was picked is
+# kept in balance_colony_subject / balance_colony_location on root, the
+# filters in balance_colony_f_rural/_town/_city/_goods.
+
+balance_colony_open = {
+	scope = country
+	effect = {
+		balance_colony_return_all_held = yes
+		balance_colony_fill_subjects = yes
+		if = {
+			limit = {
+				has_variable = balance_colony_subject
+				NOT = { var:balance_colony_subject ?= { is_subject_of = root } }
+			}
+			remove_variable = balance_colony_subject
+			clear_variable_list = balance_colony_selected
+		}
+		if = {
+			limit = {
+				has_variable = balance_colony_location
+				NOT = { var:balance_colony_location ?= { owner ?= { is_subject_of = root } } }
+			}
+			remove_variable = balance_colony_location
+		}
+		balance_colony_fill_locations = yes
+		balance_colony_fill_buildings = yes
+	}
+}
+
+# from the location window's button: straight to that location
+balance_colony_can_open_at = {
+	scope = country
+	saved_scopes = { location }
+	is_shown = { scope:location = { owner ?= { is_subject_of = root } } }
+}
+
+balance_colony_open_at = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = { scope:location = { owner ?= { is_subject_of = root } } }
+	effect = {
+		balance_colony_return_all_held = yes
+		balance_colony_fill_subjects = yes
+		scope:location = { owner = { save_temporary_scope_as = balance_colony_s2 } }
+		if = {
+			limit = { NOT = { var:balance_colony_subject ?= scope:balance_colony_s2 } }
+			clear_variable_list = balance_colony_selected
+		}
+		set_variable = { name = balance_colony_subject value = scope:balance_colony_s2 }
+		set_variable = { name = balance_colony_location value = scope:location }
+		balance_colony_clear_filters = yes
+		balance_colony_fill_locations = yes
+		balance_colony_fill_buildings = yes
+	}
+}
+
+balance_colony_pick_subject = {
+	scope = country
+	saved_scopes = { subject }
+	effect = {
+		set_variable = { name = balance_colony_subject value = scope:subject }
+		if = {
+			limit = { has_variable = balance_colony_location }
+			remove_variable = balance_colony_location
+		}
+		clear_variable_list = balance_colony_selected
+		if = {
+			limit = { has_variable = balance_colony_f_goods }
+			remove_variable = balance_colony_f_goods
+		}
+		balance_colony_fill_locations = yes
+		balance_colony_fill_buildings = yes
+	}
+}
+
+balance_colony_pick_location = {
+	scope = country
+	saved_scopes = { location }
+	effect = {
+		set_variable = { name = balance_colony_location value = scope:location }
+		balance_colony_fill_buildings = yes
+	}
+}
+
+balance_colony_is_subject = {
+	scope = country
+	saved_scopes = { subject }
+	is_shown = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= scope:subject
+	}
+}
+
+balance_colony_is_location = {
+	scope = country
+	saved_scopes = { location }
+	is_shown = {
+		has_variable = balance_colony_location
+		var:balance_colony_location ?= scope:location
+	}
+}
+
+# ---- filters
+balance_colony_filter_all = {
+	scope = country
+	effect = {
+		if = { limit = { has_variable = balance_colony_f_rural } remove_variable = balance_colony_f_rural }
+		if = { limit = { has_variable = balance_colony_f_town } remove_variable = balance_colony_f_town }
+		if = { limit = { has_variable = balance_colony_f_city } remove_variable = balance_colony_f_city }
+		balance_colony_fill_locations = yes
+	}
+}
+
+balance_colony_filter_all_on = {
+	scope = country
+	is_shown = {
+		NOT = { has_variable = balance_colony_f_rural }
+		NOT = { has_variable = balance_colony_f_town }
+		NOT = { has_variable = balance_colony_f_city }
+	}
+}
+
+balance_colony_filter_rural = {
+	scope = country
+	effect = {
+		if = { limit = { has_variable = balance_colony_f_town } remove_variable = balance_colony_f_town }
+		if = { limit = { has_variable = balance_colony_f_city } remove_variable = balance_colony_f_city }
+		set_variable = balance_colony_f_rural
+		balance_colony_fill_locations = yes
+	}
+}
+
+balance_colony_filter_rural_on = {
+	scope = country
+	is_shown = { has_variable = balance_colony_f_rural }
+}
+
+balance_colony_filter_town = {
+	scope = country
+	effect = {
+		if = { limit = { has_variable = balance_colony_f_rural } remove_variable = balance_colony_f_rural }
+		if = { limit = { has_variable = balance_colony_f_city } remove_variable = balance_colony_f_city }
+		set_variable = balance_colony_f_town
+		balance_colony_fill_locations = yes
+	}
+}
+
+balance_colony_filter_town_on = {
+	scope = country
+	is_shown = { has_variable = balance_colony_f_town }
+}
+
+balance_colony_filter_city = {
+	scope = country
+	effect = {
+		if = { limit = { has_variable = balance_colony_f_rural } remove_variable = balance_colony_f_rural }
+		if = { limit = { has_variable = balance_colony_f_town } remove_variable = balance_colony_f_town }
+		set_variable = balance_colony_f_city
+		balance_colony_fill_locations = yes
+	}
+}
+
+balance_colony_filter_city_on = {
+	scope = country
+	is_shown = { has_variable = balance_colony_f_city }
+}
+
+balance_colony_filter_goods = {
+	scope = country
+	saved_scopes = { goods }
+	effect = {
+		if = {
+			limit = { var:balance_colony_f_goods ?= scope:goods }
+			remove_variable = balance_colony_f_goods
+		}
+		else = {
+			set_variable = { name = balance_colony_f_goods value = scope:goods }
+		}
+		balance_colony_fill_locations = yes
+	}
+}
+
+balance_colony_is_goods = {
+	scope = country
+	saved_scopes = { goods }
+	is_shown = { var:balance_colony_f_goods ?= scope:goods }
+}
+
+# ---- selection for the bulk buttons
+balance_colony_toggle_select = {
+	scope = country
+	saved_scopes = { location }
+	effect = {
+		if = {
+			limit = { is_target_in_variable_list = { name = balance_colony_selected target = scope:location } }
+			remove_list_variable = { name = balance_colony_selected target = scope:location }
+		}
+		else = {
+			add_to_variable_list = { name = balance_colony_selected target = scope:location }
+		}
+	}
+}
+
+balance_colony_is_selected = {
+	scope = country
+	saved_scopes = { location }
+	is_shown = { is_target_in_variable_list = { name = balance_colony_selected target = scope:location } }
+}
+
+balance_colony_select_shown = {
+	scope = country
+	effect = {
+		every_in_list = {
+			variable = balance_colony_locations
+			save_temporary_scope_as = balance_colony_l
+			root = {
+				if = {
+					limit = { NOT = { is_target_in_variable_list = { name = balance_colony_selected target = scope:balance_colony_l } } }
+					add_to_variable_list = { name = balance_colony_selected target = scope:balance_colony_l }
+				}
+			}
+		}
+	}
+}
+
+balance_colony_select_clear = {
+	scope = country
+	effect = { clear_variable_list = balance_colony_selected }
+}
+
+# ---- bulk, on every selected location: each button turns one thing on
+# everywhere in the selection, or, when it is on everywhere, off
+balance_colony_sel_town = {
+	scope = country
+	effect = {
+		if = {
+			limit = {
+				any_in_list = {
+					variable = balance_colony_selected
+					owner ?= { is_subject_of = root }
+					has_variable = balance_no_town
+				}
+				NOT = {
+					any_in_list = {
+						variable = balance_colony_selected
+						owner ?= { is_subject_of = root }
+						location_rank = location_rank:rural_settlement
+						NOT = { has_variable = balance_no_town }
+					}
+				}
+			}
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					has_variable = balance_no_town
+				}
+				remove_variable = balance_no_town
+			}
+		}
+		else = {
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					location_rank = location_rank:rural_settlement
+					NOT = { has_variable = balance_no_town }
+				}
+				set_variable = balance_no_town
+			}
+		}
+	}
+}
+
+balance_colony_sel_town_on = {
+	scope = country
+	is_shown = {
+		any_in_list = {
+			variable = balance_colony_selected
+			owner ?= { is_subject_of = root }
+			has_variable = balance_no_town
+		}
+		NOT = {
+			any_in_list = {
+				variable = balance_colony_selected
+				owner ?= { is_subject_of = root }
+				location_rank = location_rank:rural_settlement
+				NOT = { has_variable = balance_no_town }
+			}
+		}
+	}
+}
+
+balance_colony_sel_city = {
+	scope = country
+	effect = {
+		if = {
+			limit = {
+				any_in_list = {
+					variable = balance_colony_selected
+					owner ?= { is_subject_of = root }
+					has_variable = balance_no_city
+				}
+				NOT = {
+					any_in_list = {
+						variable = balance_colony_selected
+						owner ?= { is_subject_of = root }
+						OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town }
+						NOT = { has_variable = balance_no_city }
+					}
+				}
+			}
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					has_variable = balance_no_city
+				}
+				remove_variable = balance_no_city
+			}
+		}
+		else = {
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town }
+					NOT = { has_variable = balance_no_city }
+				}
+				set_variable = balance_no_city
+			}
+		}
+	}
+}
+
+balance_colony_sel_city_on = {
+	scope = country
+	is_shown = {
+		any_in_list = {
+			variable = balance_colony_selected
+			owner ?= { is_subject_of = root }
+			has_variable = balance_no_city
+		}
+		NOT = {
+			any_in_list = {
+				variable = balance_colony_selected
+				owner ?= { is_subject_of = root }
+				OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town }
+				NOT = { has_variable = balance_no_city }
+			}
+		}
+	}
+}
+
+balance_colony_sel_gov = {
+	scope = country
+	effect = {
+		if = {
+			limit = {
+				any_in_list = {
+					variable = balance_colony_selected
+					owner ?= { is_subject_of = root }
+					has_variable = balance_keep_governor
+				}
+				NOT = {
+					any_in_list = {
+						variable = balance_colony_selected
+						owner ?= { is_subject_of = root }
+						has_building = building_type:local_governor
+						NOT = { has_variable = balance_keep_governor }
+					}
+				}
+			}
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					has_variable = balance_keep_governor
+				}
+				remove_variable = balance_keep_governor
+			}
+		}
+		else = {
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					has_building = building_type:local_governor
+					NOT = { has_variable = balance_keep_governor }
+				}
+				set_variable = balance_keep_governor
+			}
+		}
+	}
+}
+
+balance_colony_sel_gov_on = {
+	scope = country
+	is_shown = {
+		any_in_list = {
+			variable = balance_colony_selected
+			owner ?= { is_subject_of = root }
+			has_variable = balance_keep_governor
+		}
+		NOT = {
+			any_in_list = {
+				variable = balance_colony_selected
+				owner ?= { is_subject_of = root }
+				has_building = building_type:local_governor
+				NOT = { has_variable = balance_keep_governor }
+			}
+		}
+	}
+}
+
+balance_colony_sel_keep = {
+	scope = country
+	effect = {
+		if = {
+			limit = {
+				any_in_list = {
+					variable = balance_colony_selected
+					owner ?= { is_subject_of = root }
+					has_variable = balance_keep_all
+				}
+				NOT = {
+					any_in_list = {
+						variable = balance_colony_selected
+						owner ?= { is_subject_of = root }
+						NOT = { has_variable = balance_keep_all }
+					}
+				}
+			}
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					has_variable = balance_keep_all
+				}
+				balance_colony_free_keep_here = yes
+			}
+		}
+		else = {
+			every_in_list = {
+				variable = balance_colony_selected
+				limit = {
+					owner ?= { is_subject_of = root }
+					NOT = { has_variable = balance_keep_all }
+				}
+				balance_colony_keep_buildings_here = yes
+			}
+		}
+		balance_colony_fill_buildings = yes
+	}
+}
+
+balance_colony_sel_keep_on = {
+	scope = country
+	is_shown = {
+		any_in_list = {
+			variable = balance_colony_selected
+			owner ?= { is_subject_of = root }
+			has_variable = balance_keep_all
+		}
+		NOT = {
+			any_in_list = {
+				variable = balance_colony_selected
+				owner ?= { is_subject_of = root }
+				NOT = { has_variable = balance_keep_all }
+			}
+		}
+	}
+}
+
+# select every shown location, or, when anything is selected, clear the selection
+balance_colony_select_toggle = {
+	scope = country
+	effect = {
+		if = {
+			limit = { any_in_list = { variable = balance_colony_selected always = yes } }
+			clear_variable_list = balance_colony_selected
+		}
+		else = {
+			every_in_list = {
+				variable = balance_colony_locations
+				save_temporary_scope_as = balance_colony_l
+				root = {
+					add_to_variable_list = { name = balance_colony_selected target = scope:balance_colony_l }
+				}
+			}
+		}
+	}
+}
+
+# ---- the location bars (the same three as country_interactions/balance_subject_locks.txt)
+balance_colony_toggle_town = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = {
+		scope:location = {
+			owner ?= { is_subject_of = root }
+			OR = {
+				has_variable = balance_no_town
+				location_rank = location_rank:rural_settlement
+			}
+		}
+	}
+	effect = {
+		scope:location = {
+			if = {
+				limit = { has_variable = balance_no_town }
+				remove_variable = balance_no_town
+			}
+			else = {
+				set_variable = balance_no_town
+			}
+		}
+	}
+}
+
+balance_colony_toggle_city = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = {
+		scope:location = {
+			owner ?= { is_subject_of = root }
+			OR = {
+				has_variable = balance_no_city
+				OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town }
+			}
+		}
+	}
+	effect = {
+		scope:location = {
+			if = {
+				limit = { has_variable = balance_no_city }
+				remove_variable = balance_no_city
+			}
+			else = {
+				set_variable = balance_no_city
+			}
+		}
+	}
+}
+
+balance_colony_toggle_governor = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = {
+		scope:location = {
+			owner ?= { is_subject_of = root }
+			OR = {
+				has_variable = balance_keep_governor
+				has_building = building_type:local_governor
+			}
+		}
+	}
+	effect = {
+		scope:location = {
+			if = {
+				limit = { has_variable = balance_keep_governor }
+				remove_variable = balance_keep_governor
+			}
+			else = {
+				set_variable = balance_keep_governor
+			}
+		}
+	}
+}
+
+# ---- the building locks (scripted_triggers/balance_colony_triggers.txt)
+balance_colony_is_kept = {
+	scope = country
+	saved_scopes = { location building }
+	is_shown = {
+		scope:location = {
+			OR = {
+				has_variable = balance_keep_all
+				is_target_in_variable_list = { name = balance_keep_buildings target = scope:building }
+			}
+		}
+	}
+}
+
+# a building the subject may not take down
+balance_colony_toggle_keep = {
+	scope = country
+	saved_scopes = { location building }
+	is_valid = {
+		scope:location = { owner ?= { is_subject_of = root } }
+		custom_tooltip = {
+			text = balance_colony_lock_unsupported_tt
+			scope:building = { NOT = { balance_building_lock_unsupported = yes } }
+		}
+		custom_tooltip = {
+			text = balance_colony_keep_all_tt
+			scope:location = { NOT = { has_variable = balance_keep_all } }
+		}
+	}
+	effect = {
+		scope:location = {
+			if = {
+				limit = { is_target_in_variable_list = { name = balance_keep_buildings target = scope:building } }
+				remove_list_variable = { name = balance_keep_buildings target = scope:building }
+			}
+			else = {
+				add_to_variable_list = { name = balance_keep_buildings target = scope:building }
+			}
+		}
+	}
+}
+
+# the whole picked location at once
+balance_colony_keep_here = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = { scope:location = { owner ?= { is_subject_of = root } } }
+	effect = {
+		scope:location = {
+			if = {
+				limit = { has_variable = balance_keep_all }
+				balance_colony_free_keep_here = yes
+			}
+			else = {
+				balance_colony_keep_buildings_here = yes
+			}
+		}
+		balance_colony_fill_buildings = yes
+	}
+}
+
+balance_colony_keep_here_on = {
+	scope = country
+	saved_scopes = { location }
+	is_shown = { scope:location = { has_variable = balance_keep_all } }
+}
+

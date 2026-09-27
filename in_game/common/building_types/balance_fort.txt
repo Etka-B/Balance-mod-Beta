@@ -24,7 +24,7 @@ TRY_REPLACE:stockade = {
 	
 	unique_production_methods = {
 	
-		stockade_maintenance = {
+		balance_stockade_maintenance = {
 			lumber = 0.1
 			weaponry = 0.02
 			tar = 0.02
@@ -75,6 +75,8 @@ TRY_REPLACE:stockade = {
 		local_nobles_desired_pop = 0.005
 		pure_tooltip_entry = pte_no_propagating_zone_of_control            # propagating_zone_of_control = no
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }
 
 TRY_REPLACE:castle = {
@@ -101,7 +103,7 @@ TRY_REPLACE:castle = {
 	
 	
 	unique_production_methods = {
-		castle_maintenance = {
+		balance_castle_maintenance = {
 			stone = 0.1
 			tools = 0.05
 			weaponry = 0.1
@@ -153,6 +155,8 @@ TRY_REPLACE:castle = {
 		local_nobles_desired_pop = 0.02
 		propagating_zone_of_control = yes
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }
 
 TRY_REPLACE:bastion = {
@@ -179,7 +183,7 @@ TRY_REPLACE:bastion = {
 	
 	unique_production_methods = {
 		
-		bastion_maintenance = {
+		balance_bastion_maintenance = {
 			stone = 0.5
 			firearms = 0.5
 			cannons = 0.5
@@ -231,6 +235,8 @@ TRY_REPLACE:bastion = {
 		fort_level = 4
 		propagating_zone_of_control = yes
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }
 
 TRY_REPLACE:star_fort = {
@@ -255,7 +261,7 @@ TRY_REPLACE:star_fort = {
 	expensive = yes
 	
 	unique_production_methods = {
-		star_fort_maintenance = {	
+		balance_star_fort_maintenance = {	
 			stone = 1
 			firearms = 1
 			cannons = 1.0
@@ -306,6 +312,8 @@ TRY_REPLACE:star_fort = {
 		fort_level = 6
 		propagating_zone_of_control = yes
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }
 
 TRY_REPLACE:fortress = {
@@ -331,7 +339,7 @@ TRY_REPLACE:fortress = {
 	expensive = yes
 	
 	unique_production_methods = {
-		fortress_maintenance = {	
+		balance_fortress_maintenance = {	
 			stone = 2
 			firearms = 4
 			cannons = 4
@@ -382,6 +390,8 @@ TRY_REPLACE:fortress = {
 		fort_level = 8
 		propagating_zone_of_control = yes
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }
 
 TRY_REPLACE:coastal_fort = {
@@ -409,7 +419,7 @@ TRY_REPLACE:coastal_fort = {
 	
 	unique_production_methods = {
 		
-		coastal_fort_maintenance = {
+		balance_coastal_fort_maintenance = {
 			stone = 0.2
 			firearms = 0.2
 			cannons = 0.5
@@ -430,6 +440,8 @@ TRY_REPLACE:coastal_fort = {
 		hostile_fleet_attrition = 1
 		blocks_privateer_raids = yes
 		local_maritime_presence = 0.15
+	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
 
@@ -461,7 +473,7 @@ TRY_REPLACE:naval_battery = {
 	
 	unique_production_methods = {
 	
-		naval_battery_maintenance = {
+		balance_naval_battery_maintenance = {
 			stone = 0.2
 			firearms = 0.2
 			cannons = 1.0
@@ -481,6 +493,8 @@ TRY_REPLACE:naval_battery = {
 		hostile_fleet_attrition = 2
 		blocks_privateer_raids = yes
 		local_maritime_presence = 0.3
+	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
 
@@ -564,4 +578,6 @@ TRY_REPLACE:city_walls = {
 	}
 
 	graphical_tags = { small_city_walls city_walls }
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }

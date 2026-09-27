@@ -1,0 +1,269 @@
+# OVERLORD'S BARS ON A SUBJECT'S LOCATION. The overlord picks one of its
+# subjects, then one of that subject's locations, and bars (or, used again,
+# lets go) one thing there:
+#   balance_no_town        - it cannot be raised to a town  (location_ranks/00_default.txt)
+#   balance_no_city        - it cannot be raised to a city  (location_ranks/00_default.txt)
+#   balance_keep_governor  - the subject cannot take down the local governor
+#                            there (building_types/balancebuild.txt, can_destroy)
+# Each is a flag on the location; every check that reads one also asks that
+# the location is still held by a subject, so a bar lapses by itself once the
+# subject is free or the land is annexed.
+# Closing buildings cannot be barred per location: the game decides that per
+# building type only (can_close / ai_forbid_shutdown), with no trigger.
+
+balance_subject_lock_town = {
+	type = subject
+	category = CATEGORY_SUBJECT_ACTIONS
+
+	potential = {
+	}
+
+	allow = {
+		scope:actor = {
+			any_subject = {
+				any_owned_location = {
+					OR = { location_rank = location_rank:rural_settlement has_variable = balance_no_town }
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		interaction_source_list = {
+			scope:actor = {
+				every_subject = {
+					limit = {
+						any_owned_location = {
+							OR = { location_rank = location_rank:rural_settlement has_variable = balance_no_town }
+						}
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = recipient
+		name = "choose_country"
+		none_available_msg_key = "no_countries_available"
+		column = {
+			data = name
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = location
+		interaction_source_list = {
+			scope:recipient = {
+				every_owned_location = {
+					limit = {
+						OR = { location_rank = location_rank:rural_settlement has_variable = balance_no_town }
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = target_location
+		name = "choose_location"
+		none_available_msg_key = "no_locations_available"
+		column = {
+			data = name
+		}
+		visible = {
+			has_owner = yes
+			owner ?= scope:recipient
+			OR = { location_rank = location_rank:rural_settlement has_variable = balance_no_town }
+		}
+	}
+
+	# a second use on the same place lifts the bar again
+	effect = {
+		scope:target_location = {
+			if = {
+				limit = { has_variable = balance_no_town }
+				remove_variable = balance_no_town
+				custom_tooltip = balance_no_town_unlock_tt
+			}
+			else = {
+				set_variable = balance_no_town
+				custom_tooltip = balance_no_town_lock_tt
+			}
+		}
+	}
+
+	ai_tick = never
+	ai_will_do = {
+		add = -1000
+	}
+}
+
+
+balance_subject_lock_city = {
+	type = subject
+	category = CATEGORY_SUBJECT_ACTIONS
+
+	potential = {
+	}
+
+	allow = {
+		scope:actor = {
+			any_subject = {
+				any_owned_location = {
+					OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town has_variable = balance_no_city }
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		interaction_source_list = {
+			scope:actor = {
+				every_subject = {
+					limit = {
+						any_owned_location = {
+							OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town has_variable = balance_no_city }
+						}
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = recipient
+		name = "choose_country"
+		none_available_msg_key = "no_countries_available"
+		column = {
+			data = name
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = location
+		interaction_source_list = {
+			scope:recipient = {
+				every_owned_location = {
+					limit = {
+						OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town has_variable = balance_no_city }
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = target_location
+		name = "choose_location"
+		none_available_msg_key = "no_locations_available"
+		column = {
+			data = name
+		}
+		visible = {
+			has_owner = yes
+			owner ?= scope:recipient
+			OR = { location_rank = location_rank:rural_settlement location_rank = location_rank:town has_variable = balance_no_city }
+		}
+	}
+
+	# a second use on the same place lifts the bar again
+	effect = {
+		scope:target_location = {
+			if = {
+				limit = { has_variable = balance_no_city }
+				remove_variable = balance_no_city
+				custom_tooltip = balance_no_city_unlock_tt
+			}
+			else = {
+				set_variable = balance_no_city
+				custom_tooltip = balance_no_city_lock_tt
+			}
+		}
+	}
+
+	ai_tick = never
+	ai_will_do = {
+		add = -1000
+	}
+}
+
+
+balance_subject_keep_governor = {
+	type = subject
+	category = CATEGORY_SUBJECT_ACTIONS
+
+	potential = {
+	}
+
+	allow = {
+		scope:actor = {
+			any_subject = {
+				any_owned_location = {
+					OR = { has_building = building_type:local_governor has_variable = balance_keep_governor }
+				}
+			}
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = country
+		interaction_source_list = {
+			scope:actor = {
+				every_subject = {
+					limit = {
+						any_owned_location = {
+							OR = { has_building = building_type:local_governor has_variable = balance_keep_governor }
+						}
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = recipient
+		name = "choose_country"
+		none_available_msg_key = "no_countries_available"
+		column = {
+			data = name
+		}
+	}
+
+	select_trigger = {
+		looking_for_a = location
+		interaction_source_list = {
+			scope:recipient = {
+				every_owned_location = {
+					limit = {
+						OR = { has_building = building_type:local_governor has_variable = balance_keep_governor }
+					}
+					add_to_list = source
+				}
+			}
+		}
+		target_flag = target_location
+		name = "choose_location"
+		none_available_msg_key = "no_locations_available"
+		column = {
+			data = name
+		}
+		visible = {
+			has_owner = yes
+			owner ?= scope:recipient
+			OR = { has_building = building_type:local_governor has_variable = balance_keep_governor }
+		}
+	}
+
+	# a second use on the same place lifts the bar again
+	effect = {
+		scope:target_location = {
+			if = {
+				limit = { has_variable = balance_keep_governor }
+				remove_variable = balance_keep_governor
+				custom_tooltip = balance_keep_governor_unlock_tt
+			}
+			else = {
+				set_variable = balance_keep_governor
+				custom_tooltip = balance_keep_governor_lock_tt
+			}
+		}
+	}
+
+	ai_tick = never
+	ai_will_do = {
+		add = -1000
+	}
+}

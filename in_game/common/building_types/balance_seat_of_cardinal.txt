@@ -51,6 +51,8 @@ REPLACE:seat_of_cardinal = {
 	}
 
 	can_destroy = {
+		balance_building_not_kept = yes  # Balance mod: colony window building lock
+
 		situation:western_schism = {
 			situation_is_active = no
 		}

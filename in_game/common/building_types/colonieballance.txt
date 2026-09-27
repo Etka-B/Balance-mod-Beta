@@ -55,4 +55,6 @@
 		local_pop_assimilation_speed = 0.05
 
 	}
+	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
+	}
 }

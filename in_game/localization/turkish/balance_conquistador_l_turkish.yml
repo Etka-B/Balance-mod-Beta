@@ -1,0 +1,6 @@
+﻿l_turkish:
+ balance_conquistador_select_multiplier: "Sefer Büyüklüğü"
+ balance_conquistador_select_multiplier_desc: "Ne büyüklükte bir sefer donatılacağını seç. Daha fazla gümüş ve erzak ödemek, orantılı olarak daha büyük bir ordu, süvari birliği ve ikmal kafilesi gönderir."
+ balance_conquistador_supply_line: "Konkistador İkmal Hattı"
+ balance_conquistador_supply_line_desc: "Anavatandan gönderilen taze altın ve erzak, bu seferin ordusunu Yeni Dünya'da tutunurken besler ve maaşını öder."
+ STATIC_MODIFIER_NAME_balance_conquistador_supply_line: "$balance_conquistador_supply_line$"

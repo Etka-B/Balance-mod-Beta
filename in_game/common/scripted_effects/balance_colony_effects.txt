@@ -1,0 +1,147 @@
+﻿# THE COLONY WINDOW'S LISTS AND LOCKS (gui/balance_colony_window.gui). The
+# window cannot ask the game for a subject's locations or a location's
+# buildings, so these fill variable lists on the player's country (root):
+#   balance_colony_subjects   our subjects
+#   balance_colony_locations  the picked subject's locations that pass the filters
+#   balance_colony_goods      the raw materials of that subject's locations
+#   balance_colony_buildings  the picked location's buildings
+#   balance_colony_selected   locations picked for the bulk buttons
+
+balance_colony_fill_subjects = {
+	clear_variable_list = balance_colony_subjects
+	# biggest first
+	ordered_subject = {
+		order_by = num_locations
+		max = 1000
+		check_range_bounds = no
+		save_temporary_scope_as = balance_colony_s
+		root = {
+			add_to_variable_list = { name = balance_colony_subjects target = scope:balance_colony_s }
+		}
+	}
+}
+
+balance_colony_fill_locations = {
+	clear_variable_list = balance_colony_locations
+	clear_variable_list = balance_colony_goods
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		if = {
+			limit = { has_variable = balance_colony_f_goods }
+			var:balance_colony_f_goods = { save_temporary_scope_as = balance_colony_fg }
+		}
+		var:balance_colony_subject = {
+			every_owned_location = {
+				save_temporary_scope_as = balance_colony_l
+				raw_material ?= {
+					save_temporary_scope_as = balance_colony_g
+					root = {
+						if = {
+							limit = { NOT = { is_target_in_variable_list = { name = balance_colony_goods target = scope:balance_colony_g } } }
+							add_to_variable_list = { name = balance_colony_goods target = scope:balance_colony_g }
+						}
+					}
+				}
+				if = {
+					limit = { balance_colony_location_shown = yes }
+					root = {
+						add_to_variable_list = { name = balance_colony_locations target = scope:balance_colony_l }
+					}
+				}
+			}
+		}
+	}
+}
+
+balance_colony_fill_buildings = {
+	clear_variable_list = balance_colony_buildings
+	if = {
+		limit = { has_variable = balance_colony_location }
+		var:balance_colony_location = {
+			every_buildings_in_location = {
+				save_temporary_scope_as = balance_colony_b
+				root = {
+					add_to_variable_list = { name = balance_colony_buildings target = scope:balance_colony_b }
+				}
+			}
+		}
+	}
+}
+
+balance_colony_clear_filters = {
+	if = { limit = { has_variable = balance_colony_f_rural } remove_variable = balance_colony_f_rural }
+	if = { limit = { has_variable = balance_colony_f_town } remove_variable = balance_colony_f_town }
+	if = { limit = { has_variable = balance_colony_f_city } remove_variable = balance_colony_f_city }
+	if = { limit = { has_variable = balance_colony_f_goods } remove_variable = balance_colony_f_goods }
+}
+
+# ---- building locks on one location (this = the location, root = the overlord);
+# balance_keep_all / balance_hold_all on the location mark a whole-location lock
+balance_colony_keep_buildings_here = {
+	set_variable = balance_keep_all
+}
+
+balance_colony_free_keep_here = {
+	clear_variable_list = balance_keep_buildings
+	if = { limit = { has_variable = balance_keep_all } remove_variable = balance_keep_all }
+}
+
+# ---- giving back the buildings the old "can't be closed" lock took
+# (removed 2026-09-27: taking a building split it in two whenever the subject
+# built more levels of that type). this = the location, root = the overlord.
+balance_colony_free_hold_here = {
+	save_temporary_scope_as = balance_colony_here
+	owner = { save_temporary_scope_as = balance_colony_o }
+	every_in_list = {
+		variable = balance_hold_buildings
+		limit = { owner ?= root }
+		save_temporary_scope_as = balance_colony_b
+		building_type = { save_temporary_scope_as = balance_colony_t }
+		if = {
+			limit = {
+				scope:balance_colony_here = {
+					any_buildings_in_location = {
+						building_type = scope:balance_colony_t
+						owner ?= scope:balance_colony_o
+					}
+				}
+			}
+			# the subject built a second one of this type beside ours:
+			# move our levels into theirs, then remove ours
+			scope:balance_colony_here = {
+				random_buildings_in_location = {
+					limit = {
+						building_type = scope:balance_colony_t
+						owner ?= scope:balance_colony_o
+					}
+					save_temporary_scope_as = balance_colony_s
+				}
+			}
+			while = {
+				limit = { scope:balance_colony_b = { building_level >= 2 } }
+				scope:balance_colony_b = { change_building_level = -1 }
+				scope:balance_colony_s = { change_building_level = 1 }
+			}
+			if = {
+				limit = { scope:balance_colony_b = { building_level >= 1 } }
+				scope:balance_colony_s = { change_building_level = 1 }
+			}
+			scope:balance_colony_here = { destroy_building = scope:balance_colony_b }
+		}
+		else = {
+			change_building_owner = scope:balance_colony_o
+		}
+	}
+	clear_variable_list = balance_hold_buildings
+	if = { limit = { has_variable = balance_hold_all } remove_variable = balance_hold_all }
+}
+
+# every such building in our subjects' lands (root = the overlord)
+balance_colony_return_all_held = {
+	every_subject = {
+		every_owned_location = {
+			limit = { has_variable_list = balance_hold_buildings }
+			balance_colony_free_hold_here = yes
+		}
+	}
+}

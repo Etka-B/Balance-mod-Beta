@@ -66,10 +66,15 @@
 		}
 	}
 
+	# Checked on the location (root), not on scope:building: a building still
+	# under construction has no owner yet, so the old check was always false
+	# and its construction could not be cancelled.
 	can_destroy = {
+		balance_building_not_kept = yes  # Balance mod: colony window building lock
+
 		OR = {
-			scope:building.owner = scope:actor
-			scope:building.owner = {
+			owner = scope:actor
+			owner = {
 				is_subject_of = scope:actor
 			}
 		}
@@ -77,7 +82,7 @@
 	
 	
 	unique_production_methods = {
-		bailiff_input = {
+		balance_bailiff_input = {
 			paper = 0.1
 			tools = 0.15
 			weaponry = 0.25
@@ -156,11 +161,30 @@ REPLACE:local_governor = {
 		}
 	}
 
+	# Checked on the location (root), not on scope:building: a building still
+	# under construction has no owner yet, so the old check was always false
+	# and its construction could not be cancelled.
 	can_destroy = {
+		balance_building_not_kept = yes  # Balance mod: colony window building lock
+
 		OR = {
-			scope:building.owner = scope:actor
-			scope:building.owner = {
+			owner = {
 				is_subject_of = scope:actor
+			}
+			AND = {
+				owner = scope:actor
+				# a subject cannot take down a governor its overlord has kept
+				# (country_interactions/balance_subject_locks.txt)
+				trigger_if = {
+					limit = {
+						has_variable = balance_keep_governor
+						owner = { is_subject = yes }
+					}
+					custom_tooltip = {
+						text = balance_keep_governor_tt
+						always = no
+					}
+				}
 			}
 		}
 	}
@@ -188,7 +212,7 @@ REPLACE:local_governor = {
 
 
 	unique_production_methods = {
-		local_governor_maintenance = {
+		balance_local_governor_maintenance = {
 			tools = 1
 			masonry = 1
 			weaponry = 0.5

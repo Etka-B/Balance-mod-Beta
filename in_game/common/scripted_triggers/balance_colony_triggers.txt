@@ -1,0 +1,35 @@
+﻿# THE COLONY WINDOW'S BUILDING LOCKS (gui/balance_colony_window.gui).
+# An overlord marks a subject's location:
+#   balance_keep_all        no building there may be taken down by the subject
+#   balance_keep_buildings  a list of single buildings the subject may not take down
+# Both lapse by themselves once the location is no longer a subject's.
+
+# can_destroy (root = location, scope:building = the building)
+balance_building_not_kept = {
+	trigger_if = {
+		limit = {
+			# only the subject is held back: its overlord (or anyone else with a
+			# building here) may still take its own building down
+			exists = scope:actor
+			owner ?= { is_subject = yes }
+			owner ?= scope:actor
+			OR = {
+				has_variable = balance_keep_all		# the whole location, later buildings too
+				AND = {
+					exists = scope:building
+					is_target_in_variable_list = { name = balance_keep_buildings target = scope:building }
+				}
+			}
+		}
+		custom_tooltip = {
+			text = balance_keep_building_tt
+			always = no
+		}
+	}
+}
+
+# building scope: types the lock does not reach (none: every type carries it,
+# see write_building_locks.py); kept for the window's buttons
+balance_building_lock_unsupported = {
+	always = no
+}

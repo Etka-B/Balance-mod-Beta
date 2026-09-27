@@ -1,0 +1,15 @@
+# Balance mod: opens the Locations list (urban rights) again a moment after a
+# grant started from one of its rows (triggered from
+# gui/attribute_columns/town_rights_type.gui). Always alive, invisible;
+# registered in gui/scripted_widgets/balance_scripted_windows.txt.
+widget = {
+	name = "balance_tr_helper"
+	size = { 1 1 }
+	alwaystransparent = yes
+
+	state = {
+		name = balance_tr_again_list
+		duration = 0.2
+		on_finish = "[OpenLateralView('town_rights')]"
+	}
+}
