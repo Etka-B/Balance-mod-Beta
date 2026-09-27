@@ -93,8 +93,9 @@ balance_colony_free_keep_here = {
 # location window drops its "unprofitable" mark), so balance_subsidy_all makes
 # the subject subsidise its own buildings here. It holds the overlord that set
 # it, so a subject handed to a new overlord keeps only the new one's. Renewed
-# every month by balance_colony_subsidy_monthly: that also reaches buildings
-# built later, and undoes the subject taking a subsidy away.
+# every day by balance_colony_subsidy_renew: that also reaches buildings built
+# later, and undoes the subject's AI taking a subsidy away (nothing in the
+# game stops it doing that, so the best we can do is give it straight back).
 balance_colony_subsidize_here = {
 	owner = { save_temporary_scope_as = balance_colony_o }
 	every_buildings_in_location = {
@@ -127,6 +128,7 @@ balance_colony_subsidy_on_here = {
 		}
 	}
 	balance_colony_subsidize_here = yes
+	root = { balance_colony_subsidy_seed = yes }
 }
 
 balance_colony_subsidy_off_here = {
@@ -136,11 +138,48 @@ balance_colony_subsidy_off_here = {
 	balance_colony_unsubsidize_here = yes
 }
 
-# monthly, from on_action/balance_colony_on_action.txt (root = the overlord).
-# balance_subsidy_locations on the overlord only spares the pulse a walk over
-# every subject's every location. A location no longer a subject's lapses:
-# its subsidies stay as they are, the new owner decides.
+# ---- the daily renewal (root = the overlord), a hidden event that re-arms
+# itself every day while the overlord has subsidised locations
+# (events/balance_colony_subsidy_events.txt); the same chain as the combat
+# probe's. balance_subsidy_running stops a second chain from starting beside
+# a live one; balance_subsidy_alive is set on every tick, so the monthly pulse
+# can tell a chain that died without dropping its flag and start a new one.
+balance_colony_subsidy_seed = {
+	if = {
+		limit = {
+			NOT = { has_variable = balance_subsidy_running }
+			any_in_list = { variable = balance_subsidy_locations always = yes }
+		}
+		set_variable = balance_subsidy_running
+		set_variable = balance_subsidy_alive
+		trigger_event_silently = {
+			id = balance_colony_subsidy.1
+			days = 1
+		}
+	}
+}
+
+# monthly, from on_action/balance_colony_on_action.txt
 balance_colony_subsidy_monthly = {
+	if = {
+		limit = {
+			has_variable = balance_subsidy_running
+			NOT = { has_variable = balance_subsidy_alive }
+		}
+		# no tick for a whole month from a chain that ticks daily: it is gone
+		remove_variable = balance_subsidy_running
+	}
+	if = {
+		limit = { has_variable = balance_subsidy_alive }
+		remove_variable = balance_subsidy_alive
+	}
+	balance_colony_subsidy_seed = yes
+}
+
+# every day. balance_subsidy_locations on the overlord only spares this a walk
+# over every subject's every location. A location no longer a subject's
+# lapses: its subsidies stay as they are, the new owner decides.
+balance_colony_subsidy_renew = {
 	every_in_list = {
 		variable = balance_subsidy_locations
 		limit = { var:balance_subsidy_all ?= root }

@@ -1,0 +1,33 @@
+namespace = balance_colony_subsidy
+
+# THE COLONY WINDOW'S DAILY SUBSIDY RENEWAL (scripted_effects/
+# balance_colony_effects.txt). The game has nothing that stops a subject's AI
+# from taking a subsidy away, so in the locations the overlord picked every
+# subsidy it took is given straight back the next day, before the building
+# has been at a loss for long. A country event on the overlord that re-arms
+# itself every day, the same chain as balance_combat_probe.1 (which measured
+# that days = 1 does re-fire daily). Started by balance_colony_subsidy_seed;
+# ends by itself once the overlord has no subsidised location left.
+
+balance_colony_subsidy.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	immediate = {
+		set_variable = balance_subsidy_alive
+		balance_colony_subsidy_renew = yes
+		if = {
+			limit = { any_in_list = { variable = balance_subsidy_locations always = yes } }
+			trigger_event_silently = {
+				id = balance_colony_subsidy.1
+				days = 1
+			}
+		}
+		else = {
+			remove_variable = balance_subsidy_running
+		}
+	}
+}
