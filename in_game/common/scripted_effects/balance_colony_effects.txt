@@ -107,126 +107,6 @@ balance_colony_subsidize_here = {
 	}
 }
 
-# ---- reopening. The game has no effect that opens a closed building, and
-# its only bar on closing (ai_forbid_shutdown, can_close) is a yes/no on the
-# whole building type, so it would reach every country. So a closed building
-# we keep is taken down and the same type put back at the same level for the
-# same owner, which comes up open. Its production method starts from the
-# default and its staff are hired again; a lock on it moves to the new one.
-# Buildings still going up are left alone. Done for the buildings the overlord
-# locked (balance_colony_reopen_kept_here, every day from
-# balance_colony_subsidy_renew) and in "Keep open" locations
-# (balance_colony_reopen_here: a closed building cannot be subsidised either,
-# a subsidy keeps staff from being laid off and a closed one has none).
-# this = the location, root = the overlord.
-balance_colony_reopen_here = {
-	save_temporary_scope_as = balance_colony_here
-	owner = { save_temporary_scope_as = balance_colony_o }
-	root = { clear_variable_list = balance_colony_reopen }
-	balance_colony_gather_closed_here = yes
-	balance_colony_rebuild_gathered = yes
-}
-
-balance_colony_reopen_kept_here = {
-	save_temporary_scope_as = balance_colony_here
-	owner = { save_temporary_scope_as = balance_colony_o }
-	root = { clear_variable_list = balance_colony_reopen }
-	if = {
-		limit = { has_variable = balance_keep_all }
-		balance_colony_gather_closed_here = yes
-	}
-	else = {
-		every_in_list = {
-			variable = balance_keep_buildings
-			limit = { balance_colony_is_closed_reopenable = yes }
-			save_temporary_scope_as = balance_colony_b
-			root = { add_to_variable_list = { name = balance_colony_reopen target = scope:balance_colony_b } }
-		}
-	}
-	balance_colony_rebuild_gathered = yes
-}
-
-# gathered first: buildings are taken down and put up below, not while walking
-# the location's own list
-balance_colony_gather_closed_here = {
-	every_buildings_in_location = {
-		limit = { balance_colony_is_closed_reopenable = yes }
-		save_temporary_scope_as = balance_colony_b
-		root = { add_to_variable_list = { name = balance_colony_reopen target = scope:balance_colony_b } }
-	}
-}
-
-balance_colony_rebuild_gathered = {
-	root = {
-		every_in_list = {
-			variable = balance_colony_reopen
-			save_temporary_scope_as = balance_colony_b
-			building_type = { save_temporary_scope_as = balance_colony_t }
-			if = {
-				limit = { has_local_variable = balance_colony_was_kept }
-				remove_local_variable = balance_colony_was_kept
-			}
-			if = {
-				limit = {
-					scope:balance_colony_here = {
-						is_target_in_variable_list = { name = balance_keep_buildings target = scope:balance_colony_b }
-					}
-				}
-				set_local_variable = { name = balance_colony_was_kept value = 1 }
-				scope:balance_colony_here = {
-					remove_list_variable = { name = balance_keep_buildings target = scope:balance_colony_b }
-				}
-			}
-			# the game gives no level as a number: count it down to one, the
-			# way balance_colony_free_hold_here moves levels
-			set_local_variable = { name = balance_colony_lvl value = 1 }
-			while = {
-				limit = { scope:balance_colony_b = { building_level >= 2 } }
-				scope:balance_colony_b = { change_building_level = -1 }
-				change_local_variable = { name = balance_colony_lvl add = 1 }
-			}
-			scope:balance_colony_here = {
-				destroy_building_forcefully = scope:balance_colony_b
-				change_building_level_in_location = {
-					building = scope:balance_colony_t
-					value = local_var:balance_colony_lvl
-					owner = scope:balance_colony_o
-				}
-				if = {
-					limit = { has_local_variable = balance_colony_was_kept }
-					random_buildings_in_location = {
-						limit = {
-							building_type = scope:balance_colony_t
-							owner ?= scope:balance_colony_o
-						}
-						save_temporary_scope_as = balance_colony_n
-						scope:balance_colony_here = {
-							add_to_variable_list = { name = balance_keep_buildings target = scope:balance_colony_n }
-						}
-					}
-				}
-			}
-		}
-		clear_variable_list = balance_colony_reopen
-	}
-}
-
-# every day, from balance_colony_subsidy_renew (root = the overlord): the
-# locked buildings in our subjects' lands that were closed
-balance_colony_reopen_all_kept = {
-	every_subject = {
-		every_owned_location = {
-			limit = {
-				OR = {
-					has_variable = balance_keep_all
-					has_variable_list = balance_keep_buildings
-				}
-			}
-			balance_colony_reopen_kept_here = yes
-		}
-	}
-}
-
 balance_colony_unsubsidize_here = {
 	owner = { save_temporary_scope_as = balance_colony_o }
 	every_buildings_in_location = {
@@ -247,7 +127,6 @@ balance_colony_subsidy_on_here = {
 			add_to_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl }
 		}
 	}
-	balance_colony_reopen_here = yes
 	balance_colony_subsidize_here = yes
 	root = { balance_colony_subsidy_seed = yes }
 }
@@ -269,7 +148,7 @@ balance_colony_subsidy_seed = {
 	if = {
 		limit = {
 			NOT = { has_variable = balance_subsidy_running }
-			balance_colony_daily_needed = yes
+			any_in_list = { variable = balance_subsidy_locations always = yes }
 		}
 		set_variable = balance_subsidy_running
 		set_variable = balance_subsidy_alive
@@ -280,34 +159,8 @@ balance_colony_subsidy_seed = {
 	}
 }
 
-# a building lock was set (root = the overlord): from now on the daily chain
-# also reopens locked buildings the subject closed
-balance_colony_locks_on = {
-	if = {
-		limit = { NOT = { has_variable = balance_colony_uses_locks } }
-		set_variable = balance_colony_uses_locks
-	}
-	balance_colony_subsidy_seed = yes
-}
-
 # monthly, from on_action/balance_colony_on_action.txt
 balance_colony_subsidy_monthly = {
-	# locks set before the daily chain reopened buildings carry no flag yet
-	if = {
-		limit = {
-			is_ai = no
-			NOT = { has_variable = balance_colony_uses_locks }
-			any_subject = {
-				any_owned_location = {
-					OR = {
-						has_variable = balance_keep_all
-						has_variable_list = balance_keep_buildings
-					}
-				}
-			}
-		}
-		set_variable = balance_colony_uses_locks
-	}
 	if = {
 		limit = {
 			has_variable = balance_subsidy_running
@@ -323,22 +176,15 @@ balance_colony_subsidy_monthly = {
 	balance_colony_subsidy_seed = yes
 }
 
-# every day (root = the overlord): locked buildings the subject closed are
-# rebuilt open, and "Keep open" locations are renewed. balance_subsidy_locations
-# on the overlord spares this a walk over every subject's every location for
-# them. A location no longer a subject's lapses: its subsidies stay as they
-# are, the new owner decides.
+# every day. balance_subsidy_locations on the overlord only spares this a walk
+# over every subject's every location. A location no longer a subject's
+# lapses: its subsidies stay as they are, the new owner decides.
 balance_colony_subsidy_renew = {
-	if = {
-		limit = { has_variable = balance_colony_uses_locks }
-		balance_colony_reopen_all_kept = yes
-	}
 	every_in_list = {
 		variable = balance_subsidy_locations
 		limit = { var:balance_subsidy_all ?= root }
 		if = {
 			limit = { owner ?= { is_subject_of = root } }
-			balance_colony_reopen_here = yes
 			balance_colony_subsidize_here = yes
 		}
 		else = {

@@ -33,25 +33,3 @@ balance_building_not_kept = {
 balance_building_lock_unsupported = {
 	always = no
 }
-
-# building scope: one of the subject's own (scope:balance_colony_o) that it has
-# closed, and not still going up: rebuilt open by balance_colony_rebuild_gathered
-balance_colony_is_closed_reopenable = {
-	owner ?= scope:balance_colony_o
-	is_opened = no
-	building_level >= 1
-	NOT = { building_levels_under_construction >= 1 }
-}
-
-# country scope: whether the overlord needs the daily chain
-# (events/balance_colony_subsidy_events.txt): "Keep open" locations, or
-# building locks in its subjects' lands to reopen
-balance_colony_daily_needed = {
-	OR = {
-		any_in_list = { variable = balance_subsidy_locations always = yes }
-		AND = {
-			has_variable = balance_colony_uses_locks
-			any_subject = { always = yes }
-		}
-	}
-}

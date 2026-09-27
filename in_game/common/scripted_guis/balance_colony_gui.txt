@@ -417,7 +417,6 @@ balance_colony_sel_gov_on = {
 balance_colony_sel_keep = {
 	scope = country
 	effect = {
-		balance_colony_locks_on = yes	# locked buildings are reopened daily
 		if = {
 			limit = {
 				any_in_list = {
@@ -600,7 +599,6 @@ balance_colony_toggle_keep = {
 		}
 	}
 	effect = {
-		balance_colony_locks_on = yes	# locked buildings are reopened daily
 		scope:location = {
 			if = {
 				limit = { is_target_in_variable_list = { name = balance_keep_buildings target = scope:building } }
@@ -619,7 +617,6 @@ balance_colony_keep_here = {
 	saved_scopes = { location }
 	is_valid = { scope:location = { owner ?= { is_subject_of = root } } }
 	effect = {
-		balance_colony_locks_on = yes	# locked buildings are reopened daily
 		scope:location = {
 			if = {
 				limit = { has_variable = balance_keep_all }
@@ -639,11 +636,9 @@ balance_colony_keep_here_on = {
 	is_shown = { scope:location = { has_variable = balance_keep_all } }
 }
 
-# ---- "Keep open" (scripted_effects/balance_colony_effects.txt): in the picked
-# location the subject's closed buildings are rebuilt open and the ones that
-# can be subsidised are, so its AI has no loss to close them over. Buildings
-# that earn nothing (bailiff, armory, dock) cannot be subsidised; a building
-# lock above reopens them all the same.
+# ---- subsidies (scripted_effects/balance_colony_effects.txt): the subject
+# pays for its buildings in the picked location, so its AI has no loss to
+# close them over
 balance_colony_subsidy_here = {
 	scope = country
 	saved_scopes = { location }

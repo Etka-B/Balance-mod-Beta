@@ -1,21 +1,15 @@
 # Keeps the colony window's daily subsidy renewal alive (scripted_effects/
 # balance_colony_effects.txt, events/balance_colony_subsidy_events.txt): starts
-# the daily chain if it is not running, or starts it again if it died. Only a
-# player with subjects, or an overlord with "Keep open" locations, gets past
-# the trigger.
+# the daily chain if it is not running, or starts it again if it died. Only an
+# overlord that has asked for subsidies somewhere carries the list, so every
+# other country stops at the trigger.
 #
 # The monthly_country_pulse entry that calls this lives in
 # balance_attrition_shadow_on_action.txt, with the mod's other monthly hooks --
 # see the note there on why they share one block.
 balance_colony_subsidy_pulse = {
 	trigger = {
-		OR = {
-			has_variable_list = balance_subsidy_locations
-			AND = {
-				is_ai = no
-				any_subject = { always = yes }
-			}
-		}
+		has_variable_list = balance_subsidy_locations
 	}
 	effect = {
 		balance_colony_subsidy_monthly = yes
