@@ -20,6 +20,7 @@ monthly_country_pulse = {
 		balance_attrition_shadow
 		balance_probe_combat
 		balance_cstat_pulse
+		balance_colony_subsidy_pulse	# balance_colony_on_action.txt
 	}
 }
 

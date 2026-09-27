@@ -636,3 +636,29 @@ balance_colony_keep_here_on = {
 	is_shown = { scope:location = { has_variable = balance_keep_all } }
 }
 
+# ---- subsidies (scripted_effects/balance_colony_effects.txt): the subject
+# pays for its buildings in the picked location, so its AI has no loss to
+# close them over
+balance_colony_subsidy_here = {
+	scope = country
+	saved_scopes = { location }
+	is_valid = { scope:location = { owner ?= { is_subject_of = root } } }
+	effect = {
+		scope:location = {
+			if = {
+				limit = { var:balance_subsidy_all ?= root }
+				balance_colony_subsidy_off_here = yes
+			}
+			else = {
+				balance_colony_subsidy_on_here = yes
+			}
+		}
+	}
+}
+
+balance_colony_subsidy_here_on = {
+	scope = country
+	saved_scopes = { location }
+	is_shown = { scope:location = { var:balance_subsidy_all ?= root } }
+}
+

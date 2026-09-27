@@ -1,0 +1,17 @@
+# Renews the colony window's subsidies once a month (scripted_effects/
+# balance_colony_effects.txt): buildings the subject built since, and any
+# subsidy its AI took away, are subsidised again. Only an overlord that has
+# asked for subsidies somewhere carries the list, so every other country
+# stops at the trigger.
+#
+# The monthly_country_pulse entry that calls this lives in
+# balance_attrition_shadow_on_action.txt, with the mod's other monthly hooks --
+# see the note there on why they share one block.
+balance_colony_subsidy_pulse = {
+	trigger = {
+		has_variable_list = balance_subsidy_locations
+	}
+	effect = {
+		balance_colony_subsidy_monthly = yes
+	}
+}

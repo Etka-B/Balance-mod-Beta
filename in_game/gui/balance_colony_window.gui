@@ -654,10 +654,10 @@ window = {
 						size = { 100% 100% }
 						widget = {
 							position = { 0 0 }
-							size = { 240 26 }
+							size = { 188 26 }
 							button_regular_alt_red = {
 								visible = "[GetScriptedGui('balance_colony_keep_here_on').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
-								size = { 240 26 }
+								size = { 188 26 }
 								fontsize = 12
 								text = "BALANCE_COLONY_H_KEEP_ON"
 								tooltip = "BALANCE_COLONY_H_KEEP_ON_TT"
@@ -665,12 +665,33 @@ window = {
 							}
 							button_regular_alt = {
 								visible = "[Not(GetScriptedGui('balance_colony_keep_here_on').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End))]"
-								size = { 240 26 }
+								size = { 188 26 }
 								fontsize = 12
 								text = "BALANCE_COLONY_H_KEEP_OFF"
 								tooltip = "BALANCE_COLONY_H_KEEP_OFF_TT"
 								enabled = "[GetScriptedGui('balance_colony_keep_here').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
 								onclick = "[GetScriptedGui('balance_colony_keep_here').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
+							}
+						}
+						widget = {
+							position = { 192 0 }
+							size = { 188 26 }
+							button_regular_alt_green = {
+								visible = "[GetScriptedGui('balance_colony_subsidy_here_on').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
+								size = { 188 26 }
+								fontsize = 12
+								text = "BALANCE_COLONY_H_SUB_ON"
+								tooltip = "BALANCE_COLONY_H_SUB_ON_TT"
+								onclick = "[GetScriptedGui('balance_colony_subsidy_here').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
+							}
+							button_regular_alt = {
+								visible = "[Not(GetScriptedGui('balance_colony_subsidy_here_on').IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End))]"
+								size = { 188 26 }
+								fontsize = 12
+								text = "BALANCE_COLONY_H_SUB_OFF"
+								tooltip = "BALANCE_COLONY_H_SUB_OFF_TT"
+								enabled = "[GetScriptedGui('balance_colony_subsidy_here').IsValid(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
+								onclick = "[GetScriptedGui('balance_colony_subsidy_here').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('location', GetPlayer.MakeScope.GetVariable('balance_colony_location').GetLocation.MakeScope).End)]"
 							}
 						}
 					}
@@ -719,6 +740,15 @@ window = {
 											align = right|nobaseline
 											fontsize = 12
 											text = "BALANCE_COLONY_OURS"
+										}
+										text_single = {
+											visible = "[And(Scope.GetBuilding.IsSubsidized, Not(ObjectsEqual(Scope.GetBuilding.GetOwner.Self, GetPlayer.Self)))]"
+											position = { 206 29 }
+											size = { 150 18 }
+											autoresize = no
+											align = right|nobaseline
+											fontsize = 12
+											text = "BALANCE_COLONY_SUBSIDIZED"
 										}
 										text_single = {
 											visible = "[Scope.GetBuilding.IsUnderConstruction]"

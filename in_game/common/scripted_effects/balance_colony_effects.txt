@@ -86,6 +86,97 @@ balance_colony_free_keep_here = {
 	if = { limit = { has_variable = balance_keep_all } remove_variable = balance_keep_all }
 }
 
+# ---- subsidies on one location (this = the location, root = the overlord).
+# can_close is a plain yes/no on the building type and the game has no effect
+# that reopens a closed building, so closing cannot be barred per location.
+# What it closes over is the loss: a subsidised building has none (the
+# location window drops its "unprofitable" mark), so balance_subsidy_all makes
+# the subject subsidise its own buildings here. It holds the overlord that set
+# it, so a subject handed to a new overlord keeps only the new one's. Renewed
+# every month by balance_colony_subsidy_monthly: that also reaches buildings
+# built later, and undoes the subject taking a subsidy away.
+balance_colony_subsidize_here = {
+	owner = { save_temporary_scope_as = balance_colony_o }
+	every_buildings_in_location = {
+		limit = {
+			owner ?= scope:balance_colony_o		# never ours, nor a third country's: their owner pays
+			NOT = { is_subsidized = yes }
+		}
+		set_subsidized = yes
+	}
+}
+
+balance_colony_unsubsidize_here = {
+	owner = { save_temporary_scope_as = balance_colony_o }
+	every_buildings_in_location = {
+		limit = {
+			owner ?= scope:balance_colony_o
+			is_subsidized = yes
+		}
+		set_subsidized = no
+	}
+}
+
+balance_colony_subsidy_on_here = {
+	set_variable = { name = balance_subsidy_all value = root }
+	save_temporary_scope_as = balance_colony_sl
+	root = {
+		if = {
+			limit = { NOT = { is_target_in_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl } } }
+			add_to_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl }
+		}
+	}
+	balance_colony_subsidize_here = yes
+}
+
+balance_colony_subsidy_off_here = {
+	remove_variable = balance_subsidy_all
+	save_temporary_scope_as = balance_colony_sl
+	root = { remove_list_variable = { name = balance_subsidy_locations target = scope:balance_colony_sl } }
+	balance_colony_unsubsidize_here = yes
+}
+
+# monthly, from on_action/balance_colony_on_action.txt (root = the overlord).
+# balance_subsidy_locations on the overlord only spares the pulse a walk over
+# every subject's every location. A location no longer a subject's lapses:
+# its subsidies stay as they are, the new owner decides.
+balance_colony_subsidy_monthly = {
+	every_in_list = {
+		variable = balance_subsidy_locations
+		limit = { var:balance_subsidy_all ?= root }
+		if = {
+			limit = { owner ?= { is_subject_of = root } }
+			balance_colony_subsidize_here = yes
+		}
+		else = {
+			remove_variable = balance_subsidy_all
+		}
+	}
+	# drop the lapsed ones from the list, but not while walking it
+	if = {
+		limit = {
+			any_in_list = {
+				variable = balance_subsidy_locations
+				NOT = { var:balance_subsidy_all ?= root }
+			}
+		}
+		clear_variable_list = balance_subsidy_rebuild
+		every_in_list = {
+			variable = balance_subsidy_locations
+			limit = { var:balance_subsidy_all ?= root }
+			save_temporary_scope_as = balance_colony_sl
+			root = { add_to_variable_list = { name = balance_subsidy_rebuild target = scope:balance_colony_sl } }
+		}
+		clear_variable_list = balance_subsidy_locations
+		every_in_list = {
+			variable = balance_subsidy_rebuild
+			save_temporary_scope_as = balance_colony_sl
+			root = { add_to_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl } }
+		}
+		clear_variable_list = balance_subsidy_rebuild
+	}
+}
+
 # ---- giving back the buildings the old "can't be closed" lock took
 # (removed 2026-09-27: taking a building split it in two whenever the subject
 # built more levels of that type). this = the location, root = the overlord.
