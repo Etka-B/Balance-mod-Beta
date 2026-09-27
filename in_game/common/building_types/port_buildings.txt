@@ -46,6 +46,7 @@ dock = {
 		local_repair_speed = 0.02
 
 	}
+	ai_forbid_shutdown = yes  # Balance mod: the AI never closes it (it earns nothing, so it always looks like a loss)
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -99,6 +100,7 @@ dry_dock = {
 		harbor_suitability = 0.15
 		local_repair_speed = 0.04
 	}
+	ai_forbid_shutdown = yes  # Balance mod: the AI never closes it (it earns nothing, so it always looks like a loss)
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -152,6 +154,7 @@ shipyard = {
 		harbor_suitability = 0.2
 		local_repair_speed = 0.06
 	}
+	ai_forbid_shutdown = yes  # Balance mod: the AI never closes it (it earns nothing, so it always looks like a loss)
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -205,6 +208,7 @@ grand_shipyard = {
 		harbor_suitability = 0.25
 		local_repair_speed = 0.08
 	}
+	ai_forbid_shutdown = yes  # Balance mod: the AI never closes it (it earns nothing, so it always looks like a loss)
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }

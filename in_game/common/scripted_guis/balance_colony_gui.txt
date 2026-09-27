@@ -636,9 +636,11 @@ balance_colony_keep_here_on = {
 	is_shown = { scope:location = { has_variable = balance_keep_all } }
 }
 
-# ---- subsidies (scripted_effects/balance_colony_effects.txt): the subject
-# pays for its buildings in the picked location, so its AI has no loss to
-# close them over
+# ---- "Keep open" (scripted_effects/balance_colony_effects.txt): in the picked
+# location the subject's closed buildings are rebuilt open and the ones that
+# can be subsidised are, so its AI has no loss to close them over. Buildings
+# that earn nothing (bailiff, armory, dock and their upgrades) cannot be
+# subsidised; their types carry ai_forbid_shutdown instead.
 balance_colony_subsidy_here = {
 	scope = country
 	saved_scopes = { location }
