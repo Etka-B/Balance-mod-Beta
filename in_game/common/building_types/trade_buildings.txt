@@ -41,6 +41,7 @@ marketplace = {
 		local_trades_per_burgher = 1
 		local_merchant_capacity = 1
 	}
+	ai_forbid_shutdown = yes  # Balance mod: no AI ever closes it
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -88,6 +89,7 @@ merchants_quarters = {
 	}
 	
 	obsolete = marketplace
+	ai_forbid_shutdown = yes  # Balance mod: no AI ever closes it
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -134,6 +136,7 @@ grand_marketplace = {
 	}
 	
 	obsolete = merchants_quarters
+	ai_forbid_shutdown = yes  # Balance mod: no AI ever closes it
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
@@ -184,6 +187,7 @@ commerce_center = {
 	}
 	
 	obsolete = grand_marketplace
+	ai_forbid_shutdown = yes  # Balance mod: no AI ever closes it
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }

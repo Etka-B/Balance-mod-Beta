@@ -61,6 +61,7 @@ bailiff = {
 	}
 	
 	
+	ai_forbid_shutdown = yes  # Balance mod: no AI ever closes it
 	can_destroy = { balance_building_not_kept = yes  # Balance mod: colony window building lock
 	}
 }
