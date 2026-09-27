@@ -69,7 +69,6 @@
 	# Checked on the location (root), not on scope:building: a building still
 	# under construction has no owner yet, so the old check was always false
 	# and its construction could not be cancelled.
-	ai_forbid_shutdown = yes  # Balance mod: the AI never closes it (it earns nothing, so it always looks like a loss)
 	can_destroy = {
 		balance_building_not_kept = yes  # Balance mod: colony window building lock
 
