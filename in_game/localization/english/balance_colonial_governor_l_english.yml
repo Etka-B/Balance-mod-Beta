@@ -1,0 +1,5 @@
+﻿l_english:
+ balance_colonial_governor: "Colonial Governor"
+ balance_colonial_governor_desc: "A modest seat of administration for a young colony. Unlike the [ShowBuildingTypeName('local_governor')] it can be set up in a rural settlement, a town or a city, costs little to build and to run, and is a smaller source of proximity. It takes one of the colony's [ShowBuildingTypeName('local_governor')] slots, and gives way to a [ShowBuildingTypeName('local_governor')] finished in the same location."
+ balance_colonial_governor_maintenance: "Colonial Administration"
+ balance_colonial_governor_tt: "The combined total of [ShowBuildingTypeName('local_governor')], [ShowBuildingTypeName('lieutenancy')] and [ShowBuildingTypeName('balance_colonial_governor')] in the colony's territory is less than its own limit."

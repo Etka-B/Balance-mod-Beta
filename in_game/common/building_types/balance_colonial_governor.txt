@@ -1,0 +1,88 @@
+﻿# Balance mod: a cheap governor for colonies. A colony stays small for decades,
+# and the local governor (cities only) is out of its reach for 30-40 years; this
+# one goes up in a rural settlement, a town or a city of a colonial subject,
+# gives 60 proximity (the local governor 80), costs 200 gold and next to nothing
+# to run. It takes one of the owner's local governor slots, as the lieutenancy
+# does: local_governor + lieutenancy + this < modifier:num_local_governors, and
+# the other two count it too (balancebuild.txt, capital_buildings.txt,
+# unique_buildings.txt). The overlord may build it in its colonies, as with the
+# local governor; the colony's own slots are used. Its icon is
+# gfx/interface/icons/buildings/balance_colonial_governor.dds.
+balance_colonial_governor = {
+	audio_tier = 2
+	is_special = yes
+	is_foreign = no
+	pop_type = peasants				# a colony has few nobles to staff it
+	max_levels = 1
+	employment_size = 0.1
+	forbidden_for_estates = yes
+
+	category = government_category
+
+	rural_settlement = yes
+	town = yes
+	city = yes
+	megalopolis = yes
+
+	price = balance_colonial_governor_price		# prices/ballance_prices.txt: 200 gold
+	build_time = government_build_time
+
+	location_potential = {
+		owner ?= { is_colonial_subject = yes }
+		owner.capital != this
+		NOT = { has_building = building_type:local_governor }
+	}
+
+	allow = {
+		owner = {
+			OR = {
+				this = scope:actor
+				is_subject_of = scope:actor
+			}
+		}
+		custom_tooltip = {
+			text = balance_colonial_governor_tt
+			owner = {
+				total_building_levels_including_construction:local_governor < {
+					value = modifier:num_local_governors
+					subtract = total_building_levels_including_construction:lieutenancy
+					subtract = total_building_levels_including_construction:balance_colonial_governor
+				}
+			}
+		}
+	}
+
+	# a colony's building: gone once its owner is no colony any more, and it
+	# gives way to a local governor finished in the same location
+	remove_if = {
+		OR = {
+			owner ?= { is_colonial_subject = no }
+			location = { has_building_with_at_least_one_level = building_type:local_governor }
+		}
+	}
+
+	can_destroy = {
+		balance_building_not_kept = yes  # Balance mod: colony window building lock
+		OR = {
+			owner = scope:actor
+			owner = { is_subject_of = scope:actor }
+		}
+	}
+
+	automation_build_allowed = no
+	ai_forbid_shutdown = yes		# no AI ever closes it
+	important_for_AI = yes
+	ai_ignore_maintenance = yes
+	AI_ignore_available_worker_flag = yes
+
+	unique_production_methods = {
+		balance_colonial_governor_maintenance = {
+			lumber = 0.2
+			category = building_maintenance
+		}
+	}
+
+	modifier = {
+		local_proximity_source = 60
+	}
+}

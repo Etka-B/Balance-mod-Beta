@@ -10,3 +10,10 @@
 providentia_temporalis_action = {
 	religious_influence = 50
 }
+
+# What a colonial governor costs to build (building_types/balance_colonial_governor.txt),
+# kept at 200 whatever the inflation.
+balance_colonial_governor_price = {
+	gold = 200
+	ignore_inflation = yes
+}

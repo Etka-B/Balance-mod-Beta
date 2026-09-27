@@ -1,0 +1,5 @@
+﻿l_turkish:
+ balance_colonial_governor: "Koloni Valisi"
+ balance_colonial_governor_desc: "Genç bir koloni için mütevazı bir yönetim merkezi. [ShowBuildingTypeName('local_governor')] binasından farklı olarak kırsalda, kasabada ya da şehirde kurulabilir; kurması da işletmesi de ucuzdur, daha küçük bir yakınlık kaynağıdır. Koloninin [ShowBuildingTypeName('local_governor')] slotlarından birini kullanır; aynı yerde bir [ShowBuildingTypeName('local_governor')] tamamlanınca yerini ona bırakır."
+ balance_colonial_governor_maintenance: "Koloni İdaresi"
+ balance_colonial_governor_tt: "Koloninin topraklarındaki [ShowBuildingTypeName('local_governor')], [ShowBuildingTypeName('lieutenancy')] ve [ShowBuildingTypeName('balance_colonial_governor')] toplamı, koloninin kendi limitinden az olmalı."

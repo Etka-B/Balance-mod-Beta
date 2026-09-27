@@ -132,6 +132,7 @@ REPLACE:local_governor = {
 						value = {
 							value = modifier:num_local_governors
 							subtract = total_building_levels_including_construction:lieutenancy
+							subtract = total_building_levels_including_construction:balance_colonial_governor  # Balance mod: shares the slot
 						}
 					}
 				}
@@ -145,6 +146,7 @@ REPLACE:local_governor = {
 						value = {
 							value = modifier:num_local_governors
 							subtract = total_building_levels_including_construction:lieutenancy
+							subtract = total_building_levels_including_construction:balance_colonial_governor  # Balance mod: shares the slot
 						}
 					}
 				}
