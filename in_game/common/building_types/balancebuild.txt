@@ -22,7 +22,7 @@
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bailiff }
 		trigger_if = {
 			limit = {
 				owner = {
@@ -118,7 +118,7 @@ REPLACE:local_governor = {
 	city = yes
 	megalopolis = yes
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = local_governor }
 		trigger_if = {
 			limit = {
 				owner = {

@@ -4,6 +4,7 @@
 # Age of Traditions
 
 tools_guild = {
+	allow = { balance_building_not_forbidden = { TYPE = tools_guild } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = burghers
@@ -68,6 +69,7 @@ tools_guild = {
 }
 
 tools_workshop = {
+	allow = { balance_building_not_forbidden = { TYPE = tools_workshop } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -107,6 +109,7 @@ tools_workshop = {
 }
 
 iron_foundry = {
+	allow = { balance_building_not_forbidden = { TYPE = iron_foundry } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_foreign = no
 	pop_type = laborers		#unique
@@ -147,6 +150,7 @@ iron_foundry = {
 }
 
 iron_mill = {
+	allow = { balance_building_not_forbidden = { TYPE = iron_mill } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_foreign = no
 	pop_type = laborers

@@ -1,0 +1,1719 @@
+﻿# THE COLONY WINDOW, PART TWO (gui/balance_colony_window.gui): the building
+# filter, subsidies by building type and the "Build priorities" tab.
+# Written by colony_v9.py and colony_v10.py.
+
+# ---- the building filter's icons (root = the overlord): every building type
+# standing in the picked subject's locations, in two rows
+balance_colony_fill_btypes = {
+	clear_variable_list = balance_colony_btypes
+	clear_variable_list = balance_colony_btypes2
+	set_variable = { name = balance_colony_bn value = 0 }
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			every_owned_location = {
+				every_buildings_in_location = {
+					building_type = { save_temporary_scope_as = balance_colony_bt }
+					root = {
+						if = {
+							limit = {
+								NOT = { is_target_in_variable_list = { name = balance_colony_btypes target = scope:balance_colony_bt } }
+								NOT = { is_target_in_variable_list = { name = balance_colony_btypes2 target = scope:balance_colony_bt } }
+							}
+							if = {
+								limit = { var:balance_colony_bn < 20 }
+								add_to_variable_list = { name = balance_colony_btypes target = scope:balance_colony_bt }
+							}
+							else = {
+								add_to_variable_list = { name = balance_colony_btypes2 target = scope:balance_colony_bt }
+							}
+							change_variable = { name = balance_colony_bn add = 1 }
+						}
+					}
+				}
+			}
+		}
+	}
+	remove_variable = balance_colony_bn
+}
+
+# every building type the picked subject can build (the priorities tab), and
+# the ones forbidden to it, which the game may no longer count as buildable
+balance_colony_fill_buildable = {
+	clear_variable_list = balance_colony_bt_all
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			balance_colony_prio_defaults = yes
+			# the first version's on/off lists become rows
+			every_in_list = {
+				variable = balance_prio_buildings
+				save_temporary_scope_as = balance_prio_nb
+				balance_prio_add = { K = b T = balance_prio_nb }
+			}
+			clear_variable_list = balance_prio_buildings
+			every_in_list = {
+				variable = balance_prio_goods
+				save_temporary_scope_as = balance_prio_nb
+				balance_prio_add = { K = g T = balance_prio_nb }
+			}
+			clear_variable_list = balance_prio_goods
+			balance_prio_count_all = yes
+			# its locations, for the picker's third list
+			save_temporary_scope_as = balance_prio_s
+			# rows set to "selected" before every row had its own locations
+			if = {
+				limit = {
+					has_variable = balance_prio_1_where
+					var:balance_prio_1_where = 1
+					NOT = { any_in_list = { variable = balance_prio_1_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_1_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_2_where
+					var:balance_prio_2_where = 1
+					NOT = { any_in_list = { variable = balance_prio_2_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_2_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_3_where
+					var:balance_prio_3_where = 1
+					NOT = { any_in_list = { variable = balance_prio_3_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_3_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_4_where
+					var:balance_prio_4_where = 1
+					NOT = { any_in_list = { variable = balance_prio_4_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_4_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_5_where
+					var:balance_prio_5_where = 1
+					NOT = { any_in_list = { variable = balance_prio_5_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_5_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_6_where
+					var:balance_prio_6_where = 1
+					NOT = { any_in_list = { variable = balance_prio_6_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_6_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_7_where
+					var:balance_prio_7_where = 1
+					NOT = { any_in_list = { variable = balance_prio_7_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_7_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_8_where
+					var:balance_prio_8_where = 1
+					NOT = { any_in_list = { variable = balance_prio_8_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_8_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_9_where
+					var:balance_prio_9_where = 1
+					NOT = { any_in_list = { variable = balance_prio_9_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_9_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_10_where
+					var:balance_prio_10_where = 1
+					NOT = { any_in_list = { variable = balance_prio_10_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_10_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_11_where
+					var:balance_prio_11_where = 1
+					NOT = { any_in_list = { variable = balance_prio_11_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_11_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_12_where
+					var:balance_prio_12_where = 1
+					NOT = { any_in_list = { variable = balance_prio_12_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_12_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_13_where
+					var:balance_prio_13_where = 1
+					NOT = { any_in_list = { variable = balance_prio_13_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_13_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_14_where
+					var:balance_prio_14_where = 1
+					NOT = { any_in_list = { variable = balance_prio_14_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_14_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_15_where
+					var:balance_prio_15_where = 1
+					NOT = { any_in_list = { variable = balance_prio_15_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_15_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_16_where
+					var:balance_prio_16_where = 1
+					NOT = { any_in_list = { variable = balance_prio_16_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_16_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_17_where
+					var:balance_prio_17_where = 1
+					NOT = { any_in_list = { variable = balance_prio_17_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_17_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_18_where
+					var:balance_prio_18_where = 1
+					NOT = { any_in_list = { variable = balance_prio_18_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_18_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_19_where
+					var:balance_prio_19_where = 1
+					NOT = { any_in_list = { variable = balance_prio_19_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_19_locs target = scope:balance_prio_cl } }
+				}
+			}
+			if = {
+				limit = {
+					has_variable = balance_prio_20_where
+					var:balance_prio_20_where = 1
+					NOT = { any_in_list = { variable = balance_prio_20_locs always = yes } }
+				}
+				every_in_list = {
+					variable = balance_prio_locs
+					save_temporary_scope_as = balance_prio_cl
+					scope:balance_prio_s = { add_to_variable_list = { name = balance_prio_20_locs target = scope:balance_prio_cl } }
+				}
+			}
+
+			root = { clear_variable_list = balance_prio_loc_list }
+			ordered_owned_location = {
+				order_by = population
+				max = 2000
+				check_range_bounds = no
+				save_temporary_scope_as = balance_prio_l
+				root = { add_to_variable_list = { name = balance_prio_loc_list target = scope:balance_prio_l } }
+			}
+			every_buildable_building_type = {
+				save_temporary_scope_as = balance_colony_bt
+				root = { add_to_variable_list = { name = balance_colony_bt_all target = scope:balance_colony_bt } }
+			}
+			every_in_list = {
+				variable = balance_forbid_buildings
+				save_temporary_scope_as = balance_colony_bt
+				root = {
+					if = {
+						limit = { NOT = { is_target_in_variable_list = { name = balance_colony_bt_all target = scope:balance_colony_bt } } }
+						add_to_variable_list = { name = balance_colony_bt_all target = scope:balance_colony_bt }
+					}
+				}
+			}
+		}
+	}
+}
+
+# ---- subsidies by building type (this = the location, root = the overlord,
+# scope:balance_colony_st = the building type). balance_subsidy_types on the
+# location lists the types, balance_subsidy_tby holds the overlord that set
+# them; the daily renewal (balance_colony_subsidy_renew) keeps them up.
+balance_colony_subsidize_types_here = {
+	owner = { save_temporary_scope_as = balance_colony_o }
+	save_temporary_scope_as = balance_colony_here
+	every_in_list = {
+		variable = balance_subsidy_types
+		save_temporary_scope_as = balance_colony_st2
+		scope:balance_colony_here = {
+			every_buildings_in_location = {
+				limit = {
+					building_type = scope:balance_colony_st2
+					owner ?= scope:balance_colony_o
+					NOT = { is_subsidized = yes }
+				}
+				set_subsidized = yes
+			}
+		}
+	}
+}
+
+balance_colony_subsidy_type_on_here = {
+	if = {
+		limit = { NOT = { is_target_in_variable_list = { name = balance_subsidy_types target = scope:balance_colony_st } } }
+		add_to_variable_list = { name = balance_subsidy_types target = scope:balance_colony_st }
+	}
+	set_variable = { name = balance_subsidy_tby value = root }
+	save_temporary_scope_as = balance_colony_sl
+	root = {
+		if = {
+			limit = { NOT = { is_target_in_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl } } }
+			add_to_variable_list = { name = balance_subsidy_locations target = scope:balance_colony_sl }
+		}
+	}
+	balance_colony_subsidize_types_here = yes
+	root = { balance_colony_subsidy_seed = yes }
+}
+
+balance_colony_subsidy_type_off_here = {
+	remove_list_variable = { name = balance_subsidy_types target = scope:balance_colony_st }
+	if = {
+		limit = { NOT = { var:balance_subsidy_all ?= root } }
+		owner = { save_temporary_scope_as = balance_colony_o }
+		every_buildings_in_location = {
+			limit = {
+				building_type = scope:balance_colony_st
+				owner ?= scope:balance_colony_o
+				is_subsidized = yes
+			}
+			set_subsidized = no
+		}
+	}
+	if = {
+		limit = { NOT = { any_in_list = { variable = balance_subsidy_types always = yes } } }
+		if = { limit = { has_variable = balance_subsidy_tby } remove_variable = balance_subsidy_tby }
+		if = {
+			limit = { NOT = { var:balance_subsidy_all ?= root } }
+			save_temporary_scope_as = balance_colony_sl
+			root = { remove_list_variable = { name = balance_subsidy_locations target = scope:balance_colony_sl } }
+		}
+	}
+}
+
+# ---- the priorities tab: an ordered list of up to 20 rows on the subject.
+# Row S is the variables balance_prio_S_b (a building type) or _g (a raw
+# material), _gold (build only while the treasury holds this much), _max (how
+# many of it may be under construction at once), _where (0 everywhere,
+# 1 the saved selection, 2 towns and cities), _hold (while this row still has
+# work, the rows under it wait), _busy (under construction at the last look),
+# _pmin (build only while its buildings of this type earn this much on
+# average), _pavg (that average at the last look) and _mode (where first:
+# 0 most populous, 1 most efficient, 2 most profitable / best price). Row 0 is
+# scratch for swapping. The overlord keeps the subjects it gave orders to in
+# balance_prio_subjects. Written by colony_v10.py and colony_v11.py.
+balance_colony_prio_defaults = {
+	if = { limit = { NOT = { has_variable = balance_prio_freq } } set_variable = { name = balance_prio_freq value = 1 } }
+}
+
+# this = the subject, root = the overlord: switch the orders on and remember it
+balance_colony_prio_enable = {
+	set_variable = balance_prio_on
+	balance_colony_prio_defaults = yes
+	save_temporary_scope_as = balance_prio_s
+	root = {
+		if = {
+			limit = { NOT = { is_target_in_variable_list = { name = balance_prio_subjects target = scope:balance_prio_s } } }
+			add_to_variable_list = { name = balance_prio_subjects target = scope:balance_prio_s }
+		}
+	}
+}
+
+# ---- rows (this = the subject)
+balance_prio_clear_slot = {
+	if = { limit = { has_variable = balance_prio_$S$_b } remove_variable = balance_prio_$S$_b }
+	if = { limit = { has_variable = balance_prio_$S$_g } remove_variable = balance_prio_$S$_g }
+	if = { limit = { has_variable = balance_prio_$S$_gold } remove_variable = balance_prio_$S$_gold }
+	if = { limit = { has_variable = balance_prio_$S$_max } remove_variable = balance_prio_$S$_max }
+	if = { limit = { has_variable = balance_prio_$S$_where } remove_variable = balance_prio_$S$_where }
+	if = { limit = { has_variable = balance_prio_$S$_busy } remove_variable = balance_prio_$S$_busy }
+	if = { limit = { has_variable = balance_prio_$S$_pmin } remove_variable = balance_prio_$S$_pmin }
+	if = { limit = { has_variable = balance_prio_$S$_pavg } remove_variable = balance_prio_$S$_pavg }
+	if = { limit = { has_variable = balance_prio_$S$_pn } remove_variable = balance_prio_$S$_pn }
+	if = { limit = { has_variable = balance_prio_$S$_mode } remove_variable = balance_prio_$S$_mode }
+	if = { limit = { has_variable = balance_prio_$S$_cmin } remove_variable = balance_prio_$S$_cmin }
+	if = { limit = { has_variable = balance_prio_$S$_hold } remove_variable = balance_prio_$S$_hold }
+	clear_variable_list = balance_prio_$S$_locs
+}
+
+balance_prio_copy_slot = {
+	balance_prio_clear_slot = { S = $TO$ }
+	save_temporary_scope_as = balance_prio_cs
+	every_in_list = {
+		variable = balance_prio_$FROM$_locs
+		save_temporary_scope_as = balance_prio_cl
+		scope:balance_prio_cs = { add_to_variable_list = { name = balance_prio_$TO$_locs target = scope:balance_prio_cl } }
+	}
+	if = { limit = { has_variable = balance_prio_$FROM$_b } set_variable = { name = balance_prio_$TO$_b value = var:balance_prio_$FROM$_b } }
+	if = { limit = { has_variable = balance_prio_$FROM$_g } set_variable = { name = balance_prio_$TO$_g value = var:balance_prio_$FROM$_g } }
+	if = { limit = { has_variable = balance_prio_$FROM$_gold } set_variable = { name = balance_prio_$TO$_gold value = var:balance_prio_$FROM$_gold } }
+	if = { limit = { has_variable = balance_prio_$FROM$_max } set_variable = { name = balance_prio_$TO$_max value = var:balance_prio_$FROM$_max } }
+	if = { limit = { has_variable = balance_prio_$FROM$_where } set_variable = { name = balance_prio_$TO$_where value = var:balance_prio_$FROM$_where } }
+	if = { limit = { has_variable = balance_prio_$FROM$_busy } set_variable = { name = balance_prio_$TO$_busy value = var:balance_prio_$FROM$_busy } }
+	if = { limit = { has_variable = balance_prio_$FROM$_pmin } set_variable = { name = balance_prio_$TO$_pmin value = var:balance_prio_$FROM$_pmin } }
+	if = { limit = { has_variable = balance_prio_$FROM$_pavg } set_variable = { name = balance_prio_$TO$_pavg value = var:balance_prio_$FROM$_pavg } }
+	if = { limit = { has_variable = balance_prio_$FROM$_pn } set_variable = { name = balance_prio_$TO$_pn value = var:balance_prio_$FROM$_pn } }
+	if = { limit = { has_variable = balance_prio_$FROM$_mode } set_variable = { name = balance_prio_$TO$_mode value = var:balance_prio_$FROM$_mode } }
+	if = { limit = { has_variable = balance_prio_$FROM$_cmin } set_variable = { name = balance_prio_$TO$_cmin value = var:balance_prio_$FROM$_cmin } }
+	if = { limit = { has_variable = balance_prio_$FROM$_hold } set_variable = balance_prio_$TO$_hold }
+}
+
+balance_prio_swap_slots = {
+	balance_prio_copy_slot = { FROM = $A$ TO = 0 }
+	balance_prio_copy_slot = { FROM = $B$ TO = $A$ }
+	balance_prio_copy_slot = { FROM = 0 TO = $B$ }
+	balance_prio_clear_slot = { S = 0 }
+}
+
+# close the gap a removed row leaves
+balance_prio_compact = {
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 1 }
+			NOT = { balance_prio_slot_empty = { S = 2 } }
+		}
+		balance_prio_copy_slot = { FROM = 2 TO = 1 }
+		balance_prio_clear_slot = { S = 2 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 2 }
+			NOT = { balance_prio_slot_empty = { S = 3 } }
+		}
+		balance_prio_copy_slot = { FROM = 3 TO = 2 }
+		balance_prio_clear_slot = { S = 3 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 3 }
+			NOT = { balance_prio_slot_empty = { S = 4 } }
+		}
+		balance_prio_copy_slot = { FROM = 4 TO = 3 }
+		balance_prio_clear_slot = { S = 4 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 4 }
+			NOT = { balance_prio_slot_empty = { S = 5 } }
+		}
+		balance_prio_copy_slot = { FROM = 5 TO = 4 }
+		balance_prio_clear_slot = { S = 5 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 5 }
+			NOT = { balance_prio_slot_empty = { S = 6 } }
+		}
+		balance_prio_copy_slot = { FROM = 6 TO = 5 }
+		balance_prio_clear_slot = { S = 6 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 6 }
+			NOT = { balance_prio_slot_empty = { S = 7 } }
+		}
+		balance_prio_copy_slot = { FROM = 7 TO = 6 }
+		balance_prio_clear_slot = { S = 7 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 7 }
+			NOT = { balance_prio_slot_empty = { S = 8 } }
+		}
+		balance_prio_copy_slot = { FROM = 8 TO = 7 }
+		balance_prio_clear_slot = { S = 8 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 8 }
+			NOT = { balance_prio_slot_empty = { S = 9 } }
+		}
+		balance_prio_copy_slot = { FROM = 9 TO = 8 }
+		balance_prio_clear_slot = { S = 9 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 9 }
+			NOT = { balance_prio_slot_empty = { S = 10 } }
+		}
+		balance_prio_copy_slot = { FROM = 10 TO = 9 }
+		balance_prio_clear_slot = { S = 10 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 10 }
+			NOT = { balance_prio_slot_empty = { S = 11 } }
+		}
+		balance_prio_copy_slot = { FROM = 11 TO = 10 }
+		balance_prio_clear_slot = { S = 11 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 11 }
+			NOT = { balance_prio_slot_empty = { S = 12 } }
+		}
+		balance_prio_copy_slot = { FROM = 12 TO = 11 }
+		balance_prio_clear_slot = { S = 12 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 12 }
+			NOT = { balance_prio_slot_empty = { S = 13 } }
+		}
+		balance_prio_copy_slot = { FROM = 13 TO = 12 }
+		balance_prio_clear_slot = { S = 13 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 13 }
+			NOT = { balance_prio_slot_empty = { S = 14 } }
+		}
+		balance_prio_copy_slot = { FROM = 14 TO = 13 }
+		balance_prio_clear_slot = { S = 14 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 14 }
+			NOT = { balance_prio_slot_empty = { S = 15 } }
+		}
+		balance_prio_copy_slot = { FROM = 15 TO = 14 }
+		balance_prio_clear_slot = { S = 15 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 15 }
+			NOT = { balance_prio_slot_empty = { S = 16 } }
+		}
+		balance_prio_copy_slot = { FROM = 16 TO = 15 }
+		balance_prio_clear_slot = { S = 16 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 16 }
+			NOT = { balance_prio_slot_empty = { S = 17 } }
+		}
+		balance_prio_copy_slot = { FROM = 17 TO = 16 }
+		balance_prio_clear_slot = { S = 17 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 17 }
+			NOT = { balance_prio_slot_empty = { S = 18 } }
+		}
+		balance_prio_copy_slot = { FROM = 18 TO = 17 }
+		balance_prio_clear_slot = { S = 18 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 18 }
+			NOT = { balance_prio_slot_empty = { S = 19 } }
+		}
+		balance_prio_copy_slot = { FROM = 19 TO = 18 }
+		balance_prio_clear_slot = { S = 19 }
+	}
+	if = {
+		limit = {
+			balance_prio_slot_empty = { S = 19 }
+			NOT = { balance_prio_slot_empty = { S = 20 } }
+		}
+		balance_prio_copy_slot = { FROM = 20 TO = 19 }
+		balance_prio_clear_slot = { S = 20 }
+	}
+}
+
+# K = b (building type) or g (raw material), T = the saved scope: into the
+# first free row
+balance_prio_add = {
+	if = { limit = { has_variable = balance_prio_placed } remove_variable = balance_prio_placed }
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 1 }
+		}
+		set_variable = { name = balance_prio_1_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_1_gold value = 100 }
+		set_variable = { name = balance_prio_1_max value = 1 }
+		set_variable = { name = balance_prio_1_where value = 0 }
+		set_variable = { name = balance_prio_1_busy value = 0 }
+		set_variable = { name = balance_prio_1_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 2 }
+		}
+		set_variable = { name = balance_prio_2_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_2_gold value = 100 }
+		set_variable = { name = balance_prio_2_max value = 1 }
+		set_variable = { name = balance_prio_2_where value = 0 }
+		set_variable = { name = balance_prio_2_busy value = 0 }
+		set_variable = { name = balance_prio_2_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 3 }
+		}
+		set_variable = { name = balance_prio_3_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_3_gold value = 100 }
+		set_variable = { name = balance_prio_3_max value = 1 }
+		set_variable = { name = balance_prio_3_where value = 0 }
+		set_variable = { name = balance_prio_3_busy value = 0 }
+		set_variable = { name = balance_prio_3_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 4 }
+		}
+		set_variable = { name = balance_prio_4_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_4_gold value = 100 }
+		set_variable = { name = balance_prio_4_max value = 1 }
+		set_variable = { name = balance_prio_4_where value = 0 }
+		set_variable = { name = balance_prio_4_busy value = 0 }
+		set_variable = { name = balance_prio_4_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 5 }
+		}
+		set_variable = { name = balance_prio_5_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_5_gold value = 100 }
+		set_variable = { name = balance_prio_5_max value = 1 }
+		set_variable = { name = balance_prio_5_where value = 0 }
+		set_variable = { name = balance_prio_5_busy value = 0 }
+		set_variable = { name = balance_prio_5_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 6 }
+		}
+		set_variable = { name = balance_prio_6_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_6_gold value = 100 }
+		set_variable = { name = balance_prio_6_max value = 1 }
+		set_variable = { name = balance_prio_6_where value = 0 }
+		set_variable = { name = balance_prio_6_busy value = 0 }
+		set_variable = { name = balance_prio_6_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 7 }
+		}
+		set_variable = { name = balance_prio_7_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_7_gold value = 100 }
+		set_variable = { name = balance_prio_7_max value = 1 }
+		set_variable = { name = balance_prio_7_where value = 0 }
+		set_variable = { name = balance_prio_7_busy value = 0 }
+		set_variable = { name = balance_prio_7_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 8 }
+		}
+		set_variable = { name = balance_prio_8_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_8_gold value = 100 }
+		set_variable = { name = balance_prio_8_max value = 1 }
+		set_variable = { name = balance_prio_8_where value = 0 }
+		set_variable = { name = balance_prio_8_busy value = 0 }
+		set_variable = { name = balance_prio_8_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 9 }
+		}
+		set_variable = { name = balance_prio_9_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_9_gold value = 100 }
+		set_variable = { name = balance_prio_9_max value = 1 }
+		set_variable = { name = balance_prio_9_where value = 0 }
+		set_variable = { name = balance_prio_9_busy value = 0 }
+		set_variable = { name = balance_prio_9_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 10 }
+		}
+		set_variable = { name = balance_prio_10_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_10_gold value = 100 }
+		set_variable = { name = balance_prio_10_max value = 1 }
+		set_variable = { name = balance_prio_10_where value = 0 }
+		set_variable = { name = balance_prio_10_busy value = 0 }
+		set_variable = { name = balance_prio_10_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 11 }
+		}
+		set_variable = { name = balance_prio_11_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_11_gold value = 100 }
+		set_variable = { name = balance_prio_11_max value = 1 }
+		set_variable = { name = balance_prio_11_where value = 0 }
+		set_variable = { name = balance_prio_11_busy value = 0 }
+		set_variable = { name = balance_prio_11_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 12 }
+		}
+		set_variable = { name = balance_prio_12_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_12_gold value = 100 }
+		set_variable = { name = balance_prio_12_max value = 1 }
+		set_variable = { name = balance_prio_12_where value = 0 }
+		set_variable = { name = balance_prio_12_busy value = 0 }
+		set_variable = { name = balance_prio_12_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 13 }
+		}
+		set_variable = { name = balance_prio_13_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_13_gold value = 100 }
+		set_variable = { name = balance_prio_13_max value = 1 }
+		set_variable = { name = balance_prio_13_where value = 0 }
+		set_variable = { name = balance_prio_13_busy value = 0 }
+		set_variable = { name = balance_prio_13_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 14 }
+		}
+		set_variable = { name = balance_prio_14_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_14_gold value = 100 }
+		set_variable = { name = balance_prio_14_max value = 1 }
+		set_variable = { name = balance_prio_14_where value = 0 }
+		set_variable = { name = balance_prio_14_busy value = 0 }
+		set_variable = { name = balance_prio_14_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 15 }
+		}
+		set_variable = { name = balance_prio_15_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_15_gold value = 100 }
+		set_variable = { name = balance_prio_15_max value = 1 }
+		set_variable = { name = balance_prio_15_where value = 0 }
+		set_variable = { name = balance_prio_15_busy value = 0 }
+		set_variable = { name = balance_prio_15_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 16 }
+		}
+		set_variable = { name = balance_prio_16_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_16_gold value = 100 }
+		set_variable = { name = balance_prio_16_max value = 1 }
+		set_variable = { name = balance_prio_16_where value = 0 }
+		set_variable = { name = balance_prio_16_busy value = 0 }
+		set_variable = { name = balance_prio_16_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 17 }
+		}
+		set_variable = { name = balance_prio_17_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_17_gold value = 100 }
+		set_variable = { name = balance_prio_17_max value = 1 }
+		set_variable = { name = balance_prio_17_where value = 0 }
+		set_variable = { name = balance_prio_17_busy value = 0 }
+		set_variable = { name = balance_prio_17_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 18 }
+		}
+		set_variable = { name = balance_prio_18_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_18_gold value = 100 }
+		set_variable = { name = balance_prio_18_max value = 1 }
+		set_variable = { name = balance_prio_18_where value = 0 }
+		set_variable = { name = balance_prio_18_busy value = 0 }
+		set_variable = { name = balance_prio_18_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 19 }
+		}
+		set_variable = { name = balance_prio_19_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_19_gold value = 100 }
+		set_variable = { name = balance_prio_19_max value = 1 }
+		set_variable = { name = balance_prio_19_where value = 0 }
+		set_variable = { name = balance_prio_19_busy value = 0 }
+		set_variable = { name = balance_prio_19_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_placed }
+			balance_prio_slot_empty = { S = 20 }
+		}
+		set_variable = { name = balance_prio_20_$K$ value = scope:$T$ }
+		set_variable = { name = balance_prio_20_gold value = 100 }
+		set_variable = { name = balance_prio_20_max value = 1 }
+		set_variable = { name = balance_prio_20_where value = 0 }
+		set_variable = { name = balance_prio_20_busy value = 0 }
+		set_variable = { name = balance_prio_20_mode value = 0 }
+		set_variable = balance_prio_placed
+	}
+	if = { limit = { has_variable = balance_prio_placed } remove_variable = balance_prio_placed }
+}
+
+balance_prio_remove = {
+	if = { limit = { var:balance_prio_1_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 1 } }
+	if = { limit = { var:balance_prio_2_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 2 } }
+	if = { limit = { var:balance_prio_3_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 3 } }
+	if = { limit = { var:balance_prio_4_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 4 } }
+	if = { limit = { var:balance_prio_5_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 5 } }
+	if = { limit = { var:balance_prio_6_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 6 } }
+	if = { limit = { var:balance_prio_7_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 7 } }
+	if = { limit = { var:balance_prio_8_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 8 } }
+	if = { limit = { var:balance_prio_9_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 9 } }
+	if = { limit = { var:balance_prio_10_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 10 } }
+	if = { limit = { var:balance_prio_11_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 11 } }
+	if = { limit = { var:balance_prio_12_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 12 } }
+	if = { limit = { var:balance_prio_13_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 13 } }
+	if = { limit = { var:balance_prio_14_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 14 } }
+	if = { limit = { var:balance_prio_15_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 15 } }
+	if = { limit = { var:balance_prio_16_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 16 } }
+	if = { limit = { var:balance_prio_17_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 17 } }
+	if = { limit = { var:balance_prio_18_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 18 } }
+	if = { limit = { var:balance_prio_19_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 19 } }
+	if = { limit = { var:balance_prio_20_$K$ ?= scope:$T$ } balance_prio_clear_slot = { S = 20 } }
+	balance_prio_compact = yes
+}
+
+# rows under construction now, for the list (this = the subject)
+balance_prio_count_all = {
+	save_temporary_scope_as = balance_prio_c
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 1 } } } balance_prio_count_slot = { S = 1 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 2 } } } balance_prio_count_slot = { S = 2 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 3 } } } balance_prio_count_slot = { S = 3 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 4 } } } balance_prio_count_slot = { S = 4 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 5 } } } balance_prio_count_slot = { S = 5 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 6 } } } balance_prio_count_slot = { S = 6 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 7 } } } balance_prio_count_slot = { S = 7 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 8 } } } balance_prio_count_slot = { S = 8 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 9 } } } balance_prio_count_slot = { S = 9 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 10 } } } balance_prio_count_slot = { S = 10 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 11 } } } balance_prio_count_slot = { S = 11 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 12 } } } balance_prio_count_slot = { S = 12 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 13 } } } balance_prio_count_slot = { S = 13 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 14 } } } balance_prio_count_slot = { S = 14 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 15 } } } balance_prio_count_slot = { S = 15 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 16 } } } balance_prio_count_slot = { S = 16 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 17 } } } balance_prio_count_slot = { S = 17 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 18 } } } balance_prio_count_slot = { S = 18 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 19 } } } balance_prio_count_slot = { S = 19 } }
+	if = { limit = { NOT = { balance_prio_slot_empty = { S = 20 } } } balance_prio_count_slot = { S = 20 } }
+}
+
+# S = the row; sets balance_prio_busy and scope:balance_prio_t / _g
+balance_prio_count_slot = {
+	if = { limit = { NOT = { has_variable = balance_prio_$S$_mode } } set_variable = { name = balance_prio_$S$_mode value = 0 } }
+	set_variable = { name = balance_prio_busy value = 0 }
+	if = {
+		limit = { has_variable = balance_prio_$S$_b }
+		var:balance_prio_$S$_b = { save_temporary_scope_as = balance_prio_t }
+		every_owned_location = {
+			limit = {
+				any_buildings_in_location = {
+					building_type = scope:balance_prio_t
+					building_levels_under_construction > 0
+				}
+			}
+			scope:balance_prio_c = { change_variable = { name = balance_prio_busy add = 1 } }
+		}
+		# the average profit of its own buildings of this type
+		set_variable = { name = balance_prio_n value = balance_sv_prio_t_count }
+		if = {
+			limit = { var:balance_prio_n > 0 }
+			set_variable = { name = balance_prio_$S$_pavg value = balance_sv_prio_t_profit_sum }
+			change_variable = { name = balance_prio_$S$_pavg divide = var:balance_prio_n }
+			set_variable = { name = balance_prio_$S$_pn value = var:balance_prio_n }
+		}
+		if = {
+			limit = {
+				var:balance_prio_n <= 0
+				has_variable = balance_prio_$S$_pavg
+			}
+			remove_variable = balance_prio_$S$_pavg
+			if = { limit = { has_variable = balance_prio_$S$_pn } remove_variable = balance_prio_$S$_pn }
+		}
+		remove_variable = balance_prio_n
+	}
+	if = {
+		limit = { has_variable = balance_prio_$S$_g }
+		var:balance_prio_$S$_g = { save_temporary_scope_as = balance_prio_g }
+		every_owned_location = {
+			limit = {
+				raw_material ?= scope:balance_prio_g
+				balance_prio_rgo_busy = yes
+			}
+			scope:balance_prio_c = { change_variable = { name = balance_prio_busy add = 1 } }
+		}
+	}
+	set_variable = { name = balance_prio_$S$_busy value = var:balance_prio_busy }
+}
+
+# ---- one order (location scope)
+balance_prio_order_b = {
+	set_variable = { name = balance_prio_tried_b value = scope:balance_prio_t days = 1 }
+	construct_building = {
+		building_type = scope:balance_prio_t
+		owner = scope:balance_prio_c
+		payer = scope:balance_prio_c
+	}
+}
+
+balance_prio_order_g = {
+	set_variable = { name = balance_prio_tried_g value = scope:balance_prio_g days = 1 }
+	set_variable = { name = balance_prio_rgo_t days = 30 }
+	set_variable = { name = balance_prio_rgo_on days = 730 }
+	construct_rgo_upgrade = { }
+}
+
+# ---- where the next one goes (this = the subject, balance_prio_m = the mode)
+balance_prio_place_b = {
+	if = { limit = { has_variable = balance_prio_done } remove_variable = balance_prio_done }
+	# most profitable: add a level where its own building of this type earns most
+	if = {
+		limit = {
+			var:balance_prio_m = 2
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				balance_prio_b_has_profitable = yes
+			}
+		}
+		ordered_owned_location = {
+			order_by = balance_sv_prio_loc_t_profit
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				balance_prio_b_has_profitable = yes
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# most efficient: the locations with the best efficiency for it, in steps
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_done }
+			var:balance_prio_m = 1
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 1 }
+			}
+		}
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 1 }
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# most efficient: the locations with the best efficiency for it, in steps
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_done }
+			var:balance_prio_m = 1
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.5 }
+			}
+		}
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.5 }
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# most efficient: the locations with the best efficiency for it, in steps
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_done }
+			var:balance_prio_m = 1
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.25 }
+			}
+		}
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.25 }
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# most efficient: the locations with the best efficiency for it, in steps
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_done }
+			var:balance_prio_m = 1
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.1 }
+			}
+		}
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0.1 }
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# most efficient: the locations with the best efficiency for it, in steps
+	if = {
+		limit = {
+			NOT = { has_variable = balance_prio_done }
+			var:balance_prio_m = 1
+			any_owned_location = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0 }
+			}
+		}
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = {
+				balance_prio_b_place_ok = yes
+				building_efficiency = { building_type = scope:balance_prio_t value >= 0 }
+			}
+			balance_prio_order_b = yes
+		}
+		set_variable = balance_prio_done
+	}
+	# else (and after those): the most populous
+	if = {
+		limit = { NOT = { has_variable = balance_prio_done } }
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = { balance_prio_b_place_ok = yes }
+			balance_prio_order_b = yes
+		}
+	}
+	if = { limit = { has_variable = balance_prio_done } remove_variable = balance_prio_done }
+}
+
+balance_prio_place_g = {
+	if = {
+		# best price: where the raw material sells highest in its market
+		limit = { var:balance_prio_m = 2 }
+		ordered_owned_location = {
+			order_by = balance_sv_prio_rgo_price
+			max = 1
+			check_range_bounds = no
+			limit = { balance_prio_g_place_ok = yes }
+			balance_prio_order_g = yes
+		}
+	}
+	else = {
+		ordered_owned_location = {
+			order_by = population
+			max = 1
+			check_range_bounds = no
+			limit = { balance_prio_g_place_ok = yes }
+			balance_prio_order_g = yes
+		}
+	}
+}
+
+# monthly (on_action/balance_colony_on_action.txt), root = the overlord
+balance_colony_prio_monthly = {
+	every_in_list = {
+		variable = balance_prio_subjects
+		limit = {
+			is_subject_of = root
+			has_variable = balance_prio_on
+		}
+		balance_colony_prio_tick = yes
+	}
+}
+
+# this = the subject: the rows top down
+balance_colony_prio_tick = {
+	save_temporary_scope_as = balance_prio_c
+	balance_colony_prio_defaults = yes
+	if = { limit = { NOT = { has_variable = balance_prio_count } } set_variable = { name = balance_prio_count value = 0 } }
+	change_variable = { name = balance_prio_count add = 1 }
+	if = {
+		limit = { var:balance_prio_count >= var:balance_prio_freq }
+		set_variable = { name = balance_prio_count value = 0 }
+		if = { limit = { has_variable = balance_prio_stop } remove_variable = balance_prio_stop }
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 1 } }
+			}
+			balance_prio_run_slot = { S = 1 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 2 } }
+			}
+			balance_prio_run_slot = { S = 2 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 3 } }
+			}
+			balance_prio_run_slot = { S = 3 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 4 } }
+			}
+			balance_prio_run_slot = { S = 4 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 5 } }
+			}
+			balance_prio_run_slot = { S = 5 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 6 } }
+			}
+			balance_prio_run_slot = { S = 6 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 7 } }
+			}
+			balance_prio_run_slot = { S = 7 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 8 } }
+			}
+			balance_prio_run_slot = { S = 8 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 9 } }
+			}
+			balance_prio_run_slot = { S = 9 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 10 } }
+			}
+			balance_prio_run_slot = { S = 10 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 11 } }
+			}
+			balance_prio_run_slot = { S = 11 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 12 } }
+			}
+			balance_prio_run_slot = { S = 12 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 13 } }
+			}
+			balance_prio_run_slot = { S = 13 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 14 } }
+			}
+			balance_prio_run_slot = { S = 14 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 15 } }
+			}
+			balance_prio_run_slot = { S = 15 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 16 } }
+			}
+			balance_prio_run_slot = { S = 16 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 17 } }
+			}
+			balance_prio_run_slot = { S = 17 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 18 } }
+			}
+			balance_prio_run_slot = { S = 18 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 19 } }
+			}
+			balance_prio_run_slot = { S = 19 }
+		}
+		if = {
+			limit = {
+				NOT = { has_variable = balance_prio_stop }
+				NOT = { balance_prio_slot_empty = { S = 20 } }
+			}
+			balance_prio_run_slot = { S = 20 }
+		}
+		if = { limit = { has_variable = balance_prio_stop } remove_variable = balance_prio_stop }
+		balance_prio_count_all = yes
+	}
+}
+
+# one row: as many orders as its limit leaves room for, while the treasury
+# holds its minimum and (buildings) its buildings of this type earn enough
+balance_prio_run_slot = {
+	balance_prio_count_slot = { S = $S$ }
+	set_variable = { name = balance_prio_w value = var:balance_prio_$S$_where }
+	set_variable = { name = balance_prio_m value = var:balance_prio_$S$_mode }
+	# the row's own locations and control floor, for balance_prio_where_ok
+	clear_variable_list = balance_prio_curlocs
+	save_temporary_scope_as = balance_prio_cs
+	every_in_list = {
+		variable = balance_prio_$S$_locs
+		save_temporary_scope_as = balance_prio_cl
+		scope:balance_prio_cs = { add_to_variable_list = { name = balance_prio_curlocs target = scope:balance_prio_cl } }
+	}
+	if = {
+		limit = { has_variable = balance_prio_$S$_cmin }
+		set_variable = { name = balance_prio_cm value = var:balance_prio_$S$_cmin }
+	}
+	else = {
+		set_variable = { name = balance_prio_cm value = 0 }
+	}
+	set_variable = { name = balance_prio_need value = var:balance_prio_$S$_gold }
+	set_variable = { name = balance_prio_left value = var:balance_prio_$S$_max }
+	change_variable = { name = balance_prio_left subtract = var:balance_prio_busy }
+	if = { limit = { has_variable = balance_prio_pgate } remove_variable = balance_prio_pgate }
+	if = {
+		limit = {
+			has_variable = balance_prio_$S$_pmin
+			has_variable = balance_prio_$S$_pavg
+			var:balance_prio_$S$_pavg < var:balance_prio_$S$_pmin
+		}
+		# they earn too little now: no more of them until the profit is back
+		set_variable = balance_prio_pgate
+		set_variable = { name = balance_prio_left value = 0 }
+	}
+	if = {
+		limit = { has_variable = balance_prio_$S$_b }
+		if = {
+			limit = {
+				can_build_building = scope:balance_prio_t
+				NOT = { is_target_in_variable_list = { name = balance_forbid_buildings target = scope:balance_prio_t } }
+			}
+			while = {
+				limit = {
+					var:balance_prio_left > 0
+					gold >= var:balance_prio_need
+					any_owned_location = { balance_prio_b_place_ok = yes }
+				}
+				balance_prio_place_b = yes
+				change_variable = { name = balance_prio_left add = -1 }
+			}
+		}
+		if = {
+			limit = {
+				has_variable = balance_prio_$S$_hold
+				OR = {
+					var:balance_prio_busy > 0
+					AND = {
+						NOT = { has_variable = balance_prio_pgate }
+						can_build_building = scope:balance_prio_t
+						NOT = { is_target_in_variable_list = { name = balance_forbid_buildings target = scope:balance_prio_t } }
+						any_owned_location = { balance_prio_b_place_ok = yes }
+					}
+				}
+			}
+			set_variable = balance_prio_stop
+		}
+	}
+	if = {
+		limit = { has_variable = balance_prio_$S$_g }
+		while = {
+			limit = {
+				var:balance_prio_left > 0
+				gold >= var:balance_prio_need
+				any_owned_location = { balance_prio_g_place_ok = yes }
+			}
+			balance_prio_place_g = yes
+			change_variable = { name = balance_prio_left add = -1 }
+		}
+		if = {
+			limit = {
+				has_variable = balance_prio_$S$_hold
+				OR = {
+					var:balance_prio_busy > 0
+					any_owned_location = { balance_prio_g_place_ok = yes }
+				}
+			}
+			set_variable = balance_prio_stop
+		}
+	}
+	if = { limit = { has_variable = balance_prio_pgate } remove_variable = balance_prio_pgate }
+	remove_variable = balance_prio_m
+	remove_variable = balance_prio_cm
+	clear_variable_list = balance_prio_curlocs
+	remove_variable = balance_prio_w
+	remove_variable = balance_prio_need
+	remove_variable = balance_prio_left
+	remove_variable = balance_prio_busy
+}
+
+# ---- the row's location box (gui: "balance_lp"); root = the overlord,
+# balance_lp_row = the row, balance_lp_fg / _fp the raw material / province
+# filters, balance_lp_rural / _town / _city the rank filter
+balance_lp_fill = {
+	clear_variable_list = balance_lp_list
+	clear_variable_list = balance_lp_prov_list
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		if = {
+			limit = { has_variable = balance_lp_fg }
+			var:balance_lp_fg = { save_temporary_scope_as = balance_lp_g }
+		}
+		# the provinces with a location that passes the raw material and rank filters
+		var:balance_colony_subject = {
+			ordered_owned_location = {
+				order_by = population
+				max = 2000
+				check_range_bounds = no
+				limit = { balance_lp_shown_np = yes }
+				province_definition = { save_temporary_scope_as = balance_lp_pd }
+				root = {
+					if = {
+						limit = { NOT = { is_target_in_variable_list = { name = balance_lp_prov_list target = scope:balance_lp_pd } } }
+						add_to_variable_list = { name = balance_lp_prov_list target = scope:balance_lp_pd }
+					}
+				}
+			}
+		}
+		# a picked province with none of those any more stops filtering
+		if = {
+			limit = {
+				has_variable = balance_lp_fp
+				NOT = { is_target_in_variable_list = { name = balance_lp_prov_list target = var:balance_lp_fp } }
+			}
+			remove_variable = balance_lp_fp
+		}
+		if = {
+			limit = { has_variable = balance_lp_fp }
+			var:balance_lp_fp = { save_temporary_scope_as = balance_lp_p }
+		}
+		# in the order picked in the box: population, most or least control
+		var:balance_colony_subject = {
+			if = {
+				limit = { root = { has_variable = balance_lp_sort_cd } }
+				ordered_owned_location = {
+					order_by = local_control
+					max = 2000
+					check_range_bounds = no
+					limit = { balance_lp_shown = yes }
+					save_temporary_scope_as = balance_lp_l
+					root = { add_to_variable_list = { name = balance_lp_list target = scope:balance_lp_l } }
+				}
+			}
+			else_if = {
+				limit = { root = { has_variable = balance_lp_sort_ca } }
+				ordered_owned_location = {
+					order_by = balance_sv_lp_less_control
+					max = 2000
+					check_range_bounds = no
+					limit = { balance_lp_shown = yes }
+					save_temporary_scope_as = balance_lp_l
+					root = { add_to_variable_list = { name = balance_lp_list target = scope:balance_lp_l } }
+				}
+			}
+			else = {
+				ordered_owned_location = {
+					order_by = population
+					max = 2000
+					check_range_bounds = no
+					limit = { balance_lp_shown = yes }
+					save_temporary_scope_as = balance_lp_l
+					root = { add_to_variable_list = { name = balance_lp_list target = scope:balance_lp_l } }
+				}
+			}
+		}
+	}
+	balance_lp_recount = yes
+}
+
+# this = the subject
+balance_lp_toggle_in = {
+	if = {
+		limit = { is_target_in_variable_list = { name = balance_prio_$S$_locs target = scope:location } }
+		remove_list_variable = { name = balance_prio_$S$_locs target = scope:location }
+	}
+	else = {
+		add_to_variable_list = { name = balance_prio_$S$_locs target = scope:location }
+	}
+}
+
+balance_lp_add_shown_in = {
+	save_temporary_scope_as = balance_lp_s
+	root = {
+		every_in_list = {
+			variable = balance_lp_list
+			save_temporary_scope_as = balance_lp_l
+			scope:balance_lp_s = {
+				if = {
+					limit = { NOT = { is_target_in_variable_list = { name = balance_prio_$S$_locs target = scope:balance_lp_l } } }
+					add_to_variable_list = { name = balance_prio_$S$_locs target = scope:balance_lp_l }
+				}
+			}
+		}
+	}
+}
+
+balance_lp_remove_shown_in = {
+	save_temporary_scope_as = balance_lp_s
+	root = {
+		every_in_list = {
+			variable = balance_lp_list
+			save_temporary_scope_as = balance_lp_l
+			scope:balance_lp_s = {
+				if = {
+					limit = { is_target_in_variable_list = { name = balance_prio_$S$_locs target = scope:balance_lp_l } }
+					remove_list_variable = { name = balance_prio_$S$_locs target = scope:balance_lp_l }
+				}
+			}
+		}
+	}
+}
+
+balance_lp_count_in = {
+	every_in_list = {
+		variable = balance_prio_$S$_locs
+		root = { change_variable = { name = balance_lp_count add = 1 } }
+	}
+}
+
+# the same, for the open row
+balance_lp_toggle = {
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			if = { limit = { root = { var:balance_lp_row = 1 } } balance_lp_toggle_in = { S = 1 } }
+			if = { limit = { root = { var:balance_lp_row = 2 } } balance_lp_toggle_in = { S = 2 } }
+			if = { limit = { root = { var:balance_lp_row = 3 } } balance_lp_toggle_in = { S = 3 } }
+			if = { limit = { root = { var:balance_lp_row = 4 } } balance_lp_toggle_in = { S = 4 } }
+			if = { limit = { root = { var:balance_lp_row = 5 } } balance_lp_toggle_in = { S = 5 } }
+			if = { limit = { root = { var:balance_lp_row = 6 } } balance_lp_toggle_in = { S = 6 } }
+			if = { limit = { root = { var:balance_lp_row = 7 } } balance_lp_toggle_in = { S = 7 } }
+			if = { limit = { root = { var:balance_lp_row = 8 } } balance_lp_toggle_in = { S = 8 } }
+			if = { limit = { root = { var:balance_lp_row = 9 } } balance_lp_toggle_in = { S = 9 } }
+			if = { limit = { root = { var:balance_lp_row = 10 } } balance_lp_toggle_in = { S = 10 } }
+			if = { limit = { root = { var:balance_lp_row = 11 } } balance_lp_toggle_in = { S = 11 } }
+			if = { limit = { root = { var:balance_lp_row = 12 } } balance_lp_toggle_in = { S = 12 } }
+			if = { limit = { root = { var:balance_lp_row = 13 } } balance_lp_toggle_in = { S = 13 } }
+			if = { limit = { root = { var:balance_lp_row = 14 } } balance_lp_toggle_in = { S = 14 } }
+			if = { limit = { root = { var:balance_lp_row = 15 } } balance_lp_toggle_in = { S = 15 } }
+			if = { limit = { root = { var:balance_lp_row = 16 } } balance_lp_toggle_in = { S = 16 } }
+			if = { limit = { root = { var:balance_lp_row = 17 } } balance_lp_toggle_in = { S = 17 } }
+			if = { limit = { root = { var:balance_lp_row = 18 } } balance_lp_toggle_in = { S = 18 } }
+			if = { limit = { root = { var:balance_lp_row = 19 } } balance_lp_toggle_in = { S = 19 } }
+			if = { limit = { root = { var:balance_lp_row = 20 } } balance_lp_toggle_in = { S = 20 } }
+		}
+	}
+	balance_lp_recount = yes
+}
+
+balance_lp_add_shown = {
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			if = { limit = { root = { var:balance_lp_row = 1 } } balance_lp_add_shown_in = { S = 1 } }
+			if = { limit = { root = { var:balance_lp_row = 2 } } balance_lp_add_shown_in = { S = 2 } }
+			if = { limit = { root = { var:balance_lp_row = 3 } } balance_lp_add_shown_in = { S = 3 } }
+			if = { limit = { root = { var:balance_lp_row = 4 } } balance_lp_add_shown_in = { S = 4 } }
+			if = { limit = { root = { var:balance_lp_row = 5 } } balance_lp_add_shown_in = { S = 5 } }
+			if = { limit = { root = { var:balance_lp_row = 6 } } balance_lp_add_shown_in = { S = 6 } }
+			if = { limit = { root = { var:balance_lp_row = 7 } } balance_lp_add_shown_in = { S = 7 } }
+			if = { limit = { root = { var:balance_lp_row = 8 } } balance_lp_add_shown_in = { S = 8 } }
+			if = { limit = { root = { var:balance_lp_row = 9 } } balance_lp_add_shown_in = { S = 9 } }
+			if = { limit = { root = { var:balance_lp_row = 10 } } balance_lp_add_shown_in = { S = 10 } }
+			if = { limit = { root = { var:balance_lp_row = 11 } } balance_lp_add_shown_in = { S = 11 } }
+			if = { limit = { root = { var:balance_lp_row = 12 } } balance_lp_add_shown_in = { S = 12 } }
+			if = { limit = { root = { var:balance_lp_row = 13 } } balance_lp_add_shown_in = { S = 13 } }
+			if = { limit = { root = { var:balance_lp_row = 14 } } balance_lp_add_shown_in = { S = 14 } }
+			if = { limit = { root = { var:balance_lp_row = 15 } } balance_lp_add_shown_in = { S = 15 } }
+			if = { limit = { root = { var:balance_lp_row = 16 } } balance_lp_add_shown_in = { S = 16 } }
+			if = { limit = { root = { var:balance_lp_row = 17 } } balance_lp_add_shown_in = { S = 17 } }
+			if = { limit = { root = { var:balance_lp_row = 18 } } balance_lp_add_shown_in = { S = 18 } }
+			if = { limit = { root = { var:balance_lp_row = 19 } } balance_lp_add_shown_in = { S = 19 } }
+			if = { limit = { root = { var:balance_lp_row = 20 } } balance_lp_add_shown_in = { S = 20 } }
+		}
+	}
+	balance_lp_recount = yes
+}
+
+balance_lp_remove_shown = {
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			if = { limit = { root = { var:balance_lp_row = 1 } } balance_lp_remove_shown_in = { S = 1 } }
+			if = { limit = { root = { var:balance_lp_row = 2 } } balance_lp_remove_shown_in = { S = 2 } }
+			if = { limit = { root = { var:balance_lp_row = 3 } } balance_lp_remove_shown_in = { S = 3 } }
+			if = { limit = { root = { var:balance_lp_row = 4 } } balance_lp_remove_shown_in = { S = 4 } }
+			if = { limit = { root = { var:balance_lp_row = 5 } } balance_lp_remove_shown_in = { S = 5 } }
+			if = { limit = { root = { var:balance_lp_row = 6 } } balance_lp_remove_shown_in = { S = 6 } }
+			if = { limit = { root = { var:balance_lp_row = 7 } } balance_lp_remove_shown_in = { S = 7 } }
+			if = { limit = { root = { var:balance_lp_row = 8 } } balance_lp_remove_shown_in = { S = 8 } }
+			if = { limit = { root = { var:balance_lp_row = 9 } } balance_lp_remove_shown_in = { S = 9 } }
+			if = { limit = { root = { var:balance_lp_row = 10 } } balance_lp_remove_shown_in = { S = 10 } }
+			if = { limit = { root = { var:balance_lp_row = 11 } } balance_lp_remove_shown_in = { S = 11 } }
+			if = { limit = { root = { var:balance_lp_row = 12 } } balance_lp_remove_shown_in = { S = 12 } }
+			if = { limit = { root = { var:balance_lp_row = 13 } } balance_lp_remove_shown_in = { S = 13 } }
+			if = { limit = { root = { var:balance_lp_row = 14 } } balance_lp_remove_shown_in = { S = 14 } }
+			if = { limit = { root = { var:balance_lp_row = 15 } } balance_lp_remove_shown_in = { S = 15 } }
+			if = { limit = { root = { var:balance_lp_row = 16 } } balance_lp_remove_shown_in = { S = 16 } }
+			if = { limit = { root = { var:balance_lp_row = 17 } } balance_lp_remove_shown_in = { S = 17 } }
+			if = { limit = { root = { var:balance_lp_row = 18 } } balance_lp_remove_shown_in = { S = 18 } }
+			if = { limit = { root = { var:balance_lp_row = 19 } } balance_lp_remove_shown_in = { S = 19 } }
+			if = { limit = { root = { var:balance_lp_row = 20 } } balance_lp_remove_shown_in = { S = 20 } }
+		}
+	}
+	balance_lp_recount = yes
+}
+
+balance_lp_recount = {
+	set_variable = { name = balance_lp_count value = 0 }
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			if = { limit = { root = { var:balance_lp_row = 1 } } balance_lp_count_in = { S = 1 } }
+			if = { limit = { root = { var:balance_lp_row = 2 } } balance_lp_count_in = { S = 2 } }
+			if = { limit = { root = { var:balance_lp_row = 3 } } balance_lp_count_in = { S = 3 } }
+			if = { limit = { root = { var:balance_lp_row = 4 } } balance_lp_count_in = { S = 4 } }
+			if = { limit = { root = { var:balance_lp_row = 5 } } balance_lp_count_in = { S = 5 } }
+			if = { limit = { root = { var:balance_lp_row = 6 } } balance_lp_count_in = { S = 6 } }
+			if = { limit = { root = { var:balance_lp_row = 7 } } balance_lp_count_in = { S = 7 } }
+			if = { limit = { root = { var:balance_lp_row = 8 } } balance_lp_count_in = { S = 8 } }
+			if = { limit = { root = { var:balance_lp_row = 9 } } balance_lp_count_in = { S = 9 } }
+			if = { limit = { root = { var:balance_lp_row = 10 } } balance_lp_count_in = { S = 10 } }
+			if = { limit = { root = { var:balance_lp_row = 11 } } balance_lp_count_in = { S = 11 } }
+			if = { limit = { root = { var:balance_lp_row = 12 } } balance_lp_count_in = { S = 12 } }
+			if = { limit = { root = { var:balance_lp_row = 13 } } balance_lp_count_in = { S = 13 } }
+			if = { limit = { root = { var:balance_lp_row = 14 } } balance_lp_count_in = { S = 14 } }
+			if = { limit = { root = { var:balance_lp_row = 15 } } balance_lp_count_in = { S = 15 } }
+			if = { limit = { root = { var:balance_lp_row = 16 } } balance_lp_count_in = { S = 16 } }
+			if = { limit = { root = { var:balance_lp_row = 17 } } balance_lp_count_in = { S = 17 } }
+			if = { limit = { root = { var:balance_lp_row = 18 } } balance_lp_count_in = { S = 18 } }
+			if = { limit = { root = { var:balance_lp_row = 19 } } balance_lp_count_in = { S = 19 } }
+			if = { limit = { root = { var:balance_lp_row = 20 } } balance_lp_count_in = { S = 20 } }
+		}
+	}
+}
+
+balance_lp_clear = {
+	if = {
+		limit = { has_variable = balance_colony_subject }
+		var:balance_colony_subject = {
+			if = { limit = { root = { var:balance_lp_row = 1 } } clear_variable_list = balance_prio_1_locs }
+			if = { limit = { root = { var:balance_lp_row = 2 } } clear_variable_list = balance_prio_2_locs }
+			if = { limit = { root = { var:balance_lp_row = 3 } } clear_variable_list = balance_prio_3_locs }
+			if = { limit = { root = { var:balance_lp_row = 4 } } clear_variable_list = balance_prio_4_locs }
+			if = { limit = { root = { var:balance_lp_row = 5 } } clear_variable_list = balance_prio_5_locs }
+			if = { limit = { root = { var:balance_lp_row = 6 } } clear_variable_list = balance_prio_6_locs }
+			if = { limit = { root = { var:balance_lp_row = 7 } } clear_variable_list = balance_prio_7_locs }
+			if = { limit = { root = { var:balance_lp_row = 8 } } clear_variable_list = balance_prio_8_locs }
+			if = { limit = { root = { var:balance_lp_row = 9 } } clear_variable_list = balance_prio_9_locs }
+			if = { limit = { root = { var:balance_lp_row = 10 } } clear_variable_list = balance_prio_10_locs }
+			if = { limit = { root = { var:balance_lp_row = 11 } } clear_variable_list = balance_prio_11_locs }
+			if = { limit = { root = { var:balance_lp_row = 12 } } clear_variable_list = balance_prio_12_locs }
+			if = { limit = { root = { var:balance_lp_row = 13 } } clear_variable_list = balance_prio_13_locs }
+			if = { limit = { root = { var:balance_lp_row = 14 } } clear_variable_list = balance_prio_14_locs }
+			if = { limit = { root = { var:balance_lp_row = 15 } } clear_variable_list = balance_prio_15_locs }
+			if = { limit = { root = { var:balance_lp_row = 16 } } clear_variable_list = balance_prio_16_locs }
+			if = { limit = { root = { var:balance_lp_row = 17 } } clear_variable_list = balance_prio_17_locs }
+			if = { limit = { root = { var:balance_lp_row = 18 } } clear_variable_list = balance_prio_18_locs }
+			if = { limit = { root = { var:balance_lp_row = 19 } } clear_variable_list = balance_prio_19_locs }
+			if = { limit = { root = { var:balance_lp_row = 20 } } clear_variable_list = balance_prio_20_locs }
+		}
+	}
+	balance_lp_recount = yes
+}

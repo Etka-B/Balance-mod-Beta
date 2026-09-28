@@ -28,7 +28,7 @@ trade_company_headquarters = {
 	}
 	
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_headquarters }
 		market = { in_trade_range_of = scope:actor }
 		scope:actor = {
 			OR = {
@@ -193,7 +193,7 @@ trade_company_garrison = {
 			}
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_garrison }
 		market = { in_trade_range_of = scope:actor }
 		can_build_satellite_trade_building = { BUILDING_TYPE = trade_company_garrison }
 	}
@@ -271,7 +271,7 @@ trade_company_harbor = {
 			}
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_harbor }
 		is_port = yes
 		market = { in_trade_range_of = scope:actor }
 		can_build_satellite_trade_building = { BUILDING_TYPE = trade_company_harbor }
@@ -351,7 +351,7 @@ trade_company_local_venture = {
 			}
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_local_venture }
 		market = { in_trade_range_of = scope:actor }
 		can_build_satellite_trade_building = { BUILDING_TYPE = trade_company_local_venture }
 	}
@@ -428,7 +428,7 @@ trade_company_foreign_influence = {
 			}
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_foreign_influence }
 		market = { in_trade_range_of = scope:actor }
 		can_build_satellite_trade_building = { BUILDING_TYPE = trade_company_foreign_influence }
 	}
@@ -506,7 +506,7 @@ trade_company_governance = {
 			}
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_company_governance }
 		market = { in_trade_range_of = scope:actor }
 		can_build_satellite_trade_building = { BUILDING_TYPE = trade_company_governance }
 	}

@@ -1,4 +1,4 @@
-REPLACE:seat_of_cardinal = {
+﻿REPLACE:seat_of_cardinal = {
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -14,7 +14,7 @@ REPLACE:seat_of_cardinal = {
 
 	category = religious_category
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = seat_of_cardinal }
 		always = no #requested with request_cardinal_seat
 	}
 

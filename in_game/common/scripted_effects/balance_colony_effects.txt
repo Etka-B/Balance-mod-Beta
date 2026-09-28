@@ -3,7 +3,8 @@
 # buildings, so these fill variable lists on the player's country (root):
 #   balance_colony_subjects   our subjects
 #   balance_colony_locations  the picked subject's locations that pass the filters
-#   balance_colony_goods      the raw materials of that subject's locations
+#   balance_colony_goods(2)   the raw materials of that subject's locations (two rows)
+#   balance_colony_btypes(2)  the building types standing there (balance_colony_prio_effects.txt)
 #   balance_colony_buildings  the picked location's buildings
 #   balance_colony_selected   locations picked for the bulk buttons
 
@@ -24,11 +25,18 @@ balance_colony_fill_subjects = {
 balance_colony_fill_locations = {
 	clear_variable_list = balance_colony_locations
 	clear_variable_list = balance_colony_goods
+	clear_variable_list = balance_colony_goods2
+	clear_variable_list = balance_colony_goods_all
+	set_variable = { name = balance_colony_gn value = 0 }
 	if = {
 		limit = { has_variable = balance_colony_subject }
 		if = {
 			limit = { has_variable = balance_colony_f_goods }
 			var:balance_colony_f_goods = { save_temporary_scope_as = balance_colony_fg }
+		}
+		if = {
+			limit = { has_variable = balance_colony_f_btype }
+			var:balance_colony_f_btype = { save_temporary_scope_as = balance_colony_fb }
 		}
 		var:balance_colony_subject = {
 			every_owned_location = {
@@ -37,8 +45,20 @@ balance_colony_fill_locations = {
 					save_temporary_scope_as = balance_colony_g
 					root = {
 						if = {
-							limit = { NOT = { is_target_in_variable_list = { name = balance_colony_goods target = scope:balance_colony_g } } }
-							add_to_variable_list = { name = balance_colony_goods target = scope:balance_colony_g }
+							limit = {
+								NOT = { is_target_in_variable_list = { name = balance_colony_goods target = scope:balance_colony_g } }
+								NOT = { is_target_in_variable_list = { name = balance_colony_goods2 target = scope:balance_colony_g } }
+							}
+							# two rows of 18
+							if = {
+								limit = { var:balance_colony_gn < 20 }
+								add_to_variable_list = { name = balance_colony_goods target = scope:balance_colony_g }
+							}
+							else = {
+								add_to_variable_list = { name = balance_colony_goods2 target = scope:balance_colony_g }
+							}
+							add_to_variable_list = { name = balance_colony_goods_all target = scope:balance_colony_g }
+							change_variable = { name = balance_colony_gn add = 1 }
 						}
 					}
 				}
@@ -51,6 +71,8 @@ balance_colony_fill_locations = {
 			}
 		}
 	}
+	remove_variable = balance_colony_gn
+	balance_colony_fill_btypes = yes
 }
 
 balance_colony_fill_buildings = {
@@ -73,6 +95,7 @@ balance_colony_clear_filters = {
 	if = { limit = { has_variable = balance_colony_f_town } remove_variable = balance_colony_f_town }
 	if = { limit = { has_variable = balance_colony_f_city } remove_variable = balance_colony_f_city }
 	if = { limit = { has_variable = balance_colony_f_goods } remove_variable = balance_colony_f_goods }
+	if = { limit = { has_variable = balance_colony_f_btype } remove_variable = balance_colony_f_btype }
 }
 
 # ---- building locks on one location (this = the location, root = the overlord);
@@ -133,9 +156,16 @@ balance_colony_subsidy_on_here = {
 
 balance_colony_subsidy_off_here = {
 	remove_variable = balance_subsidy_all
-	save_temporary_scope_as = balance_colony_sl
-	root = { remove_list_variable = { name = balance_subsidy_locations target = scope:balance_colony_sl } }
 	balance_colony_unsubsidize_here = yes
+	if = {
+		# subsidies by building type (balance_colony_prio_effects.txt) stay
+		limit = { var:balance_subsidy_tby ?= root }
+		balance_colony_subsidize_types_here = yes
+	}
+	else = {
+		save_temporary_scope_as = balance_colony_sl
+		root = { remove_list_variable = { name = balance_subsidy_locations target = scope:balance_colony_sl } }
+	}
 }
 
 # ---- the daily renewal (root = the overlord), a hidden event that re-arms
@@ -182,13 +212,26 @@ balance_colony_subsidy_monthly = {
 balance_colony_subsidy_renew = {
 	every_in_list = {
 		variable = balance_subsidy_locations
-		limit = { var:balance_subsidy_all ?= root }
+		limit = {
+			OR = {
+				var:balance_subsidy_all ?= root
+				var:balance_subsidy_tby ?= root
+			}
+		}
 		if = {
 			limit = { owner ?= { is_subject_of = root } }
-			balance_colony_subsidize_here = yes
+			if = {
+				limit = { var:balance_subsidy_all ?= root }
+				balance_colony_subsidize_here = yes
+			}
+			else = {
+				balance_colony_subsidize_types_here = yes
+			}
 		}
 		else = {
-			remove_variable = balance_subsidy_all
+			if = { limit = { has_variable = balance_subsidy_all } remove_variable = balance_subsidy_all }
+			if = { limit = { has_variable = balance_subsidy_tby } remove_variable = balance_subsidy_tby }
+			clear_variable_list = balance_subsidy_types
 		}
 	}
 	# drop the lapsed ones from the list, but not while walking it
@@ -197,12 +240,18 @@ balance_colony_subsidy_renew = {
 			any_in_list = {
 				variable = balance_subsidy_locations
 				NOT = { var:balance_subsidy_all ?= root }
+				NOT = { var:balance_subsidy_tby ?= root }
 			}
 		}
 		clear_variable_list = balance_subsidy_rebuild
 		every_in_list = {
 			variable = balance_subsidy_locations
-			limit = { var:balance_subsidy_all ?= root }
+			limit = {
+				OR = {
+					var:balance_subsidy_all ?= root
+					var:balance_subsidy_tby ?= root
+				}
+			}
 			save_temporary_scope_as = balance_colony_sl
 			root = { add_to_variable_list = { name = balance_subsidy_rebuild target = scope:balance_colony_sl } }
 		}

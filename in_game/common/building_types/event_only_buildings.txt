@@ -23,7 +23,7 @@ cantonments = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = cantonments }
 		always = no
 	}
 
@@ -64,7 +64,7 @@ grand_palace = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = grand_palace }
 		always = no
 	}
 	
@@ -115,7 +115,7 @@ great_madrasa = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = great_madrasa }
 		always = no
 	}
 	
@@ -174,7 +174,7 @@ tibetan_great_monastery = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = tibetan_great_monastery }
 		always = no
 	}
 	remove_if = {
@@ -223,7 +223,7 @@ tower_of_belem = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = tower_of_belem }
 		always = no
 	}
 	
@@ -263,7 +263,7 @@ fortezza_di_sant_andrea = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = fortezza_di_sant_andrea }
 		always = no
 	}
 	
@@ -306,7 +306,7 @@ great_temple_of_tenochtitlan = {
 	country_potential = {
 		has_or_had_tag = TNC
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = great_temple_of_tenochtitlan }
 		owner = {
 			has_unlocked_building_trigger = {
 				type = great_temple_of_tenochtitlan
@@ -359,7 +359,7 @@ corporation_of_london = {  # ESTATE BUILDING
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = corporation_of_london }
 		always = no
 	}
 	
@@ -396,7 +396,7 @@ grand_apartment = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = grand_apartment }
 		always = no
 	}	
 	
@@ -440,7 +440,7 @@ sanssouci = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = sanssouci }
 		always = no
 	}
 	
@@ -482,7 +482,7 @@ berlin_palace = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = berlin_palace }
 		always = no
 	}
 	
@@ -525,7 +525,7 @@ versailles = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = versailles }
 		always = no
 	}
 	
@@ -569,7 +569,7 @@ enderun_academy = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = enderun_academy }
 		always = no
 	}
 	
@@ -626,7 +626,7 @@ imperial_halic_shipyards = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = imperial_halic_shipyards }
 		always = no
 	}
 
@@ -674,7 +674,7 @@ rock_of_monaco = {	#Yes, we represent Monaco as a building of Nice
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = rock_of_monaco }
 		always = no
 	}
 	
@@ -715,7 +715,7 @@ llotja_seda = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = llotja_seda }
 		always = no
 	}
 	
@@ -740,6 +740,7 @@ llotja_seda = {
 }
 
 camara_comptos = {
+	allow = { balance_building_not_forbidden = { TYPE = camara_comptos } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -819,7 +820,7 @@ zwinger = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = zwinger }
 		always = no
 	}
 
@@ -868,7 +869,7 @@ globe_theatre = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = globe_theatre }
 		custom_tooltip = {
 			text = globe_theatre_why
 			always = no
@@ -929,7 +930,7 @@ schwaz_mine = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = schwaz_mine }
 		always = no
 	}
 
@@ -984,7 +985,7 @@ urban_parliament_seat = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = urban_parliament_seat }
 		always = no
 	}
 	
@@ -1047,7 +1048,7 @@ ribeira_das_naus = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = ribeira_das_naus }
 		always = no
 	}
 
@@ -1090,7 +1091,7 @@ papal_archives = {
 	megalopolis = yes
 	rural_settlement = no
 	country_potential = { always = no }
-	allow = { 
+	allow = { balance_building_not_forbidden = { TYPE = papal_archives } 
 		owner_owns_no_copies_of_building = { type = papal_archives }
 	}
 	expensive = yes
@@ -1113,6 +1114,7 @@ papal_archives = {
 }
 
 adm_vatican_library = {
+	allow = { balance_building_not_forbidden = { TYPE = adm_vatican_library } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1144,6 +1146,7 @@ adm_vatican_library = {
 	}
 }
 dip_vatican_library = {
+	allow = { balance_building_not_forbidden = { TYPE = dip_vatican_library } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1175,6 +1178,7 @@ dip_vatican_library = {
 	}
 }
 mil_vatican_library = {
+	allow = { balance_building_not_forbidden = { TYPE = mil_vatican_library } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1230,7 +1234,7 @@ wisselbank = {
 		always = no 
 	}
 
-	allow = { 
+	allow = { balance_building_not_forbidden = { TYPE = wisselbank } 
 		always = no 
 	}
 	
@@ -1280,7 +1284,7 @@ riksbank = {
 		always = no 
 	}
 
-	allow = { 
+	allow = { balance_building_not_forbidden = { TYPE = riksbank } 
 		always = no 
 	}
 	
@@ -1329,7 +1333,7 @@ bolshoi_theater = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bolshoi_theater }
 		custom_tooltip = {
 			text = bolshoi_theater_why
 			always = no
@@ -1391,7 +1395,7 @@ archive_of_the_indies = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = archive_of_the_indies }
 		custom_tooltip = {
 			text = archive_of_the_indies_why
 			always = no
@@ -1441,7 +1445,7 @@ bodrum_castle = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bodrum_castle }
 		always = no
 	}
 
@@ -1493,7 +1497,7 @@ forbidden_city = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = forbidden_city }
 		always = no
 	}
 	
@@ -1532,7 +1536,7 @@ chi_macau_port = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = chi_macau_port }
 		always = no
 	}
 
@@ -1584,7 +1588,7 @@ chi_missionary_building = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = chi_missionary_building }
 		always = no #Starting building
 	}
 	
@@ -1632,7 +1636,7 @@ college_of_poets = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = college_of_poets }
 		custom_tooltip = {
 			text = college_of_poets_why
 			always = no
@@ -1685,7 +1689,7 @@ bibliotheca_corviniana = {
 			has_variable = unlocked_bibliotheca_corviniana
 		}
 	}
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = bibliotheca_corviniana } always = no }
 	modifier = {
 		local_max_literacy = 5
 		local_monthly_literacy = 0.25
@@ -1708,6 +1712,7 @@ bibliotheca_corviniana = {
 }
 
 hexamilion_wall = {
+	allow = { balance_building_not_forbidden = { TYPE = hexamilion_wall } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1755,6 +1760,7 @@ hexamilion_wall = {
 }
 
 ablaq_palace = {
+	allow = { balance_building_not_forbidden = { TYPE = ablaq_palace } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1818,7 +1824,7 @@ oma_falaj = {
 	country_potential = {
 		has_unlocked_building_trigger = { type = oma_falaj }
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = oma_falaj }
 		is_coastal = no
 		vegetation = desert
 		climate = arid
@@ -1852,7 +1858,7 @@ oma_nizwa_fort = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = oma_nizwa_fort }
 		always = no
 	}
 	possible_production_methods = {
@@ -1887,7 +1893,7 @@ dutch_trade_outpost = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = dutch_trade_outpost }
 		always = no
 	}
 	expensive = yes
@@ -1911,6 +1917,7 @@ dutch_trade_outpost = {
 }
 
 friesland_admiralty = {
+	allow = { balance_building_not_forbidden = { TYPE = friesland_admiralty } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1952,6 +1959,7 @@ friesland_admiralty = {
 }
 
 west_friesland_admiralty = {
+	allow = { balance_building_not_forbidden = { TYPE = west_friesland_admiralty } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1995,6 +2003,7 @@ west_friesland_admiralty = {
 }
 
 rotterdam_admiralty = {
+	allow = { balance_building_not_forbidden = { TYPE = rotterdam_admiralty } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -2036,6 +2045,7 @@ rotterdam_admiralty = {
 }
 
 zeeland_admiralty = {
+	allow = { balance_building_not_forbidden = { TYPE = zeeland_admiralty } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -2079,6 +2089,7 @@ zeeland_admiralty = {
 }
 
 amsterdam_admiralty = {
+	allow = { balance_building_not_forbidden = { TYPE = amsterdam_admiralty } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_special = yes
 	is_foreign = no
@@ -2142,7 +2153,7 @@ schonbrunn_palace = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = schonbrunn_palace }
 		always = no
 	}
 	
@@ -2186,7 +2197,7 @@ teatro_san_cassiano = {
 			has_variable = unlocked_teatro_san_cassiano
 		}
 	}
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = teatro_san_cassiano } always = no }
 
 	expensive = yes
 
@@ -2228,7 +2239,7 @@ doges_palace = {
 	megalopolis = yes
 
 	country_potential = { has_variable = unlocked_the_doges_palace }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = doges_palace } always = no }
 
 	expensive = yes
 
@@ -2266,7 +2277,7 @@ library_of_vijayanagar = {
 	expensive = yes
 	build_time = large_cultural_building_time
 	country_potential = { always = no }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = library_of_vijayanagar } always = no }
 	modifier = {
 		local_max_literacy = 5
 		local_monthly_literacy = 0.1
@@ -2297,7 +2308,7 @@ city_of_victory = {
 	expensive = yes
 	build_time = religious_building_time
 	country_potential = { always = no }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = city_of_victory } always = no }
 	modifier = {
 		local_max_literacy = 5
 		local_monthly_literacy = 0.1
@@ -2337,7 +2348,7 @@ ranganathaswamy_temple_building = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = ranganathaswamy_temple_building }
 		always = no
 	}
 	remove_if = {
@@ -2388,7 +2399,7 @@ venkateswara_temple = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = venkateswara_temple }
 		always = no
 	}
 	remove_if = {
@@ -2432,7 +2443,7 @@ piazza_san_marco = {
 			has_variable = unlocked_piazza_san_marco
 		}
 	}
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = piazza_san_marco } always = no }
 
 	expensive = yes
 
@@ -2453,6 +2464,7 @@ piazza_san_marco = {
 }
 
 walls_of_ston = {
+	allow = { balance_building_not_forbidden = { TYPE = walls_of_ston } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -2537,7 +2549,7 @@ swi_collegium_helveticum = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = swi_collegium_helveticum }
 		custom_tooltip = {
 			text = swi_collegium_helveticum_why
 			always = no
@@ -2582,7 +2594,7 @@ kastellet = {
 	megalopolis = yes
 	
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = kastellet } always = no }
 
 	expensive = yes
 	
@@ -2623,7 +2635,7 @@ kronborg = {
 	megalopolis = yes
 	
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = kronborg } always = no }
 
 	expensive = yes
 	
@@ -2649,6 +2661,7 @@ kronborg = {
 }
 
 husuni_kubwa = {
+	allow = { balance_building_not_forbidden = { TYPE = husuni_kubwa } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -2709,7 +2722,7 @@ magistrato_alla_sanita = {
 	expensive = yes
 	build_time = large_cultural_building_time
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = magistrato_alla_sanita } always = no }
 	modifier = {
 		local_disease_resistance = 0.05
 	}
@@ -2738,7 +2751,7 @@ imperial_city_of_hue = {
 	expensive = yes
 	build_time = large_cultural_building_time
 	country_potential = { always = no }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = imperial_city_of_hue } always = no }
 	modifier = {
 		local_cultural_tradition = 0.25
 		local_cultural_influence = 0.25
@@ -2775,7 +2788,7 @@ wat_chaiwatthanaram_temple_building = {
 		country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = wat_chaiwatthanaram_temple_building }
 		always = no
 	}
 
@@ -2832,7 +2845,7 @@ constantinople_observatory = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = constantinople_observatory }
 		always = no
 	}
 
@@ -2866,7 +2879,7 @@ castel_sant_angelo = {
 	megalopolis = yes
 	
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = castel_sant_angelo } always = no }
 
 	expensive = yes
 	
@@ -2908,7 +2921,7 @@ quirinal_palace = {
 	megalopolis = yes
 
 	country_potential = { has_variable = has_unlocked_quirinal_palace }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = quirinal_palace } always = no }
 
 	expensive = yes
 
@@ -2949,7 +2962,7 @@ debere_meshwae = {
 	
 	price = miaphysite_monastery_building
 
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = debere_meshwae } always = no }
 	
 	country_potential = {
 		religion ?= religion:miaphysite
@@ -2996,7 +3009,7 @@ lighthouse_of_alexandria = {
 	build_time = small_fort_building
 	expensive = yes
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = lighthouse_of_alexandria } always = no }
 
 	unique_production_methods = {
 		lighthouse_of_alexandria_maintenance = {
@@ -3036,7 +3049,7 @@ al_azhar_madrasa = {
 	build_time = large_cultural_building_time
 	
 	country_potential = { always = no }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = al_azhar_madrasa } always = no }
 	
 	remove_if = {	
 		location = {
@@ -3078,7 +3091,7 @@ delhi_tomb = {
 	megalopolis = yes
 	
 	country_potential = { always = no }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = delhi_tomb } always = no }
 	
 	modifier = {
 		local_cultural_tradition = 0.2
@@ -3094,6 +3107,7 @@ delhi_tomb = {
 }
 
 rahdar = {
+	allow = { balance_building_not_forbidden = { TYPE = rahdar } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -3154,7 +3168,7 @@ red_fort = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = red_fort }
 		always = no
 	}
 	
@@ -3192,7 +3206,7 @@ ori_portuguese_quarters = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = ori_portuguese_quarters }
 		always = no
 	}
 	
@@ -3227,7 +3241,7 @@ mahmud_gawan_madrasa = {
 	graphical_tags = { large_religious }
 
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = mahmud_gawan_madrasa } always = no }
 	
 	remove_if = {	
 		location = {
@@ -3269,7 +3283,7 @@ ambras_castle = {
 	megalopolis = yes
 
 	country_potential = { has_variable = unlocked_ambras_castle }
-	allow = { always = no }
+	allow = { balance_building_not_forbidden = { TYPE = ambras_castle } always = no }
 
 	expensive = yes
 
@@ -3310,7 +3324,7 @@ belvedere_palace = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = belvedere_palace }
 		always = no
 	}
 	
@@ -3349,7 +3363,7 @@ sco_palace_of_holyroodhouse = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = sco_palace_of_holyroodhouse }
 		always = no
 	}
 	modifier = {
@@ -3383,7 +3397,7 @@ fra_louvre_museum  = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = fra_louvre_museum }
 		always = no
 	}
 	modifier = {
@@ -3401,6 +3415,7 @@ fra_louvre_museum  = {
 }
 
 guich_garrison = {
+	allow = { balance_building_not_forbidden = { TYPE = guich_garrison } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	max_levels = 1
@@ -3468,7 +3483,7 @@ bavarian_academy_of_sciences = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bavarian_academy_of_sciences }
 		always = no
 	}
 
@@ -3532,7 +3547,7 @@ herrenchiemsee_abbey = {
         }
     }
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = herrenchiemsee_abbey }
 		always = no
 	}
 
@@ -3600,7 +3615,7 @@ munich_residenz_founding = {
         }
     }
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = munich_residenz_founding }
 		always = no
 	}
 
@@ -3659,7 +3674,7 @@ munich_residenz_renaissance_expansion = {
         }
     }
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = munich_residenz_renaissance_expansion }
 		always = no
 	}
 
@@ -3716,7 +3731,7 @@ munich_residenz_baroque_expansion = {
         }
     }
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = munich_residenz_baroque_expansion }
 		always = no
 	}
 
@@ -3760,7 +3775,7 @@ general_archive_of_simancas = {
 	megalopolis = yes
 	rural_settlement = yes
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = general_archive_of_simancas } always = no }
 	expensive = yes
 	build_time = cultural_building_time
 
@@ -3804,7 +3819,7 @@ el_escorial_palace = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = el_escorial_palace }
 		always = no
 	}
 	
@@ -3839,7 +3854,7 @@ school_of_salamanca = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = school_of_salamanca }
 		always = no
 	}
 	
@@ -3880,7 +3895,7 @@ segovia_artillery_academy = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = segovia_artillery_academy }
 		always = no
 	}
 	
@@ -3919,7 +3934,7 @@ usa_academy_of_arts_and_sciences = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = usa_academy_of_arts_and_sciences }
 		custom_tooltip = {
 			text = usa_academy_of_arts_and_sciences_why
 			always = no
@@ -3973,7 +3988,7 @@ usa_philosophical_society = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = usa_philosophical_society }
 		custom_tooltip = {
 			text = usa_philosophical_society_why
 			always = no
@@ -4027,7 +4042,7 @@ usa_national_bank = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = usa_national_bank }
 		custom_tooltip = {
 			text = usa_national_bank_why
 			always = no
@@ -4074,7 +4089,7 @@ usa_national_mint = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = usa_national_mint }
 		custom_tooltip = {
 			text = usa_national_mint_why
 			always = no
@@ -4120,7 +4135,7 @@ the_cipher_secretary = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = the_cipher_secretary }
 		always = no
 	}
 
@@ -4156,7 +4171,7 @@ phanariot_district = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = phanariot_district }
 		always = no
 	}
 
@@ -4204,7 +4219,7 @@ maniot_toll_guards = {  # ESTATE BUILDING
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = maniot_toll_guards }
 		always = no
 	}
 		
@@ -4248,7 +4263,7 @@ bulgarian_administration_center = {  # ESTATE BUILDING
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bulgarian_administration_center }
 		always = no
 	}
 
@@ -4290,7 +4305,7 @@ jewish_district = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = jewish_district }
 		always = no
 	}
 
@@ -4336,7 +4351,7 @@ darussifa = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = darussifa }
 		always = no
 	}
 
@@ -4373,7 +4388,7 @@ woodhenge_of_cahokia = {
 		always = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = woodhenge_of_cahokia }
 		custom_tooltip = {
 			text = cahokia_woodhenge_why
 			always = no
@@ -4424,7 +4439,7 @@ sevilla_bullfighting_school = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = sevilla_bullfighting_school }
 		always = no
 	}
 
@@ -4459,7 +4474,7 @@ royal_audience_and_chancery = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = royal_audience_and_chancery }
 		always = no
 	}
 
@@ -4490,7 +4505,7 @@ charite_of_berlin = {
 	expensive = yes
 	build_time = large_cultural_building_time
     country_potential = { always = no }
-    allow = { always = no }
+    allow = { balance_building_not_forbidden = { TYPE = charite_of_berlin } always = no }
 	modifier = {
 		local_disease_resistance = 0.05
 	}
@@ -4535,7 +4550,7 @@ walls_of_lucca = {
 		always = no	
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = walls_of_lucca }
 		always = no
 	}
 	
@@ -4583,7 +4598,7 @@ lucca_silk_production_guild = { #Placeholder building. Should be removed once CA
 		always = no	
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = lucca_silk_production_guild }
 		has_building = building_type:lucca_silk_production_guild #Makes it upgradable
 	}
 	
@@ -4616,7 +4631,7 @@ sie_sienese_port = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = sie_sienese_port }
 		always = no
 	}
 

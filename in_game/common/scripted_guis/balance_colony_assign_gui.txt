@@ -1,0 +1,475 @@
+﻿# THE COLONY WINDOW'S "COLONY ASSIGNMENT" TAB (colony_assign_v7.py); effects in
+# scripted_effects/balance_colony_assign_effects.txt. scope:node = a region,
+# area, province (definition) or location; the suffix says which.
+
+balance_assign_refresh = {
+	scope = country
+	effect = {
+		balance_colony_fill_subjects = yes
+		balance_assign_fill = yes
+	}
+}
+
+balance_assign_home = {
+	scope = country
+	effect = {
+		if = { limit = { has_variable = balance_assign_nav_r } remove_variable = balance_assign_nav_r }
+		if = { limit = { has_variable = balance_assign_nav_a } remove_variable = balance_assign_nav_a }
+		if = { limit = { has_variable = balance_assign_nav_p } remove_variable = balance_assign_nav_p }
+		if = { limit = { has_variable = balance_assign_edit } remove_variable = balance_assign_edit }
+		if = { limit = { has_variable = balance_assign_edit_r } remove_variable = balance_assign_edit_r }
+		if = { limit = { has_variable = balance_assign_edit_a } remove_variable = balance_assign_edit_a }
+		if = { limit = { has_variable = balance_assign_edit_p } remove_variable = balance_assign_edit_p }
+		if = { limit = { has_variable = balance_assign_edit_l } remove_variable = balance_assign_edit_l }
+		balance_assign_fill_children = yes
+	}
+}
+
+balance_assign_open_r = {
+	scope = country
+	saved_scopes = { node area }
+	effect = {
+		set_variable = { name = balance_assign_nav_r value = scope:node }
+		if = { limit = { has_variable = balance_assign_nav_a } remove_variable = balance_assign_nav_a }
+		if = { limit = { has_variable = balance_assign_nav_p } remove_variable = balance_assign_nav_p }
+		balance_assign_set_edit = { K = r }
+		if = { limit = { exists = scope:area } set_variable = { name = balance_assign_focus_area value = scope:area } }
+		balance_assign_fill_children = yes
+	}
+}
+
+balance_assign_open_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		set_variable = { name = balance_assign_nav_a value = scope:node }
+		if = { limit = { has_variable = balance_assign_nav_p } remove_variable = balance_assign_nav_p }
+		balance_assign_set_edit = { K = a }
+		balance_assign_fill_children = yes
+	}
+}
+
+balance_assign_open_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		set_variable = { name = balance_assign_nav_p value = scope:node }
+		balance_assign_set_edit = { K = p }
+		balance_assign_fill_children = yes
+	}
+}
+
+balance_assign_open_l = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_set_edit = { K = l }
+	}
+}
+
+balance_assign_pick_r = {
+	scope = country
+	saved_scopes = { node area }
+	effect = {
+		balance_assign_set_edit = { K = r }
+		if = { limit = { exists = scope:area } set_variable = { name = balance_assign_focus_area value = scope:area } }
+	}
+}
+
+balance_assign_focus_r = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		scope:node = {
+			ordered_location_in_region = {
+				order_by = population
+				max = 1
+				check_range_bounds = no
+				save_temporary_scope_as = balance_assign_fl
+			}
+		}
+		if = {
+			limit = { exists = scope:balance_assign_fl }
+			set_variable = { name = balance_assign_focus value = scope:balance_assign_fl }
+		}
+	}
+}
+
+balance_assign_pick_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_set_edit = { K = a }
+	}
+}
+
+balance_assign_pick_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_set_edit = { K = p }
+	}
+}
+
+balance_assign_is_edit_r = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		var:balance_assign_edit_r ?= scope:node
+	}
+}
+
+balance_assign_is_edit_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		var:balance_assign_edit_a ?= scope:node
+	}
+}
+
+balance_assign_is_edit_p = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		var:balance_assign_edit_p ?= scope:node
+	}
+}
+
+balance_assign_is_edit_l = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		var:balance_assign_edit_l ?= scope:node
+	}
+}
+
+balance_assign_set_ask_r = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+	}
+}
+
+balance_assign_is_ask_r = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		NOT = { balance_assign_has_own_rule = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one } }
+	}
+}
+
+balance_assign_set_new_r = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+		add_to_variable_list = { name = balance_assign_new target = scope:node }
+	}
+}
+
+balance_assign_is_new_r = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_new target = scope:node }
+	}
+}
+
+balance_assign_set_one_r = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+		add_to_variable_list = { name = balance_assign_one target = scope:node }
+	}
+}
+
+balance_assign_is_one_r = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_one target = scope:node }
+	}
+}
+
+balance_assign_set_keep_r = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+		add_to_variable_list = { name = balance_assign_keep target = scope:node }
+	}
+}
+
+balance_assign_is_keep_r = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_keep target = scope:node }
+	}
+}
+
+balance_assign_set_subj_r = {
+	scope = country
+	saved_scopes = { node subject }
+	is_valid = {
+		scope:subject = { is_subject_of = root }
+	}
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+		scope:subject = { add_to_variable_list = { name = balance_assign_regions target = scope:node } }
+	}
+}
+
+balance_assign_is_subj_r = {
+	scope = country
+	saved_scopes = { node subject }
+	is_shown = {
+		scope:subject = { is_target_in_variable_list = { name = balance_assign_regions target = scope:node } }
+	}
+}
+
+balance_assign_set_inherit_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+	}
+}
+
+balance_assign_is_inherit_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		NOT = { balance_assign_has_own_rule = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a } }
+	}
+}
+
+balance_assign_set_ask_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+		add_to_variable_list = { name = balance_assign_ask_a target = scope:node }
+	}
+}
+
+balance_assign_is_ask_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_ask_a target = scope:node }
+	}
+}
+
+balance_assign_set_new_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+		add_to_variable_list = { name = balance_assign_new_a target = scope:node }
+	}
+}
+
+balance_assign_is_new_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_new_a target = scope:node }
+	}
+}
+
+balance_assign_set_one_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+		add_to_variable_list = { name = balance_assign_one_a target = scope:node }
+	}
+}
+
+balance_assign_is_one_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_one_a target = scope:node }
+	}
+}
+
+balance_assign_set_keep_a = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+		add_to_variable_list = { name = balance_assign_keep_a target = scope:node }
+	}
+}
+
+balance_assign_is_keep_a = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_keep_a target = scope:node }
+	}
+}
+
+balance_assign_set_subj_a = {
+	scope = country
+	saved_scopes = { node subject }
+	is_valid = {
+		scope:subject = { is_subject_of = root }
+	}
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+		scope:subject = { add_to_variable_list = { name = balance_assign_a target = scope:node } }
+	}
+}
+
+balance_assign_is_subj_a = {
+	scope = country
+	saved_scopes = { node subject }
+	is_shown = {
+		scope:subject = { is_target_in_variable_list = { name = balance_assign_a target = scope:node } }
+	}
+}
+
+balance_assign_set_inherit_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+	}
+}
+
+balance_assign_is_inherit_p = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		NOT = { balance_assign_has_own_rule = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p } }
+	}
+}
+
+balance_assign_set_ask_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+		add_to_variable_list = { name = balance_assign_ask_p target = scope:node }
+	}
+}
+
+balance_assign_is_ask_p = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_ask_p target = scope:node }
+	}
+}
+
+balance_assign_set_new_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+		add_to_variable_list = { name = balance_assign_new_p target = scope:node }
+	}
+}
+
+balance_assign_is_new_p = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_new_p target = scope:node }
+	}
+}
+
+balance_assign_set_keep_p = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+		add_to_variable_list = { name = balance_assign_keep_p target = scope:node }
+	}
+}
+
+balance_assign_is_keep_p = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_keep_p target = scope:node }
+	}
+}
+
+balance_assign_set_subj_p = {
+	scope = country
+	saved_scopes = { node subject }
+	is_valid = {
+		scope:subject = { is_subject_of = root }
+	}
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+		scope:subject = { add_to_variable_list = { name = balance_assign_p target = scope:node } }
+	}
+}
+
+balance_assign_is_subj_p = {
+	scope = country
+	saved_scopes = { node subject }
+	is_shown = {
+		scope:subject = { is_target_in_variable_list = { name = balance_assign_p target = scope:node } }
+	}
+}
+
+balance_assign_set_inherit_l = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_l N = balance_assign_new_l K = balance_assign_keep_l A = balance_assign_ask_l O = balance_assign_one_l }
+	}
+}
+
+balance_assign_is_inherit_l = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		NOT = { balance_assign_has_own_rule = { S = balance_assign_l N = balance_assign_new_l K = balance_assign_keep_l A = balance_assign_ask_l O = balance_assign_one_l } }
+	}
+}
+
+balance_assign_set_keep_l = {
+	scope = country
+	saved_scopes = { node }
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_l N = balance_assign_new_l K = balance_assign_keep_l A = balance_assign_ask_l O = balance_assign_one_l }
+		add_to_variable_list = { name = balance_assign_keep_l target = scope:node }
+	}
+}
+
+balance_assign_is_keep_l = {
+	scope = country
+	saved_scopes = { node }
+	is_shown = {
+		is_target_in_variable_list = { name = balance_assign_keep_l target = scope:node }
+	}
+}
+
+balance_assign_set_subj_l = {
+	scope = country
+	saved_scopes = { node subject }
+	is_valid = {
+		scope:subject = { is_subject_of = root }
+	}
+	effect = {
+		balance_assign_clear_node = { S = balance_assign_l N = balance_assign_new_l K = balance_assign_keep_l A = balance_assign_ask_l O = balance_assign_one_l }
+		scope:subject = { add_to_variable_list = { name = balance_assign_l target = scope:node } }
+	}
+}
+
+balance_assign_is_subj_l = {
+	scope = country
+	saved_scopes = { node subject }
+	is_shown = {
+		scope:subject = { is_target_in_variable_list = { name = balance_assign_l target = scope:node } }
+	}
+}

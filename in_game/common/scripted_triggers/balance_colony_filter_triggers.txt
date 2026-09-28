@@ -1,6 +1,6 @@
 ﻿# THE COLONY WINDOW'S LOCATION FILTERS (gui/balance_colony_window.gui).
 # Location scope, root = the player's country; scope:balance_colony_fg is the
-# raw material picked, if any (scripted_effects/balance_colony_effects.txt).
+# raw material picked, scope:balance_colony_fb the building type, if any (scripted_effects/balance_colony_effects.txt).
 # Only one rank filter is ever set, so plain trigger_ifs (a second
 # trigger_else_if in a row failed the game's validation).
 balance_colony_location_shown = {
@@ -22,5 +22,10 @@ balance_colony_location_shown = {
 	trigger_if = {
 		limit = { exists = scope:balance_colony_fg }
 		raw_material ?= scope:balance_colony_fg
+	}
+	# the building filter: a building of that type stands here
+	trigger_if = {
+		limit = { exists = scope:balance_colony_fb }
+		any_buildings_in_location = { building_type = scope:balance_colony_fb }
 	}
 }

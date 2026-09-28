@@ -1,7 +1,8 @@
 ﻿# THE COLONY WINDOW'S BUTTONS (gui/balance_colony_window.gui). Lists are
 # filled by scripted_effects/balance_colony_effects.txt; what was picked is
 # kept in balance_colony_subject / balance_colony_location on root, the
-# filters in balance_colony_f_rural/_town/_city/_goods.
+# filters in balance_colony_f_rural/_town/_city/_goods/_btype. The tabs'
+# new buttons are in balance_colony_prio_gui.txt.
 
 balance_colony_open = {
 	scope = country
@@ -25,6 +26,7 @@ balance_colony_open = {
 		}
 		balance_colony_fill_locations = yes
 		balance_colony_fill_buildings = yes
+		balance_colony_fill_buildable = yes
 	}
 }
 
@@ -52,6 +54,7 @@ balance_colony_open_at = {
 		balance_colony_clear_filters = yes
 		balance_colony_fill_locations = yes
 		balance_colony_fill_buildings = yes
+		balance_colony_fill_buildable = yes
 	}
 }
 
@@ -69,8 +72,13 @@ balance_colony_pick_subject = {
 			limit = { has_variable = balance_colony_f_goods }
 			remove_variable = balance_colony_f_goods
 		}
+		if = {
+			limit = { has_variable = balance_colony_f_btype }
+			remove_variable = balance_colony_f_btype
+		}
 		balance_colony_fill_locations = yes
 		balance_colony_fill_buildings = yes
+		balance_colony_fill_buildable = yes
 	}
 }
 

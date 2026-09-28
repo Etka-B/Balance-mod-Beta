@@ -1,0 +1,72 @@
+﻿# The colony window's priorities tab (colony_v9.py): how much a subject's AI
+# weighs what things give it. Put on the subject by its overlord.
+
+balance_ai_manpower_up = {
+	game_data = {
+		category = country
+	}
+	manpower_importance_modifier = 0.5
+}
+
+balance_ai_manpower_down = {
+	game_data = {
+		category = country
+	}
+	manpower_importance_modifier = -0.5
+}
+
+balance_ai_gold_up = {
+	game_data = {
+		category = country
+	}
+	gold_importance_modifier = 0.5
+}
+
+balance_ai_gold_down = {
+	game_data = {
+		category = country
+	}
+	gold_importance_modifier = -0.5
+}
+
+balance_ai_trade_up = {
+	game_data = {
+		category = country
+	}
+	trade_importance_modifier = 0.5
+}
+
+balance_ai_trade_down = {
+	game_data = {
+		category = country
+	}
+	trade_importance_modifier = -0.5
+}
+
+balance_ai_control_up = {
+	game_data = {
+		category = country
+	}
+	control_importance_modifier = 0.5
+}
+
+balance_ai_control_down = {
+	game_data = {
+		category = country
+	}
+	control_importance_modifier = -0.5
+}
+
+balance_ai_defence_up = {
+	game_data = {
+		category = country
+	}
+	defence_importance_modifier = 0.5
+}
+
+balance_ai_defence_down = {
+	game_data = {
+		category = country
+	}
+	defence_importance_modifier = -0.5
+}

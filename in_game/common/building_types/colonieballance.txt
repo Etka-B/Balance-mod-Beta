@@ -36,7 +36,7 @@
 			}
 		}
 	}
-		allow = {
+		allow = { balance_building_not_forbidden = { TYPE = colonial_assimilation }
 
 		NOT = { dominant_culture = scope:actor.culture}
 	}

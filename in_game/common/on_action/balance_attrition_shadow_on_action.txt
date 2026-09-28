@@ -21,6 +21,7 @@ monthly_country_pulse = {
 		balance_probe_combat
 		balance_cstat_pulse
 		balance_colony_subsidy_pulse	# balance_colony_on_action.txt
+		balance_colony_prio_pulse	# balance_colony_on_action.txt
 	}
 }
 

@@ -83,7 +83,7 @@
  BALANCE_COLONY_KEPT: "Can't be destroyed"
  BALANCE_COLONY_KEEP_TT: "The subject may destroy this building.\nClick: forbid it."
  BALANCE_COLONY_KEPT_TT: "The subject cannot destroy this building.\nClick: allow it again."
- BALANCE_COLONY_HELP: "Red buttons show a bar or lock in force; click a button to switch it. Town / City: the subject may not raise the location. Local governor: it may not take the governor down. Can't be destroyed: it may not destroy the building; for a whole location this also covers buildings built later. Every bar and lock lapses once the location is no longer a subject's. Closing cannot be barred (the game has no way to), but Subsidize takes away the reason: the subject pays the losses of its buildings in that location, so its AI does not close them."
+ BALANCE_COLONY_HELP: "#Y Management#!\n\n- Pick a subject on the left; its locations show in the middle. Click a location's name to see its buildings on the right; shift+click selects it.\n- Filters: All / Rural / Towns / Cities, the Raw goods or Buildings tab and its icons, and the search field.\n- Ticks on a row, or on the selection for all of it: Town / City barred (the subject may not raise the location), governor kept (it may not take the local governor down), can't be destroyed (it may not destroy the buildings), subsidise (it pays its buildings' losses, so its AI does not close them).\n- Every bar ends once the location is no longer a subject's."
  balance_colony_keep_all_tt: "The whole location is locked: use the button above the list"
  balance_keep_building_tt: "Our overlord forbids destroying this building"
  balance_colony_lock_unsupported_tt: "This building cannot be locked"

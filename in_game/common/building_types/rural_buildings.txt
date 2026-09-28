@@ -20,7 +20,7 @@ bailiff = {
 		is_overseas_for_owner = no
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bailiff }
 		trigger_if = {
 			limit = {
 				scope:actor = {
@@ -67,6 +67,7 @@ bailiff = {
 }
 
 fishing_village = {
+	allow = { balance_building_not_forbidden = { TYPE = fishing_village } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = rural_building_cap
@@ -122,6 +123,7 @@ fishing_village = {
 }
 
 farming_village = {
+	allow = { balance_building_not_forbidden = { TYPE = farming_village } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = rural_building_cap
@@ -187,6 +189,7 @@ farming_village = {
 }
 
 forest_village = {
+	allow = { balance_building_not_forbidden = { TYPE = forest_village } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	is_village = yes
@@ -239,6 +242,7 @@ forest_village = {
 }
 
 market_village = {
+	allow = { balance_building_not_forbidden = { TYPE = market_village } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = rural_building_cap
@@ -288,6 +292,7 @@ market_village = {
 }
 
 rural_glassmaker = {
+	allow = { balance_building_not_forbidden = { TYPE = rural_glassmaker } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -332,6 +337,7 @@ rural_glassmaker = {
 }
 
 rural_clothmaker = {
+	allow = { balance_building_not_forbidden = { TYPE = rural_clothmaker } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -401,6 +407,7 @@ rural_clothmaker = {
 }
 
 charcoal_maker = {
+	allow = { balance_building_not_forbidden = { TYPE = charcoal_maker } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -437,6 +444,7 @@ charcoal_maker = {
 }
 
 improved_charcoal_maker = {
+	allow = { balance_building_not_forbidden = { TYPE = improved_charcoal_maker } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -476,6 +484,7 @@ improved_charcoal_maker = {
 }
 
 elephant_hunting_grounds = {
+	allow = { balance_building_not_forbidden = { TYPE = elephant_hunting_grounds } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = {
@@ -542,6 +551,7 @@ elephant_hunting_grounds = {
 }
 
 windmill = {
+	allow = { balance_building_not_forbidden = { TYPE = windmill } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -590,6 +600,7 @@ windmill = {
 }
 
 local_smelters = {
+	allow = { balance_building_not_forbidden = { TYPE = local_smelters } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -640,6 +651,7 @@ local_smelters = {
 }
 
 sawmill = {
+	allow = { balance_building_not_forbidden = { TYPE = sawmill } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -686,6 +698,7 @@ sawmill = {
 }
 
 sheep_farms = {
+	allow = { balance_building_not_forbidden = { TYPE = sheep_farms } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = laborers
@@ -734,6 +747,7 @@ sheep_farms = {
 }
 
 settlement_building = {
+	allow = { balance_building_not_forbidden = { TYPE = settlement_building } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = 1
@@ -778,6 +792,7 @@ settlement_building = {
 }
 
 kilwan_shipwrights = {
+	allow = { balance_building_not_forbidden = { TYPE = kilwan_shipwrights } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_special = yes
 	is_foreign = no

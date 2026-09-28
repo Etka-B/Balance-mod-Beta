@@ -1,4 +1,4 @@
-namespace = balance_colony_subsidy
+﻿namespace = balance_colony_subsidy
 
 # THE COLONY WINDOW'S DAILY SUBSIDY RENEWAL (scripted_effects/
 # balance_colony_effects.txt). The game has nothing that stops a subject's AI

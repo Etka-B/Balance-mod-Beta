@@ -4,6 +4,7 @@
 # Age of Traditions
 
 glass_guild = {
+	allow = { balance_building_not_forbidden = { TYPE = glass_guild } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = burghers
@@ -64,6 +65,7 @@ glass_guild = {
 
 ###########################################
 glass_workshop = {
+	allow = { balance_building_not_forbidden = { TYPE = glass_workshop } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -111,6 +113,7 @@ glass_workshop = {
 
 ###########################################
 glassworks = {
+	allow = { balance_building_not_forbidden = { TYPE = glassworks } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_foreign = no
 	pop_type = burghers
@@ -158,6 +161,7 @@ glassworks = {
 
 
 glass_mill = {
+	allow = { balance_building_not_forbidden = { TYPE = glass_mill } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_foreign = no
 	pop_type = laborers

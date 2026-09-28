@@ -1,0 +1,334 @@
+﻿# THE COLONY WINDOW'S "COLONY ASSIGNMENT" TAB (colony_assign_v7.py). Where a
+# finished colonial charter goes, set per region, area, province or location;
+# the most specific rule wins. events/colonization/colonial_charter.txt sends a
+# finished charter here (colonial_charter.100, a hidden dispatcher) and only
+# asks (colonial_charter.190, the game's question) where no rule answers.
+
+# ---- the tab's lists (root = the overlord)
+# (one area of each region: the window can put the camera on an area's capital)
+balance_assign_add_region = {
+	if = {
+		limit = { NOT = { any_in_list = { variable = balance_assign_region_list region = scope:balance_assign_r } } }
+		scope:balance_assign_r = { random_area_in_region = { save_temporary_scope_as = balance_assign_ra } }
+		add_to_variable_list = { name = balance_assign_region_list target = scope:balance_assign_ra }
+	}
+}
+
+# every region of a rule list's entries ($L$ on this scope)
+balance_assign_add_regions_of = {
+	every_in_list = {
+		variable = $L$
+		region = { save_temporary_scope_as = balance_assign_r }
+		root = { balance_assign_add_region = yes }
+	}
+}
+
+balance_assign_fill = {
+	clear_variable_list = balance_assign_region_list
+	# where our charters are going on now
+	every_colonial_charter = {
+		province_definition = { region = { save_temporary_scope_as = balance_assign_r } }
+		root = { balance_assign_add_region = yes }
+	}
+	# where our subjects are
+	every_subject = {
+		every_owned_location = {
+			region = { save_temporary_scope_as = balance_assign_r }
+			root = { balance_assign_add_region = yes }
+		}
+	}
+	# and wherever there is a rule
+	every_in_list = {
+		variable = balance_assign_new
+		save_temporary_scope_as = balance_assign_r
+		root = { balance_assign_add_region = yes }
+	}
+	every_in_list = {
+		variable = balance_assign_keep
+		save_temporary_scope_as = balance_assign_r
+		root = { balance_assign_add_region = yes }
+	}
+	every_in_list = {
+		variable = balance_assign_one
+		save_temporary_scope_as = balance_assign_r
+		root = { balance_assign_add_region = yes }
+	}
+	every_subject = {
+		every_in_list = {
+			variable = balance_assign_regions
+			save_temporary_scope_as = balance_assign_r
+			root = { balance_assign_add_region = yes }
+		}
+	}
+	balance_assign_add_regions_of = { L = balance_assign_new_a }
+	balance_assign_add_regions_of = { L = balance_assign_keep_a }
+	balance_assign_add_regions_of = { L = balance_assign_ask_a }
+	balance_assign_add_regions_of = { L = balance_assign_one_a }
+	balance_assign_add_regions_of = { L = balance_assign_new_p }
+	balance_assign_add_regions_of = { L = balance_assign_keep_p }
+	balance_assign_add_regions_of = { L = balance_assign_ask_p }
+	balance_assign_add_regions_of = { L = balance_assign_keep_l }
+	every_subject = {
+		balance_assign_add_regions_of = { L = balance_assign_a }
+		balance_assign_add_regions_of = { L = balance_assign_p }
+		balance_assign_add_regions_of = { L = balance_assign_l }
+	}
+	balance_assign_fill_children = yes
+}
+
+# the children of the open region / area / province
+balance_assign_fill_children = {
+	clear_variable_list = balance_assign_area_list
+	clear_variable_list = balance_assign_prov_list
+	clear_variable_list = balance_assign_loc_list
+	if = {
+		limit = { has_variable = balance_assign_nav_r }
+		var:balance_assign_nav_r = {
+			every_area_in_region = {
+				save_temporary_scope_as = balance_assign_x
+				root = { add_to_variable_list = { name = balance_assign_area_list target = scope:balance_assign_x } }
+			}
+		}
+	}
+	if = {
+		limit = { has_variable = balance_assign_nav_a }
+		var:balance_assign_nav_a = {
+			every_province_definition_in_area = {
+				save_temporary_scope_as = balance_assign_x
+				root = { add_to_variable_list = { name = balance_assign_prov_list target = scope:balance_assign_x } }
+			}
+		}
+	}
+	if = {
+		limit = { has_variable = balance_assign_nav_p }
+		var:balance_assign_nav_p = {
+			every_ownable_location_in_province_definition = {
+				save_temporary_scope_as = balance_assign_x
+				root = { add_to_variable_list = { name = balance_assign_loc_list target = scope:balance_assign_x } }
+			}
+		}
+	}
+}
+
+# the node on the right (scope:node); its level K keeps it too, so each list's
+# rows compare it only with nodes of their own kind
+balance_assign_set_edit = {
+	set_variable = { name = balance_assign_edit value = scope:node }
+	if = { limit = { has_variable = balance_assign_edit_r } remove_variable = balance_assign_edit_r }
+	if = { limit = { has_variable = balance_assign_edit_a } remove_variable = balance_assign_edit_a }
+	if = { limit = { has_variable = balance_assign_edit_p } remove_variable = balance_assign_edit_p }
+	if = { limit = { has_variable = balance_assign_edit_l } remove_variable = balance_assign_edit_l }
+	set_variable = { name = balance_assign_edit_$K$ value = scope:node }
+}
+
+# scope:node loses its rule; S N K A = that level's lists (root = the overlord)
+balance_assign_clear_node = {
+	every_subject = {
+		limit = { is_target_in_variable_list = { name = $S$ target = scope:node } }
+		remove_list_variable = { name = $S$ target = scope:node }
+	}
+	if = { limit = { is_target_in_variable_list = { name = $N$ target = scope:node } } remove_list_variable = { name = $N$ target = scope:node } }
+	if = { limit = { is_target_in_variable_list = { name = $K$ target = scope:node } } remove_list_variable = { name = $K$ target = scope:node } }
+	if = { limit = { is_target_in_variable_list = { name = $A$ target = scope:node } } remove_list_variable = { name = $A$ target = scope:node } }
+	if = { limit = { is_target_in_variable_list = { name = $O$ target = scope:node } } remove_list_variable = { name = $O$ target = scope:node } }
+}
+
+# ---- a finished charter (colonial_charter.100; root = the country,
+# scope:target = the province)
+
+# one level's answer for scope:$NODE$, over what wider levels said:
+# balance_assign_kind 0 ask, 1 new colonial subject, 2 keep, 3 a subject,
+# 4 one new colonial subject for all (scope:balance_assign_onode keeps the node,
+# balance_assign_one_lv its level)
+balance_assign_level = {
+	if = { limit = { is_target_in_variable_list = { name = $A$ target = scope:$NODE$ } } set_variable = { name = balance_assign_kind value = 0 } }
+	if = { limit = { is_target_in_variable_list = { name = $N$ target = scope:$NODE$ } } set_variable = { name = balance_assign_kind value = 1 } }
+	if = { limit = { is_target_in_variable_list = { name = $K$ target = scope:$NODE$ } } set_variable = { name = balance_assign_kind value = 2 } }
+	if = {
+		limit = { is_target_in_variable_list = { name = $O$ target = scope:$NODE$ } }
+		scope:$NODE$ = { save_scope_as = balance_assign_onode }
+		set_variable = { name = balance_assign_one_lv value = $W$ }
+		set_variable = { name = balance_assign_kind value = 4 }
+	}
+	if = {
+		limit = { any_subject = { is_target_in_variable_list = { name = $S$ target = scope:$NODE$ } } }
+		random_subject = {
+			limit = { is_target_in_variable_list = { name = $S$ target = scope:$NODE$ } }
+			save_scope_as = balance_assign_to
+		}
+		set_variable = { name = balance_assign_kind value = 3 }
+	}
+}
+
+balance_colony_assign_dispatch = {
+	scope:target = {
+		save_scope_as = target
+		region = { save_scope_as = balance_assign_nr }
+		area = { save_scope_as = balance_assign_na }
+		province_definition = { save_scope_as = balance_assign_np }
+	}
+	set_variable = { name = balance_assign_kind value = 0 }
+	balance_assign_level = { NODE = balance_assign_nr W = 1 S = balance_assign_regions N = balance_assign_new K = balance_assign_keep A = balance_assign_ask_r O = balance_assign_one }
+	balance_assign_level = { NODE = balance_assign_na W = 2 S = balance_assign_a N = balance_assign_new_a K = balance_assign_keep_a A = balance_assign_ask_a O = balance_assign_one_a }
+	balance_assign_level = { NODE = balance_assign_np W = 3 S = balance_assign_p N = balance_assign_new_p K = balance_assign_keep_p A = balance_assign_ask_p O = balance_assign_one_p }
+	if = {
+		limit = {
+			OR = {
+				var:balance_assign_kind = 3
+				var:balance_assign_kind = 2
+				AND = {
+					OR = {
+						var:balance_assign_kind = 1
+						var:balance_assign_kind = 4
+					}
+					scope:target = { is_overseas_for_owner = yes }
+				}
+			}
+		}
+		balance_colony_assign_apply = yes
+		balance_colony_assign_locations = yes
+		trigger_event_silently = treaty_of_tordesillas.1
+	}
+	else = {
+		# no rule: the game's own question; its answer is followed by
+		# balance_colony_assign_locations (in the event's after)
+		trigger_event_silently = { id = colonial_charter.190 }
+	}
+	remove_variable = balance_assign_kind
+	if = { limit = { has_variable = balance_assign_one_lv } remove_variable = balance_assign_one_lv }
+}
+
+# does what the game's question does for that answer
+balance_colony_assign_apply = {
+	save_scope_as = actor
+	# the best location for a town, where the province has no city (as the game's event picks it)
+	if = {
+		limit = {
+			scope:target = {
+				any_location_in_province = {
+					is_city = yes
+					count = 0
+				}
+			}
+		}
+		scope:target = {
+			ordered_location_in_province = {
+				max = 1
+				order_by = best_capital_for_colony
+				save_scope_as = new_town
+			}
+		}
+	}
+	if = {
+		limit = { var:balance_assign_kind = 3 }
+		if = {
+			limit = { exists = scope:new_town }
+			scope:new_town = {
+				change_location_rank_effect = { location_rank = location_rank:town }
+				cc_setup_new_town = yes
+			}
+		}
+		scope:target = { change_province_owner = scope:balance_assign_to }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				var:balance_assign_kind = 1
+				var:balance_assign_kind = 4
+			}
+		}
+		if = {
+			limit = { exists = scope:new_town }
+			scope:new_town = {
+				change_location_rank_effect = { location_rank = location_rank:town }
+			}
+		}
+		scope:target = {
+			create_location_country_from_province = {
+				subject_type = subject_type:colonial_nation
+				hidden_effect = {
+					setup_colonial_nation = yes
+				}
+				save_scope_as = balance_assign_made
+			}
+		}
+		if = {
+			limit = {
+				var:balance_assign_kind = 4
+				exists = scope:balance_assign_made
+			}
+			balance_assign_one_to_made = yes
+		}
+	}
+	else = {
+		scope:target = {
+			every_location_in_province = {
+				limit = { integration_level = colonized }
+				change_integration_level = integrated
+			}
+		}
+	}
+}
+
+# a "one new colonial subject" rule, once that subject is formed, becomes a
+# rule for it: every later charter there goes to it
+balance_assign_one_swap = {
+	remove_list_variable = { name = $O$ target = scope:balance_assign_onode }
+	scope:balance_assign_made = { add_to_variable_list = { name = $S$ target = scope:balance_assign_onode } }
+}
+balance_assign_one_to_made = {
+	if = {
+		limit = { var:balance_assign_one_lv = 1 }
+		balance_assign_one_swap = { O = balance_assign_one S = balance_assign_regions }
+	}
+	else_if = {
+		limit = { var:balance_assign_one_lv = 2 }
+		balance_assign_one_swap = { O = balance_assign_one_a S = balance_assign_a }
+	}
+	else_if = {
+		limit = { var:balance_assign_one_lv = 3 }
+		balance_assign_one_swap = { O = balance_assign_one_p S = balance_assign_p }
+	}
+}
+
+# locations with their own rule move after the province is handed out (never
+# a country's capital)
+balance_colony_assign_locations = {
+	if = {
+		limit = { exists = scope:balance_assign_np }
+		scope:balance_assign_np = {
+			every_location_in_province_definition = {
+				limit = {
+					is_capital = no
+					owner ?= {
+						OR = {
+							this = root
+							is_subject_of = root
+						}
+					}
+				}
+				save_temporary_scope_as = balance_assign_loc
+				if = {
+					limit = { root = { any_subject = { is_target_in_variable_list = { name = balance_assign_l target = scope:balance_assign_loc } } } }
+					root = {
+						random_subject = {
+							limit = { is_target_in_variable_list = { name = balance_assign_l target = scope:balance_assign_loc } }
+							save_temporary_scope_as = balance_assign_lto
+						}
+					}
+					if = {
+						limit = { NOT = { owner ?= scope:balance_assign_lto } }
+						change_location_owner = scope:balance_assign_lto
+					}
+				}
+				else_if = {
+					limit = { root = { is_target_in_variable_list = { name = balance_assign_keep_l target = scope:balance_assign_loc } } }
+					if = {
+						limit = { NOT = { owner ?= root } }
+						change_location_owner = root
+					}
+				}
+			}
+		}
+	}
+}

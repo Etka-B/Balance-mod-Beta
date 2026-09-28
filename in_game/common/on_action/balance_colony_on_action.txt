@@ -1,4 +1,4 @@
-# Keeps the colony window's daily subsidy renewal alive (scripted_effects/
+﻿# Keeps the colony window's daily subsidy renewal alive (scripted_effects/
 # balance_colony_effects.txt, events/balance_colony_subsidy_events.txt): starts
 # the daily chain if it is not running, or starts it again if it died. Only an
 # overlord that has asked for subsidies somewhere carries the list, so every
@@ -13,5 +13,17 @@ balance_colony_subsidy_pulse = {
 	}
 	effect = {
 		balance_colony_subsidy_monthly = yes
+	}
+}
+
+# The colony window's build priorities (scripted_effects/
+# balance_colony_prio_effects.txt): each subject its overlord gave orders to
+# builds and expands by them. Same monthly_country_pulse block as above.
+balance_colony_prio_pulse = {
+	trigger = {
+		has_variable_list = balance_prio_subjects
+	}
+	effect = {
+		balance_colony_prio_monthly = yes
 	}
 }

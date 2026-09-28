@@ -1,0 +1,56 @@
+﻿# The colony window's priorities tab shows these for the picked subject
+# (gui/balance_colony_window.gui).
+balance_sv_gold = { value = gold }
+balance_sv_income = { value = monthly_income_total }
+balance_sv_balance = { value = monthly_balance }
+
+# the priorities (scripted_effects/balance_colony_prio_effects.txt);
+# scope:balance_prio_t = the building type, scope:balance_prio_c = the subject
+balance_sv_prio_t_profit_sum = {
+	value = 0
+	every_owned_location = {
+		every_buildings_in_location = {
+			limit = {
+				building_type = scope:balance_prio_t
+				owner ?= scope:balance_prio_c
+				building_level >= 1
+			}
+			add = building_profit
+		}
+	}
+}
+
+balance_sv_prio_t_count = {
+	value = 0
+	every_owned_location = {
+		every_buildings_in_location = {
+			limit = {
+				building_type = scope:balance_prio_t
+				owner ?= scope:balance_prio_c
+				building_level >= 1
+			}
+			add = 1
+		}
+	}
+}
+
+# location scope
+balance_sv_prio_loc_t_profit = {
+	value = 0
+	every_buildings_in_location = {
+		limit = {
+			building_type = scope:balance_prio_t
+			owner ?= scope:balance_prio_c
+		}
+		add = building_profit
+	}
+}
+
+balance_sv_prio_rgo_price = { value = relative_raw_material_price }
+
+# location scope: the location box's "least control" order (ordered_ lists
+# take the biggest first)
+balance_sv_lp_less_control = {
+	value = local_control
+	multiply = -1
+}

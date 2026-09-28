@@ -4,6 +4,7 @@
 # Age of Traditions
 
 furniture_guild = {
+	allow = { balance_building_not_forbidden = { TYPE = furniture_guild } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = burghers
@@ -42,6 +43,7 @@ furniture_guild = {
 }
 
 furniture_workshop = {
+	allow = { balance_building_not_forbidden = { TYPE = furniture_workshop } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -87,6 +89,7 @@ furniture_workshop = {
 # Age of Absolutism
 ###########################################
 furniture_manufactory = {
+	allow = { balance_building_not_forbidden = { TYPE = furniture_manufactory } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_foreign = no
 	pop_type = burghers
@@ -134,6 +137,7 @@ furniture_manufactory = {
 # Age of Revolutions
 ###########################################
 furniture_mill = {
+	allow = { balance_building_not_forbidden = { TYPE = furniture_mill } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_foreign = no
 	pop_type = laborers

@@ -1,0 +1,15 @@
+﻿# URBAN RIGHTS WITHOUT THE SCREEN CLOSING (gui/attribute_columns/location.gui).
+# In "Select Urban Location" of the grant flow, a location's click comes here
+# instead of the game's own grant, so the list stays open. The row is enabled
+# only where the game itself would allow the grant; the price is the game's.
+balance_tr_grant = {
+	scope = country
+	saved_scopes = { location type }
+	is_valid = {
+		scope:location = { owner ?= root }
+	}
+	effect = {
+		pay_price = price:grant_town_rights
+		scope:location = { grant_town_rights = scope:type }
+	}
+}

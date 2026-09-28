@@ -35,7 +35,7 @@ TRY_REPLACE:stockade = {
 	
 
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = stockade }
 		NOT = {
 			any_neighbor_location = {
 				OR = {
@@ -115,7 +115,7 @@ TRY_REPLACE:castle = {
 	
 
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = castle }
 		NOT = {
 			any_neighbor_location = {
 				OR = {
@@ -196,7 +196,7 @@ TRY_REPLACE:bastion = {
 	construction_demand = fort_construction
 	
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bastion }
 		NOT = {
 			any_neighbor_location = {
 				OR = {
@@ -273,7 +273,7 @@ TRY_REPLACE:star_fort = {
 	construction_demand = fort_construction
 	
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = star_fort }
 		NOT = {
 			any_neighbor_location = {
 				OR = {
@@ -352,7 +352,7 @@ TRY_REPLACE:fortress = {
 	
 	
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = fortress }
 		NOT = {
 			any_neighbor_location = {
 				OR = {
@@ -395,6 +395,7 @@ TRY_REPLACE:fortress = {
 }
 
 TRY_REPLACE:coastal_fort = {
+	allow = { balance_building_not_forbidden = { TYPE = coastal_fort } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = 1
@@ -446,6 +447,7 @@ TRY_REPLACE:coastal_fort = {
 }
 
 TRY_REPLACE:naval_battery = {
+	allow = { balance_building_not_forbidden = { TYPE = naval_battery } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = 1
@@ -524,7 +526,7 @@ TRY_REPLACE:city_walls = {
 	
 	construction_demand = city_walls_construction
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = city_walls }
 		NOT = { has_building = building_type:theodosian_walls }
 		NOT = { has_building = building_type:walls_of_lucca }
 	

@@ -1,0 +1,258 @@
+﻿# THE COLONY WINDOW'S PRIORITIES (colony_v10.py, colony_v11.py).
+
+# row S holds nothing
+balance_prio_slot_empty = {
+	NOT = { has_variable = balance_prio_$S$_b }
+	NOT = { has_variable = balance_prio_$S$_g }
+}
+
+# location scope; scope:balance_prio_c = the subject, whose balance_prio_w is
+# the row's "where", balance_prio_curlocs the row's own locations and
+# balance_prio_cm its control floor (0 = none)
+balance_prio_where_ok = {
+	owner ?= scope:balance_prio_c
+	trigger_if = {
+		limit = { scope:balance_prio_c = { var:balance_prio_w = 1 } }
+		scope:balance_prio_c = { is_target_in_variable_list = { name = balance_prio_curlocs target = prev } }
+	}
+	trigger_if = {
+		limit = { scope:balance_prio_c = { var:balance_prio_cm > 0 } }
+		local_control >= scope:balance_prio_c.var:balance_prio_cm
+	}
+	trigger_if = {
+		limit = { scope:balance_prio_c = { var:balance_prio_w = 2 } }
+		NOT = { location_rank = location_rank:rural_settlement }
+	}
+}
+
+# a place for one more of scope:balance_prio_t. Never where someone else owns
+# one of this type: the subject's would stand beside it as a second building.
+balance_prio_b_place_ok = {
+	balance_prio_where_ok = yes
+	NOT = { var:balance_prio_tried_b ?= scope:balance_prio_t }
+	can_build_building = scope:balance_prio_t
+	NOT = {
+		any_buildings_in_location = {
+			building_type = scope:balance_prio_t
+			NOT = { owner ?= scope:balance_prio_c }
+		}
+	}
+	NOT = {
+		any_buildings_in_location = {
+			building_type = scope:balance_prio_t
+			building_levels_under_construction > 0
+		}
+	}
+}
+
+# its own building of this type here makes a profit
+balance_prio_b_has_profitable = {
+	any_buildings_in_location = {
+		building_type = scope:balance_prio_t
+		owner ?= scope:balance_prio_c
+		building_profit > 0
+	}
+}
+
+# an RGO upgrade we ordered still going (as best script can tell: the game
+# gives no trigger for it, so our mark plus a construction in the location)
+balance_prio_rgo_busy = {
+	has_variable = balance_prio_rgo_on
+	num_civil_constructions > 0
+}
+
+# a place to expand for scope:balance_prio_g
+balance_prio_g_place_ok = {
+	raw_material ?= scope:balance_prio_g
+	is_full_expanded_rgo = no
+	balance_prio_where_ok = yes
+	NOT = { var:balance_prio_tried_g ?= scope:balance_prio_g }
+	NOT = { has_variable = balance_prio_rgo_t }
+	NOT = { balance_prio_rgo_busy = yes }
+}
+
+# in every building type's allow (root = the location, scope:actor = the
+# builder): an overlord can forbid a building type to a subject
+balance_building_not_forbidden = {
+	trigger_if = {
+		limit = { exists = scope:actor }
+		custom_tooltip = {
+			text = balance_forbid_building_tt
+			NOT = { scope:actor ?= { is_target_in_variable_list = { name = balance_forbid_buildings target = building_type:$TYPE$ } } }
+		}
+	}
+}
+
+# the target (scope:btype or scope:goods) is in one of the subject's rows
+balance_prio_has_b = {
+	OR = {
+		var:balance_prio_1_b ?= scope:btype
+		var:balance_prio_2_b ?= scope:btype
+		var:balance_prio_3_b ?= scope:btype
+		var:balance_prio_4_b ?= scope:btype
+		var:balance_prio_5_b ?= scope:btype
+		var:balance_prio_6_b ?= scope:btype
+		var:balance_prio_7_b ?= scope:btype
+		var:balance_prio_8_b ?= scope:btype
+		var:balance_prio_9_b ?= scope:btype
+		var:balance_prio_10_b ?= scope:btype
+		var:balance_prio_11_b ?= scope:btype
+		var:balance_prio_12_b ?= scope:btype
+		var:balance_prio_13_b ?= scope:btype
+		var:balance_prio_14_b ?= scope:btype
+		var:balance_prio_15_b ?= scope:btype
+		var:balance_prio_16_b ?= scope:btype
+		var:balance_prio_17_b ?= scope:btype
+		var:balance_prio_18_b ?= scope:btype
+		var:balance_prio_19_b ?= scope:btype
+		var:balance_prio_20_b ?= scope:btype
+	}
+}
+
+balance_prio_has_g = {
+	OR = {
+		var:balance_prio_1_g ?= scope:goods
+		var:balance_prio_2_g ?= scope:goods
+		var:balance_prio_3_g ?= scope:goods
+		var:balance_prio_4_g ?= scope:goods
+		var:balance_prio_5_g ?= scope:goods
+		var:balance_prio_6_g ?= scope:goods
+		var:balance_prio_7_g ?= scope:goods
+		var:balance_prio_8_g ?= scope:goods
+		var:balance_prio_9_g ?= scope:goods
+		var:balance_prio_10_g ?= scope:goods
+		var:balance_prio_11_g ?= scope:goods
+		var:balance_prio_12_g ?= scope:goods
+		var:balance_prio_13_g ?= scope:goods
+		var:balance_prio_14_g ?= scope:goods
+		var:balance_prio_15_g ?= scope:goods
+		var:balance_prio_16_g ?= scope:goods
+		var:balance_prio_17_g ?= scope:goods
+		var:balance_prio_18_g ?= scope:goods
+		var:balance_prio_19_g ?= scope:goods
+		var:balance_prio_20_g ?= scope:goods
+	}
+}
+
+
+# ---- the row's location box (location scope, root = the overlord)
+balance_lp_shown = {
+	balance_lp_shown_np = yes
+	trigger_if = {
+		limit = { exists = scope:balance_lp_p }
+		province_definition ?= scope:balance_lp_p
+	}
+}
+
+# the same without the province filter: which provinces the box lists
+balance_lp_shown_np = {
+	trigger_if = {
+		limit = { root = { has_variable = balance_lp_cmin } }
+		local_control >= root.var:balance_lp_cmin
+	}
+	trigger_if = {
+		limit = { exists = scope:balance_lp_g }
+		raw_material ?= scope:balance_lp_g
+	}
+	trigger_if = {
+		limit = { root = { has_variable = balance_lp_rural } }
+		location_rank = location_rank:rural_settlement
+	}
+	trigger_if = {
+		limit = { root = { has_variable = balance_lp_town } }
+		location_rank = location_rank:town
+	}
+	trigger_if = {
+		limit = { root = { has_variable = balance_lp_city } }
+		OR = {
+			location_rank = location_rank:city
+			location_rank = location_rank:megalopolis
+		}
+	}
+}
+
+# scope:location is in the open row's locations
+balance_lp_is_on = {
+	has_variable = balance_lp_row
+	has_variable = balance_colony_subject
+	trigger_if = {
+		limit = { var:balance_lp_row = 1 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_1_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 2 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_2_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 3 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_3_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 4 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_4_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 5 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_5_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 6 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_6_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 7 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_7_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 8 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_8_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 9 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_9_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 10 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_10_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 11 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_11_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 12 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_12_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 13 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_13_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 14 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_14_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 15 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_15_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 16 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_16_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 17 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_17_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 18 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_18_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 19 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_19_locs target = scope:location } }
+	}
+	trigger_if = {
+		limit = { var:balance_lp_row = 20 }
+		var:balance_colony_subject = { is_target_in_variable_list = { name = balance_prio_20_locs target = scope:location } }
+	}
+}

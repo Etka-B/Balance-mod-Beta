@@ -24,7 +24,7 @@ lutheran_preachers = {
 			situation_is_active = yes
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = lutheran_preachers }
 		owner ?= { this = scope:actor }
 		is_city = yes
 	}
@@ -152,7 +152,7 @@ calvinist_preachers = {
 			situation_is_active = yes
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = calvinist_preachers }
 		owner ?= { this = scope:actor }
 		is_city = yes
 	}

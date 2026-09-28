@@ -28,7 +28,7 @@ pounamou_carver = {
 		culture ?= culture:maori_culture
 	}
 	
-	allow = {		
+	allow = { balance_building_not_forbidden = { TYPE = pounamou_carver }		
 		market = { is_produced_in_market = goods:gems }
 	}
 
@@ -67,7 +67,7 @@ bardic_school = {
 	country_potential = {
 		has_reform = government_reform:celtic_traditions_reform
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = bardic_school }
 	}
 
 
@@ -90,6 +90,7 @@ bardic_school = {
 }
 
 hanseatic_kontor = {
+	allow = { balance_building_not_forbidden = { TYPE = hanseatic_kontor } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = yes
@@ -131,6 +132,7 @@ hanseatic_kontor = {
 }
 
 hanseatic_shipwright_guild = {
+	allow = { balance_building_not_forbidden = { TYPE = hanseatic_shipwright_guild } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = yes
@@ -169,6 +171,7 @@ hanseatic_shipwright_guild = {
 }
 
 hanseatic_town_hall = {
+	allow = { balance_building_not_forbidden = { TYPE = hanseatic_town_hall } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = yes
@@ -246,7 +249,7 @@ fondaco = {
 		is_merchant_republic = yes
 		culture = { has_culture_group = culture_group:italian_group }
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = fondaco }
 		within_naval_range_of = scope:actor
 		owner = {
 			giving_scripted_relation = {
@@ -276,6 +279,7 @@ fondaco = {
 }
 
 venetian_arsenal = {
+	allow = { balance_building_not_forbidden = { TYPE = venetian_arsenal } }	# Balance mod: colony window build priorities
 	audio_tier = 6
 	is_special = yes
 	is_foreign = no
@@ -326,6 +330,7 @@ venetian_arsenal = {
 }
 
 kurultai = {
+	allow = { balance_building_not_forbidden = { TYPE = kurultai } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -388,6 +393,7 @@ kurultai = {
 }
 
 gallowglass_sept = {  # ESTATE BUILDING
+	allow = { balance_building_not_forbidden = { TYPE = gallowglass_sept } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -441,6 +447,7 @@ gallowglass_sept = {  # ESTATE BUILDING
 }
 
 order_stronghold = {
+	allow = { balance_building_not_forbidden = { TYPE = order_stronghold } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -528,7 +535,7 @@ order_commandery = {
 	
 	build_time = soldier_building
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = order_commandery }
 		owner = { within_diplomatic_range = scope:actor }
 		dominant_religion ?= religion:catholic
 	}
@@ -573,6 +580,7 @@ order_commandery = {
 }
 
 banking_office = {
+	allow = { balance_building_not_forbidden = { TYPE = banking_office } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = yes
@@ -639,7 +647,7 @@ tribes_of_galway = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = tribes_of_galway }
 		always = no
 	}
 	
@@ -664,6 +672,7 @@ tribes_of_galway = {
 }
 
 copenhagen_dockyard = {
+	allow = { balance_building_not_forbidden = { TYPE = copenhagen_dockyard } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -735,7 +744,7 @@ caravanserai = {
 		has_advance = caravanserai_advance		# just to hide from those who do not get the tech.
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = caravanserai }
 		OR = {
 			region = region:khorasan_region
 			region = region:xinjiang_region
@@ -790,7 +799,7 @@ caravan_stop = {
 		has_advance = west_african_caravan_stop_advance
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = caravan_stop }
 		OR = {
 			region = region:persia_region
 			region = region:arabia_region
@@ -848,7 +857,7 @@ cinque_port = {  # ESTATE BUILDING
 		is_port = yes
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = cinque_port }
 		always = no
 	}
 	
@@ -897,7 +906,7 @@ eng_royal_forest = {
 		}
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = eng_royal_forest }
 	}
 	
 	build_time = rural_build_time
@@ -947,7 +956,7 @@ seat_of_cardinal = {
 
 	category = religious_category
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = seat_of_cardinal }
 		always = no #requested with request_cardinal_seat
 	}
 
@@ -993,6 +1002,7 @@ seat_of_cardinal = {
 }
 
 north_sea_shipyards = {
+	allow = { balance_building_not_forbidden = { TYPE = north_sea_shipyards } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1043,6 +1053,7 @@ north_sea_shipyards = {
 }
 
 galley_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = galley_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1083,6 +1094,7 @@ galley_barracks = {
 }
 
 janissary_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = janissary_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -1139,7 +1151,7 @@ safaviyya_order_hall = {
 	possible_production_methods = {
 		safaviyya_order_hall_maintenance
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = safaviyya_order_hall }
 		dominant_culture = { has_culture_group = culture_group:iranian_group }
 		dominant_religion ?= religion:shia
 	}
@@ -1149,6 +1161,7 @@ safaviyya_order_hall = {
 }
 
 warrior_lodge = {
+	allow = { balance_building_not_forbidden = { TYPE = warrior_lodge } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1190,6 +1203,7 @@ warrior_lodge = {
 }
 
 ghilman_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = ghilman_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -1241,7 +1255,7 @@ stannary_court = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = stannary_court }
 		always = no
 	}
 
@@ -1315,7 +1329,7 @@ lieutenancy = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = lieutenancy }
 		custom_tooltip = {
 			text = lieutenancy_tt
 			scope:actor = {
@@ -1383,7 +1397,7 @@ barcelona_royal_shipyard = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = barcelona_royal_shipyard }
 		always = no
 	}
 
@@ -1412,6 +1426,7 @@ barcelona_royal_shipyard = {
 }
 
 uffizi = {
+	allow = { balance_building_not_forbidden = { TYPE = uffizi } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_special = yes
 	is_foreign = no
@@ -1450,6 +1465,7 @@ uffizi = {
 }
 
 ostrog = {
+	allow = { balance_building_not_forbidden = { TYPE = ostrog } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1503,6 +1519,7 @@ ostrog = {
 }
 
 pomor_outpost = {
+	allow = { balance_building_not_forbidden = { TYPE = pomor_outpost } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1572,7 +1589,7 @@ brethren_marsh = {
 	megalopolis = yes
 	
 
-	allow = {	
+	allow = { balance_building_not_forbidden = { TYPE = brethren_marsh }	
 		owner = {
 			OR = {
 				culture ?= culture:basque
@@ -1620,6 +1637,7 @@ brethren_marsh = {
 }
 
 sofa_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = sofa_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1656,6 +1674,7 @@ sofa_barracks = {
 }
 
 cawa_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = cawa_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1713,7 +1732,7 @@ kings_manor = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = kings_manor }
 		always = no
 	}
 
@@ -1754,6 +1773,7 @@ kings_manor = {
 }
 
 polders = {
+	allow = { balance_building_not_forbidden = { TYPE = polders } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -1801,6 +1821,7 @@ polders = {
 }
 
 telpochcalli = {
+	allow = { balance_building_not_forbidden = { TYPE = telpochcalli } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -1843,6 +1864,7 @@ telpochcalli = {
 }
 
 calmecac = {
+	allow = { balance_building_not_forbidden = { TYPE = calmecac } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -1886,6 +1908,7 @@ calmecac = {
 }
 
 panaqa_building = {
+	allow = { balance_building_not_forbidden = { TYPE = panaqa_building } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -1930,6 +1953,7 @@ panaqa_building = {
 }
 
 pukara_building = {
+	allow = { balance_building_not_forbidden = { TYPE = pukara_building } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -1977,6 +2001,7 @@ pukara_building = {
 }
 
 terraces = {
+	allow = { balance_building_not_forbidden = { TYPE = terraces } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -2019,6 +2044,7 @@ terraces = {
 }
 
 tambo = {
+	allow = { balance_building_not_forbidden = { TYPE = tambo } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -2060,6 +2086,7 @@ tambo = {
 }
 
 incamisana = {
+	allow = { balance_building_not_forbidden = { TYPE = incamisana } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -2121,7 +2148,7 @@ royal_society = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = royal_society }
 		always = no
 	}
 
@@ -2188,7 +2215,7 @@ royal_academy_of_arts = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = royal_academy_of_arts }
 		always = no
 	}
 
@@ -2221,6 +2248,7 @@ royal_academy_of_arts = {
 }
 
 peel_towers = {
+	allow = { balance_building_not_forbidden = { TYPE = peel_towers } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -2272,6 +2300,7 @@ peel_towers = {
 }
 
 dun_fort = {
+	allow = { balance_building_not_forbidden = { TYPE = dun_fort } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -2357,7 +2386,7 @@ kokufu = {
 	
 	build_time = soldier_building
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = kokufu }
 		custom_tooltip = {
 			text = kokufu_why_tt
 			always = no
@@ -2412,7 +2441,7 @@ gosho = {
 	
 	build_time = soldier_building
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = gosho }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		OR = {
 			this = location:kyoto
@@ -2475,7 +2504,7 @@ yamashiro = {
 	
 	build_time = soldier_building
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = yamashiro }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		trigger_if = {
 			limit = {
@@ -2565,7 +2594,7 @@ yakata = {
 	
 	build_time = soldier_building
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = yakata }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		any_foreign_building_countries_in_location = { this = scope:actor }
 	}
@@ -2620,7 +2649,7 @@ shoen = {
 	
 	build_time = estate_build_time
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = shoen }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		OR = {
 			any_foreign_building_countries_in_location = { this = scope:actor }
@@ -2739,7 +2768,7 @@ tatara = {
 	
 	build_time = estate_build_time
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = tatara }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		any_foreign_building_countries_in_location = { this = scope:actor }
 	}
@@ -2803,7 +2832,7 @@ clan_shipyards = {
 	
 	build_time = estate_build_time
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = clan_shipyards }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		any_foreign_building_countries_in_location = { this = scope:actor }
 	}
@@ -2862,7 +2891,7 @@ clan_family_shrine = {
 	
 	build_time = estate_build_time
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = clan_family_shrine }
 		dominant_culture = { has_culture_group = culture_group:japanese_group }
 		any_foreign_building_countries_in_location = { this = scope:actor }
 	}
@@ -2893,7 +2922,7 @@ korean_gunnery_land_defense = {
 	city = yes
 	megalopolis = yes
 	build_time = small_fort_building
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = korean_gunnery_land_defense }
 		modifier:fort_level > 0
 		NOT = { has_building = building_type:korean_gunnery_coastal_defense }
 	}
@@ -2920,7 +2949,7 @@ korean_gunnery_coastal_defense = {
 	city = yes
 	megalopolis = yes
 	build_time = small_fort_building
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = korean_gunnery_coastal_defense }
 		modifier:fort_level > 0
 		NOT = { has_building = building_type:korean_gunnery_land_defense }
 	}
@@ -2940,6 +2969,7 @@ korean_gunnery_coastal_defense = {
 }
 
 kremlin = {
+	allow = { balance_building_not_forbidden = { TYPE = kremlin } }	# Balance mod: colony window build priorities
 	audio_tier = 6
 	is_special = yes
 	is_foreign = no
@@ -3027,7 +3057,7 @@ stroganov_school_of_iconic_art = {
 		NOT = { owner = { religion ?= religion:orthodox } }
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = stroganov_school_of_iconic_art }
 		always = no
 	}
 
@@ -3064,6 +3094,7 @@ stroganov_school_of_iconic_art = {
 }
 
 venetian_palaces = {
+	allow = { balance_building_not_forbidden = { TYPE = venetian_palaces } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -3121,7 +3152,7 @@ venetian_quarter = {
 		tag = VEN
 	}
 	location_potential = { this = location:constantinople }
-	allow = { within_naval_range_of = scope:actor }
+	allow = { balance_building_not_forbidden = { TYPE = venetian_quarter } within_naval_range_of = scope:actor }
 	remove_if = {
 		owner = {
 			NOT = { tag = VEN }
@@ -3175,7 +3206,7 @@ galata = {
 		scope:building.owner = scope:actor
 	}
 
-	allow = { within_naval_range_of = scope:actor }
+	allow = { balance_building_not_forbidden = { TYPE = galata } within_naval_range_of = scope:actor }
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
@@ -3220,7 +3251,7 @@ novodevichy_convent = {
 		this = location:moscow
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = novodevichy_convent }
 		always = no
 	}
 
@@ -3274,7 +3305,7 @@ moscow_artillery_yard = {
 		this = location:moscow
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = moscow_artillery_yard }
 		always = no
 	}
 
@@ -3308,6 +3339,7 @@ moscow_artillery_yard = {
 }
 
 bund = {
+	allow = { balance_building_not_forbidden = { TYPE = bund } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -3360,7 +3392,7 @@ kalari = {
 	city = yes
 	megalopolis = yes
 	build_time = soldier_building
-	allow = { owner = { has_primary_or_accepted_culture = prev.dominant_culture } }
+	allow = { balance_building_not_forbidden = { TYPE = kalari } owner = { has_primary_or_accepted_culture = prev.dominant_culture } }
 	remove_if = { NOT = { owner = { has_primary_or_accepted_culture = prev.location.dominant_culture } } }
 	modifier = {
 		local_levy_size_modifier = 0.33
@@ -3374,6 +3406,7 @@ kalari = {
 }
 
 ibadat_khana = {
+	allow = { balance_building_not_forbidden = { TYPE = ibadat_khana } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -3438,7 +3471,7 @@ academy_of_sciences = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = academy_of_sciences }
 		always = no
 	}
 
@@ -3501,7 +3534,7 @@ greek_latin_academy = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = greek_latin_academy }
 		always = no
 	}
 
@@ -3561,7 +3594,7 @@ sukharev_tower = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = sukharev_tower }
 		always = no
 	}
 
@@ -3617,7 +3650,7 @@ the_bock_fortifications = {
 		always = no
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = the_bock_fortifications }
 		always = no
 	}
 	
@@ -3669,7 +3702,7 @@ ruined_great_wall_of_china = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = ruined_great_wall_of_china }
 		always = no
 	}
 
@@ -3713,7 +3746,7 @@ repaired_great_wall_of_china = {
 	country_potential = {
 		tag = CHI
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = repaired_great_wall_of_china }
 		OR = {
 			has_building = building_type:ruined_great_wall_of_china
 			is_historical_route_of_great_wall = yes
@@ -3765,7 +3798,7 @@ free_economic_society = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = free_economic_society }
 		always = no
 	}
 
@@ -3828,7 +3861,7 @@ imperial_academy_of_arts = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = imperial_academy_of_arts }
 		always = no
 	}
 
@@ -3888,7 +3921,7 @@ moscow_orphanage = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = moscow_orphanage }
 		always = no
 	}
 
@@ -3950,7 +3983,7 @@ institute_of_noble_maidens = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = institute_of_noble_maidens }
 		always = no
 	}
 
@@ -4011,7 +4044,7 @@ royal_atarazanas_seville = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = royal_atarazanas_seville }
 		always = no
 	}
 
@@ -4038,6 +4071,7 @@ royal_atarazanas_seville = {
 }
 
 alhambra = {
+	allow = { balance_building_not_forbidden = { TYPE = alhambra } }	# Balance mod: colony window build priorities
 	audio_tier = 6
 	is_special = yes
 	is_foreign = no
@@ -4108,7 +4142,7 @@ theodosian_walls = {
 		owns = location:constantinople
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = theodosian_walls }
 		owner = {
 			or = {
 				is_ai = no
@@ -4162,6 +4196,7 @@ theodosian_walls = {
 }
 
 bey_fortress = {
+	allow = { balance_building_not_forbidden = { TYPE = bey_fortress } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -4263,6 +4298,7 @@ bey_fortress = {
 }
 
 mamluk_barracks = {
+	allow = { balance_building_not_forbidden = { TYPE = mamluk_barracks } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -4310,6 +4346,7 @@ mamluk_barracks = {
 }
 
 coastal_settlements = {
+	allow = { balance_building_not_forbidden = { TYPE = coastal_settlements } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -4361,6 +4398,7 @@ coastal_settlements = {
 }
 
 kurmina_headquarter = {
+	allow = { balance_building_not_forbidden = { TYPE = kurmina_headquarter } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -4404,6 +4442,7 @@ kurmina_headquarter = {
 }
 
 great_enclosure = {
+	allow = { balance_building_not_forbidden = { TYPE = great_enclosure } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_special = yes
 	is_foreign = no
@@ -4435,6 +4474,7 @@ great_enclosure = {
 }
 
 great_hill_complex = {
+	allow = { balance_building_not_forbidden = { TYPE = great_hill_complex } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_special = yes
 	is_foreign = no
@@ -4466,6 +4506,7 @@ great_hill_complex = {
 }
 
 great_valley_complex = {
+	allow = { balance_building_not_forbidden = { TYPE = great_valley_complex } }	# Balance mod: colony window build priorities
 	audio_tier = 5
 	is_special = yes
 	is_foreign = no
@@ -4516,7 +4557,7 @@ trans_saharan_trade_outposts = {
 			has_variable = son_trans_saharan_trade_building_variable
 		}
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trans_saharan_trade_outposts }
 		OR = {
 			this = location:cairo
 			this = location:fez
@@ -4542,6 +4583,7 @@ trans_saharan_trade_outposts = {
 }
 
 khmer_baray = {
+	allow = { balance_building_not_forbidden = { TYPE = khmer_baray } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -4580,6 +4622,7 @@ khmer_baray = {
 }
 
 bajang_ratu = {
+	allow = { balance_building_not_forbidden = { TYPE = bajang_ratu } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -4627,6 +4670,7 @@ bajang_ratu = {
 }
 
 bubu_building = {
+	allow = { balance_building_not_forbidden = { TYPE = bubu_building } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -4664,6 +4708,7 @@ bubu_building = {
 }
 
 fulani_cattle_rearing_pen = {
+	allow = { balance_building_not_forbidden = { TYPE = fulani_cattle_rearing_pen } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
@@ -4711,6 +4756,7 @@ fulani_cattle_rearing_pen = {
 }
 
 walls_of_benin = {
+	allow = { balance_building_not_forbidden = { TYPE = walls_of_benin } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -4754,6 +4800,7 @@ walls_of_benin = {
 }
 
 zazzau_walls = {
+	allow = { balance_building_not_forbidden = { TYPE = zazzau_walls } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -4795,6 +4842,7 @@ zazzau_walls = {
 }
 
 eghabho_nore_mansion = {
+	allow = { balance_building_not_forbidden = { TYPE = eghabho_nore_mansion } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -4838,6 +4886,7 @@ eghabho_nore_mansion = {
 }
 
 ribat = {
+	allow = { balance_building_not_forbidden = { TYPE = ribat } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	
@@ -4899,7 +4948,7 @@ por_feitoria = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = por_feitoria }
 		OR = {
 			is_coastal_within_range = yes
 			is_adjacent_to_owned_or_subject_owns = yes
@@ -4935,6 +4984,7 @@ por_feitoria = {
 }
 
 gurgaddi = {
+	allow = { balance_building_not_forbidden = { TYPE = gurgaddi } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 
@@ -4980,6 +5030,7 @@ gurgaddi = {
 }
 
 sufi_mosque = {
+	allow = { balance_building_not_forbidden = { TYPE = sufi_mosque } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	max_levels = 1
@@ -5038,7 +5089,7 @@ wali_songo_shrine = {
 	country_potential = {
 		always = no
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = wali_songo_shrine }
 		always = no
 	}
 
@@ -5061,6 +5112,7 @@ wali_songo_shrine = {
 }
 
 zhixian = {
+	allow = { balance_building_not_forbidden = { TYPE = zhixian } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5159,7 +5211,7 @@ seljuk_mint = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = seljuk_mint }
 		NOT = { has_building = building_type:local_governor }
 	}
 
@@ -5201,6 +5253,7 @@ seljuk_mint = {
 }
 
 tur_kodjabashi_office = {
+	allow = { balance_building_not_forbidden = { TYPE = tur_kodjabashi_office } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5263,6 +5316,7 @@ tur_kodjabashi_office = {
 }
 
 qalat_al_mashwar = {
+	allow = { balance_building_not_forbidden = { TYPE = qalat_al_mashwar } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_special = yes
 	is_foreign = no
@@ -5297,6 +5351,7 @@ qalat_al_mashwar = {
 }
 
 german_river_toll_castle = {
+	allow = { balance_building_not_forbidden = { TYPE = german_river_toll_castle } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5341,6 +5396,7 @@ german_river_toll_castle = {
 }
 
 german_mountain_toll_castle = {
+	allow = { balance_building_not_forbidden = { TYPE = german_mountain_toll_castle } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5410,7 +5466,7 @@ hippodrome = {
 
 	location_potential = { this = location:constantinople }
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = hippodrome }
 		custom_tooltip = {
 			text = won_fate_of_the_phoenix_disaster_tt
 			scope:actor = { has_variable = won_fate_of_the_phoenix_disaster_variable }
@@ -5430,6 +5486,7 @@ hippodrome = {
 }
 
 porto_pisano = {
+	allow = { balance_building_not_forbidden = { TYPE = porto_pisano } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5481,6 +5538,7 @@ porto_pisano = {
 }
 
 gymnasium_building = {
+	allow = { balance_building_not_forbidden = { TYPE = gymnasium_building } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = no
@@ -5538,6 +5596,7 @@ gymnasium_building = {
 }
 
 hsa_burgtor = {
+	allow = { balance_building_not_forbidden = { TYPE = hsa_burgtor } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_special = yes
 	is_foreign = yes

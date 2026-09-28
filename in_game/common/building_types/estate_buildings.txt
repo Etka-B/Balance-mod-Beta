@@ -4,6 +4,7 @@
 #Nobles
 
 toll_castle = {
+	allow = { balance_building_not_forbidden = { TYPE = toll_castle } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -45,6 +46,7 @@ toll_castle = {
 }
 
 nobility_fortifications = {
+	allow = { balance_building_not_forbidden = { TYPE = nobility_fortifications } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -108,7 +110,7 @@ rotten_borough = {
 		modifier:has_a_parliamentary_system = yes
 		has_parliament = yes
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = rotten_borough }
 		owner = {
 			estate_satisfaction:nobles_estate < 0.5
 			stability < 0
@@ -146,6 +148,7 @@ rotten_borough = {
 }
 
 noble_villa = {
+	allow = { balance_building_not_forbidden = { TYPE = noble_villa } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_stackable_level
@@ -184,6 +187,7 @@ noble_villa = {
 }
 
 local_noble_delegation = {
+	allow = { balance_building_not_forbidden = { TYPE = local_noble_delegation } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -222,6 +226,7 @@ local_noble_delegation = {
 }
 
 nobles_recruitment_center = {
+	allow = { balance_building_not_forbidden = { TYPE = nobles_recruitment_center } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -263,6 +268,7 @@ nobles_recruitment_center = {
 
 
 local_estates = {
+	allow = { balance_building_not_forbidden = { TYPE = local_estates } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_stackable_level
@@ -301,6 +307,7 @@ local_estates = {
 
 
 noble_courts = {
+	allow = { balance_building_not_forbidden = { TYPE = noble_courts } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -336,6 +343,7 @@ noble_courts = {
 }
 
 nobles_mansion = {
+	allow = { balance_building_not_forbidden = { TYPE = nobles_mansion } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -374,6 +382,7 @@ nobles_mansion = {
 
 
 nobled_sponsored_temple = {
+	allow = { balance_building_not_forbidden = { TYPE = nobled_sponsored_temple } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -421,6 +430,7 @@ nobled_sponsored_temple = {
 #Clergy
 
 cathedral = {
+	allow = { balance_building_not_forbidden = { TYPE = cathedral } }	# Balance mod: colony window build priorities
 	audio_tier = 4
 	is_foreign = no
 	max_levels = 1
@@ -480,6 +490,7 @@ cathedral = {
 }
 
 parish_church = {
+	allow = { balance_building_not_forbidden = { TYPE = parish_church } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -524,6 +535,7 @@ parish_church = {
 }
 
 local_shrine = {
+	allow = { balance_building_not_forbidden = { TYPE = local_shrine } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -562,6 +574,7 @@ local_shrine = {
 }
 
 clerical_archives = {
+	allow = { balance_building_not_forbidden = { TYPE = clerical_archives } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -602,6 +615,7 @@ clerical_archives = {
 }
 
 spiritual_retreat = {
+	allow = { balance_building_not_forbidden = { TYPE = spiritual_retreat } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -650,6 +664,7 @@ spiritual_retreat = {
 }
 
 warrior_monks_training_grounds = {
+	allow = { balance_building_not_forbidden = { TYPE = warrior_monks_training_grounds } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -700,6 +715,7 @@ warrior_monks_training_grounds = {
 #Burghers
 
 guild_hall = {
+	allow = { balance_building_not_forbidden = { TYPE = guild_hall } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -741,6 +757,7 @@ guild_hall = {
 }
 
 merchants_guild = {
+	allow = { balance_building_not_forbidden = { TYPE = merchants_guild } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -783,6 +800,7 @@ merchants_guild = {
 }
 
 local_markets = {
+	allow = { balance_building_not_forbidden = { TYPE = local_markets } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -819,6 +837,7 @@ local_markets = {
 }
 
 burgher_mansion = {
+	allow = { balance_building_not_forbidden = { TYPE = burgher_mansion } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -854,6 +873,7 @@ burgher_mansion = {
 }
 
 artisan_guilds = {
+	allow = { balance_building_not_forbidden = { TYPE = artisan_guilds } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_stackable_level
@@ -893,6 +913,7 @@ artisan_guilds = {
 #Peasants
 
 local_assembly = {
+	allow = { balance_building_not_forbidden = { TYPE = local_assembly } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -960,7 +981,7 @@ pirate_haven = {
 		is_port = yes
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = pirate_haven }
 		is_port = yes
 		population > 2.0
 		OR = {
@@ -986,6 +1007,7 @@ pirate_haven = {
 }
 
 peasants_training_grounds = {
+	allow = { balance_building_not_forbidden = { TYPE = peasants_training_grounds } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -1022,6 +1044,7 @@ peasants_training_grounds = {
 }
 
 festival_grounds = {
+	allow = { balance_building_not_forbidden = { TYPE = festival_grounds } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -1059,6 +1082,7 @@ festival_grounds = {
 }
 
 peasants_hunting_grounds = {
+	allow = { balance_building_not_forbidden = { TYPE = peasants_hunting_grounds } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -1105,6 +1129,7 @@ peasants_hunting_grounds = {
 }
 
 local_schools = {
+	allow = { balance_building_not_forbidden = { TYPE = local_schools } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -1144,6 +1169,7 @@ local_schools = {
 }
 
 local_newspaper = {
+	allow = { balance_building_not_forbidden = { TYPE = local_newspaper } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -1183,6 +1209,7 @@ local_newspaper = {
 }
 
 free_village = {
+	allow = { balance_building_not_forbidden = { TYPE = free_village } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	max_levels = estate_building_stackable_level

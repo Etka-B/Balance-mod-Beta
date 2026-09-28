@@ -29,7 +29,7 @@ trade_office = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = trade_office }
 		market = { in_trade_range_of = scope:actor }
 	}
 	
@@ -82,7 +82,7 @@ embassy = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = embassy }
 		is_capital = yes
 		custom_tooltip = {
 			text = embassy_max_rank_tt
@@ -146,7 +146,7 @@ missionary_building = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = missionary_building }
 		OR = { 
 			is_coastal_within_range = yes	
 			is_adjacent_to_owned_or_subject_owns = yes
@@ -200,7 +200,7 @@ slave_center = {
 		owner ?= { religion != scope:actor.religion }
 	}
 	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = slave_center }
 		OR = {
 			sub_continent = sub_continent:west_africa
 			sub_continent = sub_continent:central_africa
@@ -274,7 +274,7 @@ overseas_trading_post = {
 	location_potential = {
 		NOT = { continent = scope:actor.capital.continent }
 	}	
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = overseas_trading_post }
 		OR = { 
 			is_coastal_within_range = yes
 			is_adjacent_to_owned_or_subject_owns = yes
@@ -305,6 +305,7 @@ overseas_trading_post = {
 
 
 colonial_administration = {
+	allow = { balance_building_not_forbidden = { TYPE = colonial_administration } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_foreign = yes
 	need_good_relation = yes
@@ -376,6 +377,7 @@ colonial_administration = {
 }
 
 merchant_guild_chapel = {
+	allow = { balance_building_not_forbidden = { TYPE = merchant_guild_chapel } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = yes
 	need_good_relation = yes
@@ -443,7 +445,7 @@ viceroyalty = {
 		}
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = viceroyalty }
 		is_capital = yes
 		owner ?= {
 			is_subject_type = colonial_nation

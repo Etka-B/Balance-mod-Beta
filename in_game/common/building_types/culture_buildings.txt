@@ -23,7 +23,7 @@ university = {
 	
 	forbidden_for_estates = yes
 
-	allow = {	
+	allow = { balance_building_not_forbidden = { TYPE = university }	
 		is_core_of = owner		
 		owner = { modifier:university_construction_blocked = no }
 	}
@@ -55,6 +55,7 @@ university = {
 }
 
 library = {
+	allow = { balance_building_not_forbidden = { TYPE = library } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -98,6 +99,7 @@ library = {
 #Hyanggyo https://en.wikipedia.org/wiki/Hyanggyo
 #Shuyuan https://en.wikipedia.org/wiki/Academies_of_Classical_Learning
 confucian_school = {
+	allow = { balance_building_not_forbidden = { TYPE = confucian_school } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_special = yes
 	is_foreign = no
@@ -175,7 +177,7 @@ confucian_academy = {
 
 	build_time = cultural_building_time
 
-	allow = {	
+	allow = { balance_building_not_forbidden = { TYPE = confucian_academy }	
 		is_core_of = owner
 	}
 	
@@ -208,6 +210,7 @@ confucian_academy = {
 }
 
 opera_house = {
+	allow = { balance_building_not_forbidden = { TYPE = opera_house } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -252,6 +255,7 @@ opera_house = {
 }
 
 theater = {
+	allow = { balance_building_not_forbidden = { TYPE = theater } }	# Balance mod: colony window build priorities
 	audio_tier = 1
 	is_foreign = no
 	pop_type = burghers
@@ -306,7 +310,7 @@ jesuit_college = {
 	country_potential = {
 		has_unlocked_building_trigger = { type = jesuit_college }
 	}
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = jesuit_college }
 		owner = {
 			has_policy = jesuits_allowed
 		}
@@ -347,6 +351,7 @@ jesuit_college = {
 }
 
 art_school = {
+	allow = { balance_building_not_forbidden = { TYPE = art_school } }	# Balance mod: colony window build priorities
 	audio_tier = 2
 	is_foreign = no
 	pop_type = burghers
@@ -389,6 +394,7 @@ art_school = {
 }
 
 arts_academy = {
+	allow = { balance_building_not_forbidden = { TYPE = arts_academy } }	# Balance mod: colony window build priorities
 	audio_tier = 3
 	is_foreign = no
 	pop_type = burghers

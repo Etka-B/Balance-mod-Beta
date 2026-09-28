@@ -1,0 +1,13 @@
+﻿# THE COLONY WINDOW'S "COLONY ASSIGNMENT" TAB (colony_assign_v7.py).
+
+# scope:node has a rule of its own at its level (S N K A = the level's lists;
+# root = the overlord)
+balance_assign_has_own_rule = {
+	OR = {
+		any_subject = { is_target_in_variable_list = { name = $S$ target = scope:node } }
+		is_target_in_variable_list = { name = $N$ target = scope:node }
+		is_target_in_variable_list = { name = $K$ target = scope:node }
+		is_target_in_variable_list = { name = $A$ target = scope:node }
+		is_target_in_variable_list = { name = $O$ target = scope:node }
+	}
+}

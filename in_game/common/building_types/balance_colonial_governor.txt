@@ -12,7 +12,7 @@ balance_colonial_governor = {
 	audio_tier = 2
 	is_special = yes
 	is_foreign = no
-	pop_type = peasants				# a colony has few nobles to staff it
+	pop_type = nobles				# Balance mod: nobles staff it
 	max_levels = 1
 	employment_size = 0.1
 	forbidden_for_estates = yes
@@ -33,7 +33,7 @@ balance_colonial_governor = {
 		NOT = { has_building = building_type:local_governor }
 	}
 
-	allow = {
+	allow = { balance_building_not_forbidden = { TYPE = balance_colonial_governor }
 		owner = {
 			OR = {
 				this = scope:actor
