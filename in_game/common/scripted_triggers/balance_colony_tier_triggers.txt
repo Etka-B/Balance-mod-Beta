@@ -1,0 +1,841 @@
+﻿# THE COLONY WINDOW'S BUILDING LEVELS (gui/balance_colony_window.gui).
+# Written by tools/colony_tiers.py from the building types' obsolete = ... lines;
+# rerun it after a game update rather than editing this file.
+
+# subject scope: row S holds a building that has other levels
+balance_tier_row_has_chain = {
+	OR = {
+		var:balance_prio_$S$_b ?= building_type:art_school
+		var:balance_prio_$S$_b ?= building_type:arts_academy
+		var:balance_prio_$S$_b ?= building_type:brewery
+		var:balance_prio_$S$_b ?= building_type:beer_workshop
+		var:balance_prio_$S$_b ?= building_type:brewery_manufactory
+		var:balance_prio_$S$_b ?= building_type:brewery_mill
+		var:balance_prio_$S$_b ?= building_type:cannon_maker
+		var:balance_prio_$S$_b ?= building_type:cannon_workshop
+		var:balance_prio_$S$_b ?= building_type:cannon_foundry
+		var:balance_prio_$S$_b ?= building_type:cannons_factory
+		var:balance_prio_$S$_b ?= building_type:charcoal_maker
+		var:balance_prio_$S$_b ?= building_type:improved_charcoal_maker
+		var:balance_prio_$S$_b ?= building_type:cloth_guild
+		var:balance_prio_$S$_b ?= building_type:cloth_workshop
+		var:balance_prio_$S$_b ?= building_type:cloth_manufactory
+		var:balance_prio_$S$_b ?= building_type:textile_mill
+		var:balance_prio_$S$_b ?= building_type:coastal_fort
+		var:balance_prio_$S$_b ?= building_type:naval_battery
+		var:balance_prio_$S$_b ?= building_type:distillers_guild
+		var:balance_prio_$S$_b ?= building_type:distillers_workshop
+		var:balance_prio_$S$_b ?= building_type:distiller_manufactory
+		var:balance_prio_$S$_b ?= building_type:distiller_mill
+		var:balance_prio_$S$_b ?= building_type:dock
+		var:balance_prio_$S$_b ?= building_type:dry_dock
+		var:balance_prio_$S$_b ?= building_type:shipyard
+		var:balance_prio_$S$_b ?= building_type:grand_shipyard
+		var:balance_prio_$S$_b ?= building_type:naval_base
+		var:balance_prio_$S$_b ?= building_type:dyes_guild
+		var:balance_prio_$S$_b ?= building_type:dyes_workshop
+		var:balance_prio_$S$_b ?= building_type:dyesworks
+		var:balance_prio_$S$_b ?= building_type:dyes_mill
+		var:balance_prio_$S$_b ?= building_type:early_council_hall
+		var:balance_prio_$S$_b ?= building_type:council_hall
+		var:balance_prio_$S$_b ?= building_type:modern_council_hall
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_guild
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_workshop
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_manufactory
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_mill
+		var:balance_prio_$S$_b ?= building_type:furniture_guild
+		var:balance_prio_$S$_b ?= building_type:furniture_workshop
+		var:balance_prio_$S$_b ?= building_type:furniture_manufactory
+		var:balance_prio_$S$_b ?= building_type:furniture_mill
+		var:balance_prio_$S$_b ?= building_type:glass_guild
+		var:balance_prio_$S$_b ?= building_type:glass_workshop
+		var:balance_prio_$S$_b ?= building_type:glassworks
+		var:balance_prio_$S$_b ?= building_type:glass_mill
+		var:balance_prio_$S$_b ?= building_type:hand_cannon_guild
+		var:balance_prio_$S$_b ?= building_type:gun_smith
+		var:balance_prio_$S$_b ?= building_type:guns_workshop
+		var:balance_prio_$S$_b ?= building_type:firearms_manufactory
+		var:balance_prio_$S$_b ?= building_type:firearms_factory
+		var:balance_prio_$S$_b ?= building_type:korean_barracks
+		var:balance_prio_$S$_b ?= building_type:provincial_garrison
+		var:balance_prio_$S$_b ?= building_type:training_fields
+		var:balance_prio_$S$_b ?= building_type:armory
+		var:balance_prio_$S$_b ?= building_type:regimental_camp
+		var:balance_prio_$S$_b ?= building_type:barracks
+		var:balance_prio_$S$_b ?= building_type:conscription_center
+		var:balance_prio_$S$_b ?= building_type:lacquerware_guild
+		var:balance_prio_$S$_b ?= building_type:lacquerware_manufactory
+		var:balance_prio_$S$_b ?= building_type:marketplace
+		var:balance_prio_$S$_b ?= building_type:merchants_quarters
+		var:balance_prio_$S$_b ?= building_type:grand_marketplace
+		var:balance_prio_$S$_b ?= building_type:commerce_center
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_guild
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_workshop
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_manufactory
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_mill
+		var:balance_prio_$S$_b ?= building_type:paper_guild
+		var:balance_prio_$S$_b ?= building_type:paper_workshop
+		var:balance_prio_$S$_b ?= building_type:paper_manufactory
+		var:balance_prio_$S$_b ?= building_type:paper_mill
+		var:balance_prio_$S$_b ?= building_type:porcelain_guild
+		var:balance_prio_$S$_b ?= building_type:porcelain_manufactory
+		var:balance_prio_$S$_b ?= building_type:pottery_guild
+		var:balance_prio_$S$_b ?= building_type:pottery_workshop
+		var:balance_prio_$S$_b ?= building_type:pottery_manufactory
+		var:balance_prio_$S$_b ?= building_type:pottery_mill
+		var:balance_prio_$S$_b ?= building_type:ruined_great_wall_of_china
+		var:balance_prio_$S$_b ?= building_type:repaired_great_wall_of_china
+		var:balance_prio_$S$_b ?= building_type:saltpeter_guild
+		var:balance_prio_$S$_b ?= building_type:saltpeter_workshop
+		var:balance_prio_$S$_b ?= building_type:putrefaction_works
+		var:balance_prio_$S$_b ?= building_type:putrefaction_mill
+		var:balance_prio_$S$_b ?= building_type:scriptorium
+		var:balance_prio_$S$_b ?= building_type:printing_press_shop
+		var:balance_prio_$S$_b ?= building_type:printing_manufactory
+		var:balance_prio_$S$_b ?= building_type:printing_mill
+		var:balance_prio_$S$_b ?= building_type:stockade
+		var:balance_prio_$S$_b ?= building_type:castle
+		var:balance_prio_$S$_b ?= building_type:bastion
+		var:balance_prio_$S$_b ?= building_type:star_fort
+		var:balance_prio_$S$_b ?= building_type:fortress
+		var:balance_prio_$S$_b ?= building_type:tannery
+		var:balance_prio_$S$_b ?= building_type:tanning_workshop
+		var:balance_prio_$S$_b ?= building_type:tannery_manufactory
+		var:balance_prio_$S$_b ?= building_type:tannery_mill
+		var:balance_prio_$S$_b ?= building_type:tools_guild
+		var:balance_prio_$S$_b ?= building_type:tools_workshop
+		var:balance_prio_$S$_b ?= building_type:iron_foundry
+		var:balance_prio_$S$_b ?= building_type:iron_mill
+		var:balance_prio_$S$_b ?= building_type:weapon_guild
+		var:balance_prio_$S$_b ?= building_type:weapon_workshop
+		var:balance_prio_$S$_b ?= building_type:weapon_manufactory
+		var:balance_prio_$S$_b ?= building_type:weapon_factory
+		var:balance_prio_$S$_b ?= building_type:winery
+		var:balance_prio_$S$_b ?= building_type:winery_manufactory
+	}
+}
+
+# subject scope: row S holds a building that replaces an older one, so it can be
+# ordered as an upgrade ("Where: upgrades only")
+balance_prio_row_can_upgrade = {
+	OR = {
+		var:balance_prio_$S$_b ?= building_type:armory
+		var:balance_prio_$S$_b ?= building_type:arts_academy
+		var:balance_prio_$S$_b ?= building_type:barracks
+		var:balance_prio_$S$_b ?= building_type:bastion
+		var:balance_prio_$S$_b ?= building_type:beer_workshop
+		var:balance_prio_$S$_b ?= building_type:brewery_manufactory
+		var:balance_prio_$S$_b ?= building_type:brewery_mill
+		var:balance_prio_$S$_b ?= building_type:cannon_foundry
+		var:balance_prio_$S$_b ?= building_type:cannon_workshop
+		var:balance_prio_$S$_b ?= building_type:cannons_factory
+		var:balance_prio_$S$_b ?= building_type:castle
+		var:balance_prio_$S$_b ?= building_type:cloth_manufactory
+		var:balance_prio_$S$_b ?= building_type:cloth_workshop
+		var:balance_prio_$S$_b ?= building_type:commerce_center
+		var:balance_prio_$S$_b ?= building_type:conscription_center
+		var:balance_prio_$S$_b ?= building_type:council_hall
+		var:balance_prio_$S$_b ?= building_type:distiller_manufactory
+		var:balance_prio_$S$_b ?= building_type:distiller_mill
+		var:balance_prio_$S$_b ?= building_type:distillers_workshop
+		var:balance_prio_$S$_b ?= building_type:dry_dock
+		var:balance_prio_$S$_b ?= building_type:dyes_mill
+		var:balance_prio_$S$_b ?= building_type:dyes_workshop
+		var:balance_prio_$S$_b ?= building_type:dyesworks
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_manufactory
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_mill
+		var:balance_prio_$S$_b ?= building_type:fine_cloth_workshop
+		var:balance_prio_$S$_b ?= building_type:firearms_factory
+		var:balance_prio_$S$_b ?= building_type:firearms_manufactory
+		var:balance_prio_$S$_b ?= building_type:fortress
+		var:balance_prio_$S$_b ?= building_type:furniture_manufactory
+		var:balance_prio_$S$_b ?= building_type:furniture_mill
+		var:balance_prio_$S$_b ?= building_type:furniture_workshop
+		var:balance_prio_$S$_b ?= building_type:glass_mill
+		var:balance_prio_$S$_b ?= building_type:glass_workshop
+		var:balance_prio_$S$_b ?= building_type:glassworks
+		var:balance_prio_$S$_b ?= building_type:grand_marketplace
+		var:balance_prio_$S$_b ?= building_type:grand_shipyard
+		var:balance_prio_$S$_b ?= building_type:gun_smith
+		var:balance_prio_$S$_b ?= building_type:guns_workshop
+		var:balance_prio_$S$_b ?= building_type:improved_charcoal_maker
+		var:balance_prio_$S$_b ?= building_type:iron_foundry
+		var:balance_prio_$S$_b ?= building_type:iron_mill
+		var:balance_prio_$S$_b ?= building_type:lacquerware_manufactory
+		var:balance_prio_$S$_b ?= building_type:merchants_quarters
+		var:balance_prio_$S$_b ?= building_type:modern_council_hall
+		var:balance_prio_$S$_b ?= building_type:naval_base
+		var:balance_prio_$S$_b ?= building_type:naval_battery
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_manufactory
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_mill
+		var:balance_prio_$S$_b ?= building_type:naval_supplies_workshop
+		var:balance_prio_$S$_b ?= building_type:paper_manufactory
+		var:balance_prio_$S$_b ?= building_type:paper_mill
+		var:balance_prio_$S$_b ?= building_type:paper_workshop
+		var:balance_prio_$S$_b ?= building_type:porcelain_manufactory
+		var:balance_prio_$S$_b ?= building_type:pottery_manufactory
+		var:balance_prio_$S$_b ?= building_type:pottery_mill
+		var:balance_prio_$S$_b ?= building_type:pottery_workshop
+		var:balance_prio_$S$_b ?= building_type:printing_manufactory
+		var:balance_prio_$S$_b ?= building_type:printing_mill
+		var:balance_prio_$S$_b ?= building_type:printing_press_shop
+		var:balance_prio_$S$_b ?= building_type:putrefaction_mill
+		var:balance_prio_$S$_b ?= building_type:putrefaction_works
+		var:balance_prio_$S$_b ?= building_type:regimental_camp
+		var:balance_prio_$S$_b ?= building_type:repaired_great_wall_of_china
+		var:balance_prio_$S$_b ?= building_type:saltpeter_workshop
+		var:balance_prio_$S$_b ?= building_type:shipyard
+		var:balance_prio_$S$_b ?= building_type:star_fort
+		var:balance_prio_$S$_b ?= building_type:tannery_manufactory
+		var:balance_prio_$S$_b ?= building_type:tannery_mill
+		var:balance_prio_$S$_b ?= building_type:tanning_workshop
+		var:balance_prio_$S$_b ?= building_type:textile_mill
+		var:balance_prio_$S$_b ?= building_type:tools_workshop
+		var:balance_prio_$S$_b ?= building_type:weapon_factory
+		var:balance_prio_$S$_b ?= building_type:weapon_manufactory
+		var:balance_prio_$S$_b ?= building_type:weapon_workshop
+		var:balance_prio_$S$_b ?= building_type:winery_manufactory
+	}
+}
+
+# location scope (scope:balance_prio_t = the row's building, scope:balance_prio_c =
+# the subject): an older level of it, the subject's own, stands here. Building it
+# here replaces that one.
+balance_prio_has_predecessor_here = {
+	OR = {
+		AND = {
+			scope:balance_prio_t = building_type:armory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				OR = { building_type = building_type:korean_barracks building_type = building_type:provincial_garrison }
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:arts_academy
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:art_school
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:barracks
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:armory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:bastion
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:castle
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:beer_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:brewery
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:brewery_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:beer_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:brewery_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:brewery_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:cannon_foundry
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cannon_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:cannon_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cannon_maker
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:cannons_factory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cannon_foundry
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:castle
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:stockade
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:cloth_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cloth_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:cloth_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cloth_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:commerce_center
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:grand_marketplace
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:conscription_center
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				OR = { building_type = building_type:barracks building_type = building_type:regimental_camp }
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:council_hall
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:early_council_hall
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:distiller_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:distillers_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:distiller_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:distiller_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:distillers_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:distillers_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:dry_dock
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:dock
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:dyes_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:dyesworks
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:dyes_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:dyes_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:dyesworks
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:dyes_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:fine_cloth_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:fine_cloth_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:fine_cloth_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:fine_cloth_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:fine_cloth_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:fine_cloth_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:firearms_factory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:firearms_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:firearms_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:guns_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:fortress
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:star_fort
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:furniture_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:furniture_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:furniture_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:furniture_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:furniture_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:furniture_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:glass_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:glassworks
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:glass_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:glass_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:glassworks
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:glass_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:grand_marketplace
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:merchants_quarters
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:grand_shipyard
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:shipyard
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:gun_smith
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:hand_cannon_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:guns_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:gun_smith
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:improved_charcoal_maker
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:charcoal_maker
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:iron_foundry
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:tools_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:iron_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:iron_foundry
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:lacquerware_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:lacquerware_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:merchants_quarters
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:marketplace
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:modern_council_hall
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:council_hall
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:naval_base
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:grand_shipyard
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:naval_battery
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:coastal_fort
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:naval_supplies_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:naval_supplies_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:naval_supplies_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:naval_supplies_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:naval_supplies_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:naval_supplies_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:paper_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:paper_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:paper_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:paper_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:paper_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:paper_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:porcelain_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:porcelain_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:pottery_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:pottery_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:pottery_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:pottery_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:pottery_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:pottery_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:printing_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:printing_press_shop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:printing_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:printing_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:printing_press_shop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:scriptorium
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:putrefaction_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:putrefaction_works
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:putrefaction_works
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:saltpeter_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:regimental_camp
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:training_fields
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:repaired_great_wall_of_china
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:ruined_great_wall_of_china
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:saltpeter_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:saltpeter_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:shipyard
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:dry_dock
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:star_fort
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:bastion
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:tannery_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:tanning_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:tannery_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:tannery_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:tanning_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:tannery
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:textile_mill
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:cloth_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:tools_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:tools_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:weapon_factory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:weapon_manufactory
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:weapon_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:weapon_workshop
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:weapon_workshop
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:weapon_guild
+				building_level >= 1
+			}
+		}
+		AND = {
+			scope:balance_prio_t = building_type:winery_manufactory
+			any_buildings_in_location = {
+				owner ?= scope:balance_prio_c
+				building_type = building_type:winery
+				building_level >= 1
+			}
+		}
+	}
+}
+
+# subject scope (root = the overlord): row balance_tier_row holds scope:btype
+balance_tier_is_row_type = {
+	OR = {
+		AND = { root = { var:balance_tier_row = 1 } var:balance_prio_1_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 2 } var:balance_prio_2_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 3 } var:balance_prio_3_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 4 } var:balance_prio_4_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 5 } var:balance_prio_5_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 6 } var:balance_prio_6_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 7 } var:balance_prio_7_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 8 } var:balance_prio_8_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 9 } var:balance_prio_9_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 10 } var:balance_prio_10_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 11 } var:balance_prio_11_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 12 } var:balance_prio_12_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 13 } var:balance_prio_13_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 14 } var:balance_prio_14_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 15 } var:balance_prio_15_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 16 } var:balance_prio_16_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 17 } var:balance_prio_17_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 18 } var:balance_prio_18_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 19 } var:balance_prio_19_b ?= scope:btype }
+		AND = { root = { var:balance_tier_row = 20 } var:balance_prio_20_b ?= scope:btype }
+	}
+}

@@ -7,7 +7,8 @@ balance_prio_slot_empty = {
 }
 
 # location scope; scope:balance_prio_c = the subject, whose balance_prio_w is
-# the row's "where", balance_prio_curlocs the row's own locations and
+# the row's "where" (0 everywhere, 1 its own locations, 2 towns and cities,
+# 3 upgrades only), balance_prio_curlocs the row's own locations and
 # balance_prio_cm its control floor (0 = none)
 balance_prio_where_ok = {
 	owner ?= scope:balance_prio_c
@@ -22,6 +23,12 @@ balance_prio_where_ok = {
 	trigger_if = {
 		limit = { scope:balance_prio_c = { var:balance_prio_w = 2 } }
 		NOT = { location_rank = location_rank:rural_settlement }
+	}
+	# "upgrades only": where an older level of it stands, which building it replaces
+	# (balance_colony_tier_triggers.txt, from tools/colony_tiers.py)
+	trigger_if = {
+		limit = { scope:balance_prio_c = { var:balance_prio_w = 3 } }
+		balance_prio_has_predecessor_here = yes
 	}
 }
 

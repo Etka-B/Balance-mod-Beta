@@ -1,0 +1,443 @@
+﻿# THE COLONY WINDOW'S BUILDING LEVELS (gui/balance_colony_window.gui): the popup
+# that switches a priority row to another level of its building.
+# Written by tools/colony_tiers.py from the building types' obsolete = ... lines;
+# rerun it after a game update rather than editing this file.
+
+# root = the overlord, scope:btype = the row's building: every level of it, the
+# oldest first, in balance_tier_list
+balance_tier_fill = {
+	clear_variable_list = balance_tier_list
+	if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:art_school
+				scope:btype = building_type:arts_academy
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:art_school }
+		add_to_variable_list = { name = balance_tier_list target = building_type:arts_academy }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:brewery
+				scope:btype = building_type:beer_workshop
+				scope:btype = building_type:brewery_manufactory
+				scope:btype = building_type:brewery_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:brewery }
+		add_to_variable_list = { name = balance_tier_list target = building_type:beer_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:brewery_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:brewery_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:cannon_maker
+				scope:btype = building_type:cannon_workshop
+				scope:btype = building_type:cannon_foundry
+				scope:btype = building_type:cannons_factory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:cannon_maker }
+		add_to_variable_list = { name = balance_tier_list target = building_type:cannon_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:cannon_foundry }
+		add_to_variable_list = { name = balance_tier_list target = building_type:cannons_factory }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:charcoal_maker
+				scope:btype = building_type:improved_charcoal_maker
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:charcoal_maker }
+		add_to_variable_list = { name = balance_tier_list target = building_type:improved_charcoal_maker }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:cloth_guild
+				scope:btype = building_type:cloth_workshop
+				scope:btype = building_type:cloth_manufactory
+				scope:btype = building_type:textile_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:cloth_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:cloth_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:cloth_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:textile_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:coastal_fort
+				scope:btype = building_type:naval_battery
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:coastal_fort }
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_battery }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:distillers_guild
+				scope:btype = building_type:distillers_workshop
+				scope:btype = building_type:distiller_manufactory
+				scope:btype = building_type:distiller_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:distillers_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:distillers_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:distiller_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:distiller_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:dock
+				scope:btype = building_type:dry_dock
+				scope:btype = building_type:shipyard
+				scope:btype = building_type:grand_shipyard
+				scope:btype = building_type:naval_base
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:dock }
+		add_to_variable_list = { name = balance_tier_list target = building_type:dry_dock }
+		add_to_variable_list = { name = balance_tier_list target = building_type:shipyard }
+		add_to_variable_list = { name = balance_tier_list target = building_type:grand_shipyard }
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_base }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:dyes_guild
+				scope:btype = building_type:dyes_workshop
+				scope:btype = building_type:dyesworks
+				scope:btype = building_type:dyes_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:dyes_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:dyes_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:dyesworks }
+		add_to_variable_list = { name = balance_tier_list target = building_type:dyes_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:early_council_hall
+				scope:btype = building_type:council_hall
+				scope:btype = building_type:modern_council_hall
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:early_council_hall }
+		add_to_variable_list = { name = balance_tier_list target = building_type:council_hall }
+		add_to_variable_list = { name = balance_tier_list target = building_type:modern_council_hall }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:fine_cloth_guild
+				scope:btype = building_type:fine_cloth_workshop
+				scope:btype = building_type:fine_cloth_manufactory
+				scope:btype = building_type:fine_cloth_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:fine_cloth_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:fine_cloth_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:fine_cloth_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:fine_cloth_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:furniture_guild
+				scope:btype = building_type:furniture_workshop
+				scope:btype = building_type:furniture_manufactory
+				scope:btype = building_type:furniture_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:furniture_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:furniture_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:furniture_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:furniture_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:glass_guild
+				scope:btype = building_type:glass_workshop
+				scope:btype = building_type:glassworks
+				scope:btype = building_type:glass_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:glass_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:glass_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:glassworks }
+		add_to_variable_list = { name = balance_tier_list target = building_type:glass_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:hand_cannon_guild
+				scope:btype = building_type:gun_smith
+				scope:btype = building_type:guns_workshop
+				scope:btype = building_type:firearms_manufactory
+				scope:btype = building_type:firearms_factory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:hand_cannon_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:gun_smith }
+		add_to_variable_list = { name = balance_tier_list target = building_type:guns_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:firearms_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:firearms_factory }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:korean_barracks
+				scope:btype = building_type:provincial_garrison
+				scope:btype = building_type:training_fields
+				scope:btype = building_type:armory
+				scope:btype = building_type:regimental_camp
+				scope:btype = building_type:barracks
+				scope:btype = building_type:conscription_center
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:korean_barracks }
+		add_to_variable_list = { name = balance_tier_list target = building_type:provincial_garrison }
+		add_to_variable_list = { name = balance_tier_list target = building_type:training_fields }
+		add_to_variable_list = { name = balance_tier_list target = building_type:armory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:regimental_camp }
+		add_to_variable_list = { name = balance_tier_list target = building_type:barracks }
+		add_to_variable_list = { name = balance_tier_list target = building_type:conscription_center }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:lacquerware_guild
+				scope:btype = building_type:lacquerware_manufactory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:lacquerware_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:lacquerware_manufactory }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:marketplace
+				scope:btype = building_type:merchants_quarters
+				scope:btype = building_type:grand_marketplace
+				scope:btype = building_type:commerce_center
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:marketplace }
+		add_to_variable_list = { name = balance_tier_list target = building_type:merchants_quarters }
+		add_to_variable_list = { name = balance_tier_list target = building_type:grand_marketplace }
+		add_to_variable_list = { name = balance_tier_list target = building_type:commerce_center }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:naval_supplies_guild
+				scope:btype = building_type:naval_supplies_workshop
+				scope:btype = building_type:naval_supplies_manufactory
+				scope:btype = building_type:naval_supplies_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_supplies_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_supplies_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_supplies_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:naval_supplies_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:paper_guild
+				scope:btype = building_type:paper_workshop
+				scope:btype = building_type:paper_manufactory
+				scope:btype = building_type:paper_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:paper_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:paper_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:paper_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:paper_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:porcelain_guild
+				scope:btype = building_type:porcelain_manufactory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:porcelain_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:porcelain_manufactory }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:pottery_guild
+				scope:btype = building_type:pottery_workshop
+				scope:btype = building_type:pottery_manufactory
+				scope:btype = building_type:pottery_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:pottery_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:pottery_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:pottery_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:pottery_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:ruined_great_wall_of_china
+				scope:btype = building_type:repaired_great_wall_of_china
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:ruined_great_wall_of_china }
+		add_to_variable_list = { name = balance_tier_list target = building_type:repaired_great_wall_of_china }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:saltpeter_guild
+				scope:btype = building_type:saltpeter_workshop
+				scope:btype = building_type:putrefaction_works
+				scope:btype = building_type:putrefaction_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:saltpeter_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:saltpeter_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:putrefaction_works }
+		add_to_variable_list = { name = balance_tier_list target = building_type:putrefaction_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:scriptorium
+				scope:btype = building_type:printing_press_shop
+				scope:btype = building_type:printing_manufactory
+				scope:btype = building_type:printing_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:scriptorium }
+		add_to_variable_list = { name = balance_tier_list target = building_type:printing_press_shop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:printing_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:printing_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:stockade
+				scope:btype = building_type:castle
+				scope:btype = building_type:bastion
+				scope:btype = building_type:star_fort
+				scope:btype = building_type:fortress
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:stockade }
+		add_to_variable_list = { name = balance_tier_list target = building_type:castle }
+		add_to_variable_list = { name = balance_tier_list target = building_type:bastion }
+		add_to_variable_list = { name = balance_tier_list target = building_type:star_fort }
+		add_to_variable_list = { name = balance_tier_list target = building_type:fortress }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:tannery
+				scope:btype = building_type:tanning_workshop
+				scope:btype = building_type:tannery_manufactory
+				scope:btype = building_type:tannery_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:tannery }
+		add_to_variable_list = { name = balance_tier_list target = building_type:tanning_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:tannery_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:tannery_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:tools_guild
+				scope:btype = building_type:tools_workshop
+				scope:btype = building_type:iron_foundry
+				scope:btype = building_type:iron_mill
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:tools_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:tools_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:iron_foundry }
+		add_to_variable_list = { name = balance_tier_list target = building_type:iron_mill }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:weapon_guild
+				scope:btype = building_type:weapon_workshop
+				scope:btype = building_type:weapon_manufactory
+				scope:btype = building_type:weapon_factory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:weapon_guild }
+		add_to_variable_list = { name = balance_tier_list target = building_type:weapon_workshop }
+		add_to_variable_list = { name = balance_tier_list target = building_type:weapon_manufactory }
+		add_to_variable_list = { name = balance_tier_list target = building_type:weapon_factory }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:btype = building_type:winery
+				scope:btype = building_type:winery_manufactory
+			}
+		}
+		add_to_variable_list = { name = balance_tier_list target = building_type:winery }
+		add_to_variable_list = { name = balance_tier_list target = building_type:winery_manufactory }
+	}
+}
+
+balance_tier_clear = {
+	if = { limit = { has_variable = balance_tier_row } remove_variable = balance_tier_row }
+	clear_variable_list = balance_tier_list
+}
+
+# subject scope: row S now holds scope:btype. Its profit readings were for the
+# old building; "upgrades only" goes back to "everywhere" when the new one
+# replaces nothing.
+balance_tier_set_slot = {
+	set_variable = { name = balance_prio_$S$_b value = scope:btype }
+	if = { limit = { has_variable = balance_prio_$S$_pavg } remove_variable = balance_prio_$S$_pavg }
+	if = { limit = { has_variable = balance_prio_$S$_pn } remove_variable = balance_prio_$S$_pn }
+	if = {
+		limit = {
+			var:balance_prio_$S$_where ?= 3
+			NOT = { balance_prio_row_can_upgrade = { S = $S$ } }
+		}
+		set_variable = { name = balance_prio_$S$_where value = 0 }
+	}
+}
+
+# subject scope, root = the overlord: the row the popup was opened for
+balance_tier_set_row = {
+	if = { limit = { root = { var:balance_tier_row = 1 } } balance_tier_set_slot = { S = 1 } }
+	else_if = { limit = { root = { var:balance_tier_row = 2 } } balance_tier_set_slot = { S = 2 } }
+	else_if = { limit = { root = { var:balance_tier_row = 3 } } balance_tier_set_slot = { S = 3 } }
+	else_if = { limit = { root = { var:balance_tier_row = 4 } } balance_tier_set_slot = { S = 4 } }
+	else_if = { limit = { root = { var:balance_tier_row = 5 } } balance_tier_set_slot = { S = 5 } }
+	else_if = { limit = { root = { var:balance_tier_row = 6 } } balance_tier_set_slot = { S = 6 } }
+	else_if = { limit = { root = { var:balance_tier_row = 7 } } balance_tier_set_slot = { S = 7 } }
+	else_if = { limit = { root = { var:balance_tier_row = 8 } } balance_tier_set_slot = { S = 8 } }
+	else_if = { limit = { root = { var:balance_tier_row = 9 } } balance_tier_set_slot = { S = 9 } }
+	else_if = { limit = { root = { var:balance_tier_row = 10 } } balance_tier_set_slot = { S = 10 } }
+	else_if = { limit = { root = { var:balance_tier_row = 11 } } balance_tier_set_slot = { S = 11 } }
+	else_if = { limit = { root = { var:balance_tier_row = 12 } } balance_tier_set_slot = { S = 12 } }
+	else_if = { limit = { root = { var:balance_tier_row = 13 } } balance_tier_set_slot = { S = 13 } }
+	else_if = { limit = { root = { var:balance_tier_row = 14 } } balance_tier_set_slot = { S = 14 } }
+	else_if = { limit = { root = { var:balance_tier_row = 15 } } balance_tier_set_slot = { S = 15 } }
+	else_if = { limit = { root = { var:balance_tier_row = 16 } } balance_tier_set_slot = { S = 16 } }
+	else_if = { limit = { root = { var:balance_tier_row = 17 } } balance_tier_set_slot = { S = 17 } }
+	else_if = { limit = { root = { var:balance_tier_row = 18 } } balance_tier_set_slot = { S = 18 } }
+	else_if = { limit = { root = { var:balance_tier_row = 19 } } balance_tier_set_slot = { S = 19 } }
+	else_if = { limit = { root = { var:balance_tier_row = 20 } } balance_tier_set_slot = { S = 20 } }
+}

@@ -1,0 +1,564 @@
+﻿# THE COLONY WINDOW'S BUILDING LEVELS (gui/balance_colony_window.gui): click a
+# priority row's building to switch it to an older or newer level of it.
+# Written by tools/colony_tiers.py from the building types' obsolete = ... lines;
+# rerun it after a game update rather than editing this file.
+
+balance_tier_open_1 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 1 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 1 }
+		var:balance_colony_subject = {
+			var:balance_prio_1_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_1 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 1 } }
+	}
+}
+
+balance_tier_open_2 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 2 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 2 }
+		var:balance_colony_subject = {
+			var:balance_prio_2_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_2 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 2 } }
+	}
+}
+
+balance_tier_open_3 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 3 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 3 }
+		var:balance_colony_subject = {
+			var:balance_prio_3_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_3 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 3 } }
+	}
+}
+
+balance_tier_open_4 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 4 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 4 }
+		var:balance_colony_subject = {
+			var:balance_prio_4_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_4 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 4 } }
+	}
+}
+
+balance_tier_open_5 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 5 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 5 }
+		var:balance_colony_subject = {
+			var:balance_prio_5_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_5 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 5 } }
+	}
+}
+
+balance_tier_open_6 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 6 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 6 }
+		var:balance_colony_subject = {
+			var:balance_prio_6_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_6 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 6 } }
+	}
+}
+
+balance_tier_open_7 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 7 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 7 }
+		var:balance_colony_subject = {
+			var:balance_prio_7_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_7 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 7 } }
+	}
+}
+
+balance_tier_open_8 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 8 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 8 }
+		var:balance_colony_subject = {
+			var:balance_prio_8_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_8 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 8 } }
+	}
+}
+
+balance_tier_open_9 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 9 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 9 }
+		var:balance_colony_subject = {
+			var:balance_prio_9_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_9 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 9 } }
+	}
+}
+
+balance_tier_open_10 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 10 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 10 }
+		var:balance_colony_subject = {
+			var:balance_prio_10_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_10 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 10 } }
+	}
+}
+
+balance_tier_open_11 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 11 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 11 }
+		var:balance_colony_subject = {
+			var:balance_prio_11_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_11 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 11 } }
+	}
+}
+
+balance_tier_open_12 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 12 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 12 }
+		var:balance_colony_subject = {
+			var:balance_prio_12_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_12 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 12 } }
+	}
+}
+
+balance_tier_open_13 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 13 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 13 }
+		var:balance_colony_subject = {
+			var:balance_prio_13_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_13 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 13 } }
+	}
+}
+
+balance_tier_open_14 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 14 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 14 }
+		var:balance_colony_subject = {
+			var:balance_prio_14_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_14 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 14 } }
+	}
+}
+
+balance_tier_open_15 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 15 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 15 }
+		var:balance_colony_subject = {
+			var:balance_prio_15_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_15 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 15 } }
+	}
+}
+
+balance_tier_open_16 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 16 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 16 }
+		var:balance_colony_subject = {
+			var:balance_prio_16_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_16 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 16 } }
+	}
+}
+
+balance_tier_open_17 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 17 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 17 }
+		var:balance_colony_subject = {
+			var:balance_prio_17_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_17 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 17 } }
+	}
+}
+
+balance_tier_open_18 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 18 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 18 }
+		var:balance_colony_subject = {
+			var:balance_prio_18_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_18 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 18 } }
+	}
+}
+
+balance_tier_open_19 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 19 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 19 }
+		var:balance_colony_subject = {
+			var:balance_prio_19_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_19 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 19 } }
+	}
+}
+
+balance_tier_open_20 = {
+	scope = country
+	is_valid = {
+		has_variable = balance_colony_subject
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			balance_tier_row_has_chain = { S = 20 }
+		}
+	}
+	effect = {
+		set_variable = { name = balance_tier_row value = 20 }
+		var:balance_colony_subject = {
+			var:balance_prio_20_b = { save_temporary_scope_as = btype }
+		}
+		balance_tier_fill = yes
+	}
+}
+
+balance_tier_chain_20 = {
+	scope = country
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_row_has_chain = { S = 20 } }
+	}
+}
+
+# switch the open row to scope:btype: one the subject can build, not already in its list
+balance_tier_pick = {
+	scope = country
+	saved_scopes = { btype }
+	is_valid = {
+		has_variable = balance_colony_subject
+		has_variable = balance_tier_row
+		var:balance_colony_subject ?= {
+			is_subject_of = root
+			can_build_building = scope:btype
+			NOT = { balance_prio_has_b = yes }
+		}
+	}
+	effect = {
+		var:balance_colony_subject = {
+			balance_tier_set_row = yes
+			if = {
+				limit = { is_target_in_variable_list = { name = balance_forbid_buildings target = scope:btype } }
+				remove_list_variable = { name = balance_forbid_buildings target = scope:btype }
+			}
+		}
+		balance_tier_clear = yes
+	}
+}
+
+balance_tier_close = {
+	scope = country
+	effect = { balance_tier_clear = yes }
+}
+
+# the level the open row holds now
+balance_tier_is_current = {
+	scope = country
+	saved_scopes = { btype }
+	is_shown = {
+		var:balance_colony_subject ?= { balance_tier_is_row_type = yes }
+	}
+}
+
+# unlocked for the subject (its advances and the building's own conditions)
+balance_tier_unlocked = {
+	scope = country
+	saved_scopes = { btype }
+	is_shown = {
+		var:balance_colony_subject ?= { can_build_building = scope:btype }
+	}
+}
+
+# in another row of the list already
+balance_tier_listed = {
+	scope = country
+	saved_scopes = { btype }
+	is_shown = {
+		var:balance_colony_subject ?= {
+			balance_prio_has_b = yes
+			NOT = { balance_tier_is_row_type = yes }
+		}
+	}
+}

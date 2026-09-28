@@ -164,6 +164,7 @@ balance_prio_toggle_b = {
 		}
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			if = {
 				limit = { balance_prio_has_b = yes }
@@ -202,6 +203,7 @@ balance_prio_toggle_g = {
 		}
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			if = {
 				limit = { balance_prio_has_g = yes }
@@ -1126,6 +1128,7 @@ balance_prio_down_1 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 2 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 1 B = 2 }
 		}
@@ -1139,6 +1142,7 @@ balance_prio_del_1 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 1 }
 			balance_prio_compact = yes
@@ -1290,14 +1294,19 @@ balance_prio_where_1 = {
 				limit = { var:balance_prio_1_where = 0 }
 				set_variable = { name = balance_prio_1_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_1_where = 1 }
+				set_variable = { name = balance_prio_1_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_1_where = 2
+					balance_prio_row_can_upgrade = { S = 1 }
+				}
+				set_variable = { name = balance_prio_1_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_1_where = 1 }
-					set_variable = { name = balance_prio_1_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_1_where value = 0 }
-				}
+				set_variable = { name = balance_prio_1_where value = 0 }
 			}
 		}
 	}
@@ -1565,6 +1574,7 @@ balance_prio_up_2 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 2 B = 1 }
 		}
@@ -1579,6 +1589,7 @@ balance_prio_down_2 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 3 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 2 B = 3 }
 		}
@@ -1592,6 +1603,7 @@ balance_prio_del_2 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 2 }
 			balance_prio_compact = yes
@@ -1743,14 +1755,19 @@ balance_prio_where_2 = {
 				limit = { var:balance_prio_2_where = 0 }
 				set_variable = { name = balance_prio_2_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_2_where = 1 }
+				set_variable = { name = balance_prio_2_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_2_where = 2
+					balance_prio_row_can_upgrade = { S = 2 }
+				}
+				set_variable = { name = balance_prio_2_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_2_where = 1 }
-					set_variable = { name = balance_prio_2_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_2_where value = 0 }
-				}
+				set_variable = { name = balance_prio_2_where value = 0 }
 			}
 		}
 	}
@@ -2018,6 +2035,7 @@ balance_prio_up_3 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 3 B = 2 }
 		}
@@ -2032,6 +2050,7 @@ balance_prio_down_3 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 4 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 3 B = 4 }
 		}
@@ -2045,6 +2064,7 @@ balance_prio_del_3 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 3 }
 			balance_prio_compact = yes
@@ -2196,14 +2216,19 @@ balance_prio_where_3 = {
 				limit = { var:balance_prio_3_where = 0 }
 				set_variable = { name = balance_prio_3_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_3_where = 1 }
+				set_variable = { name = balance_prio_3_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_3_where = 2
+					balance_prio_row_can_upgrade = { S = 3 }
+				}
+				set_variable = { name = balance_prio_3_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_3_where = 1 }
-					set_variable = { name = balance_prio_3_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_3_where value = 0 }
-				}
+				set_variable = { name = balance_prio_3_where value = 0 }
 			}
 		}
 	}
@@ -2471,6 +2496,7 @@ balance_prio_up_4 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 4 B = 3 }
 		}
@@ -2485,6 +2511,7 @@ balance_prio_down_4 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 5 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 4 B = 5 }
 		}
@@ -2498,6 +2525,7 @@ balance_prio_del_4 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 4 }
 			balance_prio_compact = yes
@@ -2649,14 +2677,19 @@ balance_prio_where_4 = {
 				limit = { var:balance_prio_4_where = 0 }
 				set_variable = { name = balance_prio_4_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_4_where = 1 }
+				set_variable = { name = balance_prio_4_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_4_where = 2
+					balance_prio_row_can_upgrade = { S = 4 }
+				}
+				set_variable = { name = balance_prio_4_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_4_where = 1 }
-					set_variable = { name = balance_prio_4_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_4_where value = 0 }
-				}
+				set_variable = { name = balance_prio_4_where value = 0 }
 			}
 		}
 	}
@@ -2924,6 +2957,7 @@ balance_prio_up_5 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 5 B = 4 }
 		}
@@ -2938,6 +2972,7 @@ balance_prio_down_5 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 6 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 5 B = 6 }
 		}
@@ -2951,6 +2986,7 @@ balance_prio_del_5 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 5 }
 			balance_prio_compact = yes
@@ -3102,14 +3138,19 @@ balance_prio_where_5 = {
 				limit = { var:balance_prio_5_where = 0 }
 				set_variable = { name = balance_prio_5_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_5_where = 1 }
+				set_variable = { name = balance_prio_5_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_5_where = 2
+					balance_prio_row_can_upgrade = { S = 5 }
+				}
+				set_variable = { name = balance_prio_5_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_5_where = 1 }
-					set_variable = { name = balance_prio_5_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_5_where value = 0 }
-				}
+				set_variable = { name = balance_prio_5_where value = 0 }
 			}
 		}
 	}
@@ -3377,6 +3418,7 @@ balance_prio_up_6 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 6 B = 5 }
 		}
@@ -3391,6 +3433,7 @@ balance_prio_down_6 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 7 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 6 B = 7 }
 		}
@@ -3404,6 +3447,7 @@ balance_prio_del_6 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 6 }
 			balance_prio_compact = yes
@@ -3555,14 +3599,19 @@ balance_prio_where_6 = {
 				limit = { var:balance_prio_6_where = 0 }
 				set_variable = { name = balance_prio_6_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_6_where = 1 }
+				set_variable = { name = balance_prio_6_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_6_where = 2
+					balance_prio_row_can_upgrade = { S = 6 }
+				}
+				set_variable = { name = balance_prio_6_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_6_where = 1 }
-					set_variable = { name = balance_prio_6_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_6_where value = 0 }
-				}
+				set_variable = { name = balance_prio_6_where value = 0 }
 			}
 		}
 	}
@@ -3830,6 +3879,7 @@ balance_prio_up_7 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 7 B = 6 }
 		}
@@ -3844,6 +3894,7 @@ balance_prio_down_7 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 8 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 7 B = 8 }
 		}
@@ -3857,6 +3908,7 @@ balance_prio_del_7 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 7 }
 			balance_prio_compact = yes
@@ -4008,14 +4060,19 @@ balance_prio_where_7 = {
 				limit = { var:balance_prio_7_where = 0 }
 				set_variable = { name = balance_prio_7_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_7_where = 1 }
+				set_variable = { name = balance_prio_7_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_7_where = 2
+					balance_prio_row_can_upgrade = { S = 7 }
+				}
+				set_variable = { name = balance_prio_7_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_7_where = 1 }
-					set_variable = { name = balance_prio_7_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_7_where value = 0 }
-				}
+				set_variable = { name = balance_prio_7_where value = 0 }
 			}
 		}
 	}
@@ -4283,6 +4340,7 @@ balance_prio_up_8 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 8 B = 7 }
 		}
@@ -4297,6 +4355,7 @@ balance_prio_down_8 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 9 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 8 B = 9 }
 		}
@@ -4310,6 +4369,7 @@ balance_prio_del_8 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 8 }
 			balance_prio_compact = yes
@@ -4461,14 +4521,19 @@ balance_prio_where_8 = {
 				limit = { var:balance_prio_8_where = 0 }
 				set_variable = { name = balance_prio_8_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_8_where = 1 }
+				set_variable = { name = balance_prio_8_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_8_where = 2
+					balance_prio_row_can_upgrade = { S = 8 }
+				}
+				set_variable = { name = balance_prio_8_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_8_where = 1 }
-					set_variable = { name = balance_prio_8_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_8_where value = 0 }
-				}
+				set_variable = { name = balance_prio_8_where value = 0 }
 			}
 		}
 	}
@@ -4736,6 +4801,7 @@ balance_prio_up_9 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 9 B = 8 }
 		}
@@ -4750,6 +4816,7 @@ balance_prio_down_9 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 10 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 9 B = 10 }
 		}
@@ -4763,6 +4830,7 @@ balance_prio_del_9 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 9 }
 			balance_prio_compact = yes
@@ -4914,14 +4982,19 @@ balance_prio_where_9 = {
 				limit = { var:balance_prio_9_where = 0 }
 				set_variable = { name = balance_prio_9_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_9_where = 1 }
+				set_variable = { name = balance_prio_9_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_9_where = 2
+					balance_prio_row_can_upgrade = { S = 9 }
+				}
+				set_variable = { name = balance_prio_9_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_9_where = 1 }
-					set_variable = { name = balance_prio_9_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_9_where value = 0 }
-				}
+				set_variable = { name = balance_prio_9_where value = 0 }
 			}
 		}
 	}
@@ -5189,6 +5262,7 @@ balance_prio_up_10 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 10 B = 9 }
 		}
@@ -5203,6 +5277,7 @@ balance_prio_down_10 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 11 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 10 B = 11 }
 		}
@@ -5216,6 +5291,7 @@ balance_prio_del_10 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 10 }
 			balance_prio_compact = yes
@@ -5367,14 +5443,19 @@ balance_prio_where_10 = {
 				limit = { var:balance_prio_10_where = 0 }
 				set_variable = { name = balance_prio_10_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_10_where = 1 }
+				set_variable = { name = balance_prio_10_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_10_where = 2
+					balance_prio_row_can_upgrade = { S = 10 }
+				}
+				set_variable = { name = balance_prio_10_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_10_where = 1 }
-					set_variable = { name = balance_prio_10_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_10_where value = 0 }
-				}
+				set_variable = { name = balance_prio_10_where value = 0 }
 			}
 		}
 	}
@@ -5642,6 +5723,7 @@ balance_prio_up_11 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 11 B = 10 }
 		}
@@ -5656,6 +5738,7 @@ balance_prio_down_11 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 12 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 11 B = 12 }
 		}
@@ -5669,6 +5752,7 @@ balance_prio_del_11 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 11 }
 			balance_prio_compact = yes
@@ -5820,14 +5904,19 @@ balance_prio_where_11 = {
 				limit = { var:balance_prio_11_where = 0 }
 				set_variable = { name = balance_prio_11_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_11_where = 1 }
+				set_variable = { name = balance_prio_11_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_11_where = 2
+					balance_prio_row_can_upgrade = { S = 11 }
+				}
+				set_variable = { name = balance_prio_11_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_11_where = 1 }
-					set_variable = { name = balance_prio_11_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_11_where value = 0 }
-				}
+				set_variable = { name = balance_prio_11_where value = 0 }
 			}
 		}
 	}
@@ -6095,6 +6184,7 @@ balance_prio_up_12 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 12 B = 11 }
 		}
@@ -6109,6 +6199,7 @@ balance_prio_down_12 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 13 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 12 B = 13 }
 		}
@@ -6122,6 +6213,7 @@ balance_prio_del_12 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 12 }
 			balance_prio_compact = yes
@@ -6273,14 +6365,19 @@ balance_prio_where_12 = {
 				limit = { var:balance_prio_12_where = 0 }
 				set_variable = { name = balance_prio_12_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_12_where = 1 }
+				set_variable = { name = balance_prio_12_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_12_where = 2
+					balance_prio_row_can_upgrade = { S = 12 }
+				}
+				set_variable = { name = balance_prio_12_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_12_where = 1 }
-					set_variable = { name = balance_prio_12_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_12_where value = 0 }
-				}
+				set_variable = { name = balance_prio_12_where value = 0 }
 			}
 		}
 	}
@@ -6548,6 +6645,7 @@ balance_prio_up_13 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 13 B = 12 }
 		}
@@ -6562,6 +6660,7 @@ balance_prio_down_13 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 14 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 13 B = 14 }
 		}
@@ -6575,6 +6674,7 @@ balance_prio_del_13 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 13 }
 			balance_prio_compact = yes
@@ -6726,14 +6826,19 @@ balance_prio_where_13 = {
 				limit = { var:balance_prio_13_where = 0 }
 				set_variable = { name = balance_prio_13_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_13_where = 1 }
+				set_variable = { name = balance_prio_13_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_13_where = 2
+					balance_prio_row_can_upgrade = { S = 13 }
+				}
+				set_variable = { name = balance_prio_13_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_13_where = 1 }
-					set_variable = { name = balance_prio_13_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_13_where value = 0 }
-				}
+				set_variable = { name = balance_prio_13_where value = 0 }
 			}
 		}
 	}
@@ -7001,6 +7106,7 @@ balance_prio_up_14 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 14 B = 13 }
 		}
@@ -7015,6 +7121,7 @@ balance_prio_down_14 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 15 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 14 B = 15 }
 		}
@@ -7028,6 +7135,7 @@ balance_prio_del_14 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 14 }
 			balance_prio_compact = yes
@@ -7179,14 +7287,19 @@ balance_prio_where_14 = {
 				limit = { var:balance_prio_14_where = 0 }
 				set_variable = { name = balance_prio_14_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_14_where = 1 }
+				set_variable = { name = balance_prio_14_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_14_where = 2
+					balance_prio_row_can_upgrade = { S = 14 }
+				}
+				set_variable = { name = balance_prio_14_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_14_where = 1 }
-					set_variable = { name = balance_prio_14_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_14_where value = 0 }
-				}
+				set_variable = { name = balance_prio_14_where value = 0 }
 			}
 		}
 	}
@@ -7454,6 +7567,7 @@ balance_prio_up_15 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 15 B = 14 }
 		}
@@ -7468,6 +7582,7 @@ balance_prio_down_15 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 16 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 15 B = 16 }
 		}
@@ -7481,6 +7596,7 @@ balance_prio_del_15 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 15 }
 			balance_prio_compact = yes
@@ -7632,14 +7748,19 @@ balance_prio_where_15 = {
 				limit = { var:balance_prio_15_where = 0 }
 				set_variable = { name = balance_prio_15_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_15_where = 1 }
+				set_variable = { name = balance_prio_15_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_15_where = 2
+					balance_prio_row_can_upgrade = { S = 15 }
+				}
+				set_variable = { name = balance_prio_15_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_15_where = 1 }
-					set_variable = { name = balance_prio_15_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_15_where value = 0 }
-				}
+				set_variable = { name = balance_prio_15_where value = 0 }
 			}
 		}
 	}
@@ -7907,6 +8028,7 @@ balance_prio_up_16 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 16 B = 15 }
 		}
@@ -7921,6 +8043,7 @@ balance_prio_down_16 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 17 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 16 B = 17 }
 		}
@@ -7934,6 +8057,7 @@ balance_prio_del_16 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 16 }
 			balance_prio_compact = yes
@@ -8085,14 +8209,19 @@ balance_prio_where_16 = {
 				limit = { var:balance_prio_16_where = 0 }
 				set_variable = { name = balance_prio_16_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_16_where = 1 }
+				set_variable = { name = balance_prio_16_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_16_where = 2
+					balance_prio_row_can_upgrade = { S = 16 }
+				}
+				set_variable = { name = balance_prio_16_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_16_where = 1 }
-					set_variable = { name = balance_prio_16_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_16_where value = 0 }
-				}
+				set_variable = { name = balance_prio_16_where value = 0 }
 			}
 		}
 	}
@@ -8360,6 +8489,7 @@ balance_prio_up_17 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 17 B = 16 }
 		}
@@ -8374,6 +8504,7 @@ balance_prio_down_17 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 18 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 17 B = 18 }
 		}
@@ -8387,6 +8518,7 @@ balance_prio_del_17 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 17 }
 			balance_prio_compact = yes
@@ -8538,14 +8670,19 @@ balance_prio_where_17 = {
 				limit = { var:balance_prio_17_where = 0 }
 				set_variable = { name = balance_prio_17_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_17_where = 1 }
+				set_variable = { name = balance_prio_17_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_17_where = 2
+					balance_prio_row_can_upgrade = { S = 17 }
+				}
+				set_variable = { name = balance_prio_17_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_17_where = 1 }
-					set_variable = { name = balance_prio_17_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_17_where value = 0 }
-				}
+				set_variable = { name = balance_prio_17_where value = 0 }
 			}
 		}
 	}
@@ -8813,6 +8950,7 @@ balance_prio_up_18 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 18 B = 17 }
 		}
@@ -8827,6 +8965,7 @@ balance_prio_down_18 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 19 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 18 B = 19 }
 		}
@@ -8840,6 +8979,7 @@ balance_prio_del_18 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 18 }
 			balance_prio_compact = yes
@@ -8991,14 +9131,19 @@ balance_prio_where_18 = {
 				limit = { var:balance_prio_18_where = 0 }
 				set_variable = { name = balance_prio_18_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_18_where = 1 }
+				set_variable = { name = balance_prio_18_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_18_where = 2
+					balance_prio_row_can_upgrade = { S = 18 }
+				}
+				set_variable = { name = balance_prio_18_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_18_where = 1 }
-					set_variable = { name = balance_prio_18_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_18_where value = 0 }
-				}
+				set_variable = { name = balance_prio_18_where value = 0 }
 			}
 		}
 	}
@@ -9266,6 +9411,7 @@ balance_prio_up_19 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 19 B = 18 }
 		}
@@ -9280,6 +9426,7 @@ balance_prio_down_19 = {
 		var:balance_colony_subject = { NOT = { balance_prio_slot_empty = { S = 20 } } }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 19 B = 20 }
 		}
@@ -9293,6 +9440,7 @@ balance_prio_del_19 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 19 }
 			balance_prio_compact = yes
@@ -9444,14 +9592,19 @@ balance_prio_where_19 = {
 				limit = { var:balance_prio_19_where = 0 }
 				set_variable = { name = balance_prio_19_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_19_where = 1 }
+				set_variable = { name = balance_prio_19_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_19_where = 2
+					balance_prio_row_can_upgrade = { S = 19 }
+				}
+				set_variable = { name = balance_prio_19_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_19_where = 1 }
-					set_variable = { name = balance_prio_19_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_19_where value = 0 }
-				}
+				set_variable = { name = balance_prio_19_where value = 0 }
 			}
 		}
 	}
@@ -9719,6 +9872,7 @@ balance_prio_up_20 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_swap_slots = { A = 20 B = 19 }
 		}
@@ -9732,6 +9886,7 @@ balance_prio_del_20 = {
 		var:balance_colony_subject ?= { is_subject_of = root }
 	}
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		var:balance_colony_subject = {
 			balance_prio_clear_slot = { S = 20 }
 			balance_prio_compact = yes
@@ -9883,14 +10038,19 @@ balance_prio_where_20 = {
 				limit = { var:balance_prio_20_where = 0 }
 				set_variable = { name = balance_prio_20_where value = 1 }
 			}
+			else_if = {
+				limit = { var:balance_prio_20_where = 1 }
+				set_variable = { name = balance_prio_20_where value = 2 }
+			}
+			else_if = {
+				limit = {
+					var:balance_prio_20_where = 2
+					balance_prio_row_can_upgrade = { S = 20 }
+				}
+				set_variable = { name = balance_prio_20_where value = 3 }
+			}
 			else = {
-				if = {
-					limit = { var:balance_prio_20_where = 1 }
-					set_variable = { name = balance_prio_20_where value = 2 }
-				}
-				else = {
-					set_variable = { name = balance_prio_20_where value = 0 }
-				}
+				set_variable = { name = balance_prio_20_where value = 0 }
 			}
 		}
 	}

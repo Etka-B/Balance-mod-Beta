@@ -7,6 +7,7 @@
 balance_colony_open = {
 	scope = country
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		balance_colony_return_all_held = yes
 		balance_colony_fill_subjects = yes
 		if = {
@@ -42,6 +43,7 @@ balance_colony_open_at = {
 	saved_scopes = { location }
 	is_valid = { scope:location = { owner ?= { is_subject_of = root } } }
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		balance_colony_return_all_held = yes
 		balance_colony_fill_subjects = yes
 		scope:location = { owner = { save_temporary_scope_as = balance_colony_s2 } }
@@ -62,6 +64,7 @@ balance_colony_pick_subject = {
 	scope = country
 	saved_scopes = { subject }
 	effect = {
+		balance_tier_clear = yes	# the level popup belonged to the rows as they were
 		set_variable = { name = balance_colony_subject value = scope:subject }
 		if = {
 			limit = { has_variable = balance_colony_location }
